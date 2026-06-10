@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <script src="script.js"></script>
 <style>
 body{
   margin:0;
@@ -38,6 +37,24 @@ body{
 Amazing grace<br>
 How sweet the sound
 </div>
+<script>
+const slides = [
+  "Amazing Grace",
+  "How Sweet The Sound",
+  "Praise The Lord"
+];
 
+function updateLyrics(){
+  const index =
+    Number(localStorage.getItem("currentSlide")) || 0;
+
+  document.getElementById("lyrics").innerHTML =
+    slides[index];
+}
+
+updateLyrics();
+
+window.addEventListener("storage", updateLyrics);
+</script>
 </body>
 </html>
