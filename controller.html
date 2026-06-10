@@ -47,7 +47,7 @@ body{
   margin:15px 0 8px;
 }
 
-/* buttons like ProPresenter cues */
+/* buttons */
 .cue{
   width:100%;
   padding:12px;
@@ -64,7 +64,6 @@ body{
   background:#333;
 }
 
-/* background buttons */
 .bg-cue{
   background:#1d2a3a;
 }
@@ -73,9 +72,19 @@ body{
   background:#2b3d55;
 }
 
-/* active feel */
-.cue:active{
-  transform:scale(0.98);
+/* preview box */
+.preview{
+  background:#000;
+  height:300px;
+  border-radius:10px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  color:white;
+  font-size:32px;
+  padding:20px;
+  border:1px solid #333;
 }
 </style>
 </head>
@@ -88,7 +97,7 @@ body{
 
 <div class="container">
 
-  <!-- LEFT: Slides -->
+  <!-- LEFT PANEL -->
   <div class="panel">
     <div class="section-title">SONG</div>
 
@@ -102,10 +111,15 @@ body{
     <button class="cue bg-cue" onclick="setBG('bg2.mp4')">Worship 2</button>
   </div>
 
-  <!-- MAIN AREA (future expansion) -->
+  <!-- MAIN PANEL -->
   <div class="main">
+
     <h2 style="opacity:0.7;">Preview Panel</h2>
-    <p style="opacity:0.5;">(You can later add song list, thumbnails, etc.)</p>
+
+    <div class="preview" id="preview">
+      Loading preview...
+    </div>
+
   </div>
 
 </div>
@@ -126,6 +140,13 @@ if (!firebase.apps.length) {
 
 const db = firebase.database();
 
+const slides = [
+  "Verse 1",
+  "Verse 2",
+  "Chorus"
+];
+
+/* send controls */
 function sendSlide(index){
   db.ref("slide").set(index);
 }
@@ -133,6 +154,18 @@ function sendSlide(index){
 function setBG(name){
   db.ref("bg").set(name);
 }
+
+/* LIVE PREVIEW (like ProPresenter) */
+db.ref("slide").on("value", (snap) => {
+  const index = snap.val() || 0;
+  document.getElementById("preview").innerHTML = slides[index];
+});
+
+db.ref("bg").on("value", (snap) => {
+  const bg = snap.val() || "";
+  document.getElementById("preview").innerHTML +=
+    `<div style="font-size:12px;opacity:0.5;margin-top:10px;">BG: ${bg}</div>`;
+});
 </script>
 
 </body>
