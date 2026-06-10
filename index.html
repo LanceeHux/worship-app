@@ -38,6 +38,9 @@ Amazing grace<br>
 How sweet the sound
 </div>
 <script>
+  window.addEventListener("storage", (e) => {
+    console.log("Storage changed:", e.key, e.newValue);
+});
 const slides = [
   "Amazing Grace",
   "How Sweet The Sound",
