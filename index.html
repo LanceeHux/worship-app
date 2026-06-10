@@ -30,9 +30,7 @@ body{
 </head>
 <body>
 
-<video id="bg" autoplay muted loop>
-  <source src="background.mp4" type="video/mp4">
-</video>
+<video id="bg" autoplay muted loop></video>
 
 <div id="lyrics">Loading...</div>
 
@@ -62,14 +60,20 @@ db.ref("slide").on("value", (snap) => {
   
 db.ref("bg").on("value", (snap) => {
   const video = document.getElementById("bg");
+  const src = snap.val();
+
+  if (!src) return;
 
   video.style.opacity = 0;
 
   setTimeout(() => {
-    video.src = snap.val();
+    video.src = src;
     video.load();
-    video.play();
-    video.style.opacity = 1;
+
+    video.oncanplay = () => {
+      video.play();
+      video.style.opacity = 1;
+    };
   }, 300);
 });
 </script>
