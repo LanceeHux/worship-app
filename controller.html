@@ -157,17 +157,37 @@ const slides = [
 const songs = [
   {
     title: "Here as in Heaven",
-    parts: ["Verse 1", "Verse 2", "Chorus"]
-  },
-  {
-    title: "Amazing Grace",
-    parts: ["Verse 1", "Verse 2", "Chorus", "Bridge"]
+    parts: [
+      {
+        name: "Verse 1",
+        lyrics: [
+          "We worship You",
+          "We worship You"
+        ]
+      },
+      {
+        name: "Verse 2",
+        lyrics: [
+          "Spirit come",
+          "Fall on us"
+        ]
+      },
+      {
+        name: "Chorus",
+        lyrics: [
+          "Here as in heaven",
+          "Come move among us"
+        ]
+      }
+    ]
   }
 ];
 
 /* send controls */
 function sendSlide(index){
-  db.ref("slide").set(index);
+ db.ref("lyrics").on("value", (snap) => {
+  document.getElementById("lyrics").innerHTML = snap.val() || "";
+});
 }
 
 function setBG(name){
@@ -196,15 +216,33 @@ const secondBG = document.getElementById("secondBG");
   document.getElementById("songTitle").innerText = song.title;
 
   const container = document.getElementById("partsContainer");
-
   container.innerHTML = "";
 
   song.parts.forEach((part, i) => {
-    const btn = document.createElement("button");
-    btn.className = "cue";
-    btn.innerText = part;
-    btn.onclick = () => sendSlide(i);
-    container.appendChild(btn);
+
+    // PART TITLE (not clickable slide yet)
+    const title = document.createElement("div");
+    title.style.marginTop = "10px";
+    title.style.fontWeight = "bold";
+    title.style.color = "#aaa";
+    title.innerText = part.name;
+
+    container.appendChild(title);
+
+    // LYRICS (each line clickable)
+    part.lyrics.forEach((line, j) => {
+      const btn = document.createElement("button");
+      btn.className = "cue";
+      btn.style.marginLeft = "10px";
+      btn.innerText = line;
+
+      btn.onclick = () => {
+        db.ref("lyrics").set(line);
+      };
+
+      container.appendChild(btn);
+    });
+
   });
 }
 </script>
