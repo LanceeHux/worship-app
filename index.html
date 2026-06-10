@@ -1,13 +1,18 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <style>
 body{
   margin:0;
   height:100vh;
   overflow:hidden;
+  background:black;
 }
 
+/* background video */
 #bg{
   position:fixed;
   width:100%;
@@ -16,6 +21,7 @@ body{
   transition: opacity 0.8s ease;
 }
 
+/* lyrics */
 #lyrics{
   position:absolute;
   top:50%;
@@ -25,32 +31,46 @@ body{
   font-size:4rem;
   text-align:center;
   text-shadow:0 0 15px black;
+  white-space:pre-line;
+}
+
+/* fullscreen button */
+#fsbtn{
+  position:fixed;
+  top:10px;
+  right:10px;
+  z-index:9999;
+  padding:10px 15px;
+  font-size:14px;
 }
 </style>
 </head>
- 
+
 <body>
 
+<!-- BACKGROUND -->
 <video id="bg" autoplay muted loop></video>
 
+<!-- LYRICS -->
 <div id="lyrics">Loading...</div>
+
+<!-- FULLSCREEN BUTTON -->
+<button id="fsbtn" onclick="goFullscreen()">Fullscreen</button>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 
 <script>
-  function goFullscreen(){
-  const elem = document.documentElement;
 
-  if (elem.requestFullscreen) {
-    elem.requestFullscreen();
-  } else if (elem.webkitRequestFullscreen) {
-    elem.webkitRequestFullscreen();
-  } else if (elem.msRequestFullscreen) {
-    elem.msRequestFullscreen();
-  }
+/* FULLSCREEN */
+function goFullscreen(){
+  const elem = document.documentElement;
+  if (elem.requestFullscreen) elem.requestFullscreen();
+  else if (elem.webkitRequestFullscreen) elem.webkitRequestFullscreen();
+  else if (elem.msRequestFullscreen) elem.msRequestFullscreen();
 }
-  
+
+/* FIREBASE CONFIG */
 const firebaseConfig = {
   apiKey: "AIzaSyBTGuutbEEzmNg9Xd_dPly6DmG3hmW0hPE",
   databaseURL: "https://worship-app-4ab68-default-rtdb.firebaseio.com",
@@ -60,17 +80,12 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-const slides = [
-  "Verse 1",
-  "Verse 2",
-  "first chorus"
-];
-
-db.ref("slide").on("value", (snap) => {
-  const index = snap.val() || 0;
-  document.getElementById("lyrics").innerHTML = slides[index];
+/* LYRICS LISTENER (NEW SYSTEM) */
+db.ref("lyrics").on("value", (snap) => {
+  document.getElementById("lyrics").innerHTML = snap.val() || "";
 });
-  
+
+/* BACKGROUND SWITCHER */
 db.ref("bg").on("value", (snap) => {
   const video = document.getElementById("bg");
   const src = snap.val();
@@ -89,10 +104,8 @@ db.ref("bg").on("value", (snap) => {
     };
   }, 300);
 });
+
 </script>
-<button onclick="goFullscreen()" style="position:fixed;top:10px;right:10px;z-index:9999;">
-Fullscreen
-</button>
+
 </body>
-   
 </html>
