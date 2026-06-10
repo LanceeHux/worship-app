@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Worship Controller</title>
+
+<style>
+:root{
+  --accent:#ffcd00;
+  --bg:#0b0b0b;
+  --panel:#141414;
+  --panel2:#1a1a1a;
+  --text:#fff;
+  --muted:#888;
+  --border:#2a2a2a;
+}
+
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  font-family:Arial, sans-serif;
+  background:var(--bg);
+  color:var(--text);
+}
+
+/* TOPBAR */
+.topbar{
+  position:sticky;
+  top:0;
+  z-index:10;
+  padding:12px 14px;
+  background:linear-gradient(90deg,#111,#1a1a1a);
+  border-bottom:1px solid var(--border);
+  font-weight:bold;
+  letter-spacing:0.5px;
+}
+
+.topbar span{
+  color:var(--accent);
+}
+
+/* LAYOUT */
+.container{
+  display:flex;
+  height:calc(100vh - 50px);
+}
+
+/* LEFT PANEL */
+.panel{
+  width:260px;
+  background:var(--panel);
+  border-right:1px solid var(--border);
+  padding:12px;
+  overflow:auto;
+}
+
+/* MAIN */
+.main{
+  flex:1;
+  padding:14px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+/* PREVIEW */
+.preview{
+  flex:1;
+  background:radial-gradient(circle at center,#111,#000);
+  border:1px solid var(--border);
+  border-radius:14px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:34px;
+  text-align:center;
+  padding:20px;
+}
+
+/* SECTIONS */
+.section-title{
+  font-size:12px;
+  color:var(--muted);
+  margin:14px 0 6px;
+  letter-spacing:1px;
+}
+
+/* BUTTONS */
+.cue{
+  width:100%;
+  padding:12px;
+  margin:6px 0;
+  background:var(--panel2);
+  border:1px solid var(--border);
+  color:var(--text);
+  font-size:14px;
+  cursor:pointer;
+  border-radius:10px;
+  transition:0.15s;
+}
+
+.cue:hover{
+  border-color:var(--accent);
+  transform:scale(1.01);
+}
+
+.cue:active{
+  transform:scale(0.98);
+}
+
+.accent{
+  border-left:4px solid var(--accent);
+}
+
+.bg-cue{
+  background:#1a1605;
+  border:1px solid #3a3000;
+}
+
+.bg-cue:hover{
+  border-color:var(--accent);
+}
+
+/* SONG TITLE */
+#songTitle{
+  color:var(--accent);
+  font-weight:bold;
+}
+
+/* MOBILE */
+@media (max-width: 768px){
+  .container{
+    flex-direction:column;
+  }
+
+  .panel{
+    width:100%;
+    height:45vh;
+  }
+
+  .main{
+    height:55vh;
+  }
+
+  .preview{
+    font-size:26px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="topbar">
+🎛 <span>WORSHIP</span> CONTROLLER
+</div>
+
+<div class="container">
+
+<!-- LEFT -->
+<div class="panel">
+
+  <div class="section-title">SONGS</div>
+
+  <button class="cue accent" onclick="loadSong(0)">Here as in Heaven</button>
+
+  <div class="section-title" id="songTitle">SELECT SONG</div>
+
+  <div id="partsContainer" style="font-size:13px;opacity:0.9;"></div>
+
+  <div class="section-title">BACKGROUND</div>
+
+  <button class="cue bg-cue" onclick="setBG('bg1.mp4')">Background 1</button>
+  <button class="cue bg-cue" onclick="setBG('bg2.mp4')">Background 2</button>
+
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <div style="opacity:0.6;font-size:13px;">LIVE PREVIEW</div>
+
+  <div id="bgInfo" style="font-size:12px;opacity:0.5;">
+    Background: none
+  </div>
+
+  <div class="preview" id="preview">
+    Ready
+  </div>
+
+</div>
+
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyBTGuutbEEzmNg9Xd_dPly6DmG3hmW0hPE",
+  databaseURL: "https://worship-app-4ab68-default-rtdb.firebaseio.com",
+  projectId: "worship-app-4ab68"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+/* DATA */
+const songs = [
+  {
+    title:"Here as in Heaven",
+    parts:[
+      {
+        name:"Verse 1",
+        lyrics:[
+          "The atmosphere is changing now",
+          "For the Spirit of the Lord is here"
+        ]
+      },
+      {
+        name:"Chorus",
+        lyrics:[
+          "Here as in heaven",
+          "Come move among us"
+        ]
+      }
+    ]
+  }
+];
+
+const slides = ["Verse 1","Verse 2","Chorus"];
+
+/* LIVE PREVIEW */
+db.ref("lyrics").on("value", snap=>{
+  document.getElementById("preview").innerText = snap.val() || "Ready";
+});
+
+/* BACKGROUND */
+function setBG(name){
+  db.ref("bg").set(name);
+  document.getElementById("bgInfo").innerText = "Background: " + name;
+}
+
+/* SONG LOADER */
+function loadSong(i){
+  const song = songs[i];
+
+  document.getElementById("songTitle").innerText = song.title;
+
+  const c = document.getElementById("partsContainer");
+  c.innerHTML = "";
+
+  song.parts.forEach(part=>{
+
+    const t = document.createElement("div");
+    t.innerText = part.name;
+    t.style.color="#ffcd00";
+    t.style.margin="10px 0 5px";
+    t.style.fontSize="12px";
+    c.appendChild(t);
+
+    part.lyrics.forEach(line=>{
+      const b = document.createElement("button");
+      b.className="cue";
+      b.innerText=line;
+
+      b.onclick=()=>{
+        db.ref("lyrics").set(line);
+      };
+
+      c.appendChild(b);
+    });
+
+  });
+}
+</script>
+
+</body>
+</html>
