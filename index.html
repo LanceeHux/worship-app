@@ -28,6 +28,9 @@ body{
 }
 </style>
 </head>
+  <button onclick="goFullscreen()" style="position:fixed;top:10px;right:10px;z-index:9999;">
+Fullscreen
+</button>
 <body>
 
 <video id="bg" autoplay muted loop></video>
@@ -38,6 +41,18 @@ body{
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 
 <script>
+  function goFullscreen(){
+  const elem = document.documentElement;
+
+  if (elem.requestFullscreen) {
+    elem.requestFullscreen();
+  } else if (elem.webkitRequestFullscreen) {
+    elem.webkitRequestFullscreen();
+  } else if (elem.msRequestFullscreen) {
+    elem.msRequestFullscreen();
+  }
+}
+  
 const firebaseConfig = {
   apiKey: "AIzaSyBTGuutbEEzmNg9Xd_dPly6DmG3hmW0hPE",
   databaseURL: "https://worship-app-4ab68-default-rtdb.firebaseio.com",
