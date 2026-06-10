@@ -59,6 +59,19 @@ db.ref("slide").on("value", (snap) => {
   const index = snap.val() || 0;
   document.getElementById("lyrics").innerHTML = slides[index];
 });
+  
+db.ref("bg").on("value", (snap) => {
+  const video = document.getElementById("bg");
+
+  video.style.opacity = 0;
+
+  setTimeout(() => {
+    video.src = snap.val();
+    video.load();
+    video.play();
+    video.style.opacity = 1;
+  }, 300);
+});
 </script>
 
 </body>
