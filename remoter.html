@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Worship Controller</title>
+
+<style>
+:root{
+  --accent:#ffcd00;
+  --bg:#0b0b0b;
+  --panel:#141414;
+  --panel2:#1c1c1c;
+  --border:#2d2d2d;
+}
+
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  background:var(--bg);
+  color:white;
+  font-family:Arial,sans-serif;
+}
+
+.topbar{
+  padding:14px;
+  background:#111;
+  border-bottom:1px solid var(--border);
+  font-weight:bold;
+}
+
+.topbar span{
+  color:var(--accent);
+}
+
+.container{
+  display:flex;
+  height:calc(100vh - 50px);
+}
+
+/* LEFT PANEL */
+.panel{
+  width:340px;
+  background:var(--panel);
+  border-right:1px solid var(--border);
+  padding:12px;
+  overflow-y:auto;
+}
+
+.section-title{
+  color:#888;
+  font-size:12px;
+  margin:15px 0 8px;
+  letter-spacing:1px;
+}
+
+.cue{
+  width:100%;
+  padding:12px;
+  margin-bottom:8px;
+  background:var(--panel2);
+  border:1px solid var(--border);
+  color:white;
+  border-radius:10px;
+  cursor:pointer;
+}
+
+.cue:hover{
+  border-color:var(--accent);
+}
+
+.bg-cue{
+  background:#1f1b08;
+}
+
+#songTitle{
+  color:var(--accent);
+  font-weight:bold;
+}
+
+/* PART TITLES */
+.part-title{
+  color:var(--accent);
+  font-weight:bold;
+  margin:16px 0 8px;
+  font-size:13px;
+}
+
+/* GRID */
+.lyrics-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:8px;
+  margin-bottom:12px;
+}
+
+/* LYRIC BOX */
+.lyric-box{
+  min-height:85px;
+  background:var(--panel2);
+  border:1px solid var(--border);
+  border-radius:12px;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  text-align:center;
+  padding:10px;
+  cursor:pointer;
+
+  transition:.15s;
+}
+
+.lyric-box:hover{
+  border-color:var(--accent);
+  transform:translateY(-2px);
+}
+
+.lyric-box:active{
+  transform:scale(.97);
+}
+
+/* MAIN PANEL */
+.main{
+  flex:1;
+  padding:15px;
+}
+
+.preview{
+  height:320px;
+  background:black;
+  border-radius:12px;
+  border:1px solid var(--border);
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  text-align:center;
+  font-size:32px;
+  padding:20px;
+}
+
+#bgInfo{
+  margin-bottom:10px;
+  color:#888;
+  font-size:13px;
+}
+
+/* LANDSCAPE */
+@media (orientation:landscape){
+  .lyrics-grid{
+    grid-template-columns:repeat(4,1fr);
+  }
+}
+
+/* MOBILE */
+@media (max-width:768px){
+
+  .container{
+    flex-direction:column;
+  }
+
+  .panel{
+    width:100%;
+    height:60%;
+    border-right:none;
+    border-bottom:1px solid var(--border);
+  }
+
+  .main{
+    height:40%;
+  }
+
+  .preview{
+    height:100%;
+    font-size:24px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="topbar">
+🎛 <span>WORSHIP</span> CONTROLLER
+</div>
+
+<div class="container">
+
+<div class="panel">
+
+  <div class="section-title">SONGS</div>
+
+  <button class="cue" onclick="loadSong(0)">
+    Here as in Heaven
+  </button>
+
+  <button class="cue" onclick="loadSong(1)">
+    Amazing Grace
+  </button>
+
+  <div class="section-title" id="songTitle">
+    SELECT A SONG
+  </div>
+
+  <div id="partsContainer">
+    <p style="opacity:.5;font-size:12px;">
+      No song selected
+    </p>
+  </div>
+
+  <div class="section-title">BACKGROUND</div>
+
+  <button class="cue bg-cue" onclick="setBG('Background 1')">
+    Background 1
+  </button>
+
+  <button class="cue bg-cue" onclick="setBG('Background 2')">
+    Background 2
+  </button>
+
+</div>
+
+<div class="main">
+
+  <h3 style="opacity:.7;">Preview Panel</h3>
+
+  <div id="bgInfo">
+    Background Active: None
+  </div>
+
+  <div class="preview" id="preview">
+    Ready
+  </div>
+
+</div>
+
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+
+<script>
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  databaseURL: "YOUR_DATABASE_URL",
+  projectId: "YOUR_PROJECT_ID"
+};
+
+firebase.initializeApp(firebaseConfig);
+
+const db = firebase.database();
+
+const songs = [
+{
+  title:"Here as in Heaven",
+  parts:[
+    {
+      name:"Verse 1",
+      lyrics:[
+        "The atmosphere is changing now",
+        "For the Spirit of the Lord is here",
+        "The evidence is all around",
+        "That the Spirit of the Lord is here"
+      ]
+    },
+    {
+      name:"Chorus",
+      lyrics:[
+        "Here as in heaven",
+        "Come move among us",
+        "We welcome You",
+        "Lord Jesus"
+      ]
+    }
+  ]
+},
+{
+  title:"Amazing Grace",
+  parts:[
+    {
+      name:"Verse 1",
+      lyrics:[
+        "Amazing grace",
+        "How sweet the sound",
+        "That saved a wretch",
+        "Like me"
+      ]
+    }
+  ]
+}
+];
+
+function setBG(name){
+  db.ref("bg").set(name);
+  document.getElementById("bgInfo").innerText =
+    "Background Active: " + name;
+}
+
+function loadSong(index){
+
+  const song = songs[index];
+
+  document.getElementById("songTitle").innerText =
+    song.title;
+
+  const container =
+    document.getElementById("partsContainer");
+
+  container.innerHTML = "";
+
+  song.parts.forEach(part=>{
+
+    const title =
+      document.createElement("div");
+
+    title.className = "part-title";
+    title.innerText = part.name;
+
+    container.appendChild(title);
+
+    const grid =
+      document.createElement("div");
+
+    grid.className = "lyrics-grid";
+
+    part.lyrics.forEach(line=>{
+
+      const box =
+        document.createElement("div");
+
+      box.className = "lyric-box";
+      box.innerText = line;
+
+      box.onclick = ()=>{
+
+        db.ref("lyrics").set(line);
+
+        document
+          .querySelectorAll(".lyric-box")
+          .forEach(el=>{
+            el.style.borderColor="";
+          });
+
+        box.style.borderColor="#ffcd00";
+      };
+
+      grid.appendChild(box);
+    });
+
+    container.appendChild(grid);
+
+  });
+
+}
+
+/* LIVE PREVIEW */
+
+db.ref("lyrics").on("value",(snap)=>{
+
+  document.getElementById("preview").innerText =
+    snap.val() || "Ready";
+
+});
+</script>
+
+</body>
+</html>
