@@ -32,6 +32,9 @@ body{
   text-align:center;
   text-shadow:0 0 15px black;
   white-space:pre-line;
+
+  opacity:1;
+  transition: opacity 0.2s ease;
 }
 
 /* fullscreen button */
@@ -81,8 +84,20 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
 /* LYRICS LISTENER (NEW SYSTEM) */
+const lyricsEl = document.getElementById("lyrics");
+
 db.ref("lyrics").on("value", (snap) => {
-  document.getElementById("lyrics").innerHTML = snap.val() || "";
+  const text = snap.val() || "";
+
+  // fade out fast
+  lyricsEl.style.opacity = 0;
+
+  setTimeout(() => {
+    lyricsEl.innerHTML = text;
+
+    // fade in fast
+    lyricsEl.style.opacity = 1;
+  }, 150);
 });
 
 /* BACKGROUND SWITCHER */
