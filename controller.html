@@ -26,10 +26,23 @@ button{
 <button onclick="sendSlide(1)">Verse 2</button>
 <button onclick="sendSlide(2)">Chorus</button>
 
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+
 <script>
+const firebaseConfig = {
+  apiKey: "YAIzaSyBTGuutbEEzmNg9Xd_dPly6DmG3hmW0hPE"",
+  databaseURL: "https://worship-app-4ab68-default-rtdb.firebaseio.com",
+  projectId: "worship-app-4ab68"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+  
 function sendSlide(index){
-  localStorage.setItem("currentSlide", index);
+  db.ref("slide").set(index);
 }
+  
 </script>
 
 </body>
