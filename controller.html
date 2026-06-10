@@ -25,6 +25,8 @@ button{
 <button onclick="sendSlide(0)">Verse 1</button>
 <button onclick="sendSlide(1)">Verse 2</button>
 <button onclick="sendSlide(2)">Chorus</button>
+  <button onclick="setBG('bg1.mp4')">Background 1</button>
+<button onclick="setBG('bg2.mp4')">Background 2</button>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
@@ -44,6 +46,10 @@ const db = firebase.database();
 
 function sendSlide(index){
   db.ref("slide").set(index);
+}
+
+function setBG(name){
+  db.ref("bg").set(name);
 }
 </script>
 
