@@ -33,44 +33,32 @@ body{
   <source src="background.mp4" type="video/mp4">
 </video>
 
-<div id="lyrics">
-Amazing grace<br>
-How sweet the sound
-</div>
-  
+<div id="lyrics">Loading...</div>
+
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
 
 <script>
 const firebaseConfig = {
-  apiKey: "YAIzaSyBTGuutbEEzmNg9Xd_dPly6DmG3hmW0hPE"",
+  apiKey: "YOUR_API_KEY",
   databaseURL: "https://worship-app-4ab68-default-rtdb.firebaseio.com",
   projectId: "worship-app-4ab68"
 };
 
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
-  
-  window.addEventListener("storage", (e) => {
-    console.log("Storage changed:", e.key, e.newValue);
-});
+
 const slides = [
-  "Amazing Grace",
-  "How Sweet The Sound",
-  "Praise The Lord"
+  "Verse 1",
+  "Verse 2",
+  "Chorus"
 ];
 
-function updateLyrics(){
-  const index =
-    Number(localStorage.getItem("currentSlide")) || 0;
-
-  document.getElementById("lyrics").innerHTML =
-    slides[index];
-}
-
-updateLyrics();
-
-window.addEventListener("storage", updateLyrics);
+db.ref("slide").on("value", (snap) => {
+  const index = snap.val() || 0;
+  document.getElementById("lyrics").innerHTML = slides[index];
+});
 </script>
+
 </body>
 </html>
