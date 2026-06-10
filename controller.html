@@ -100,18 +100,25 @@ body{
 <div class="container">
 
   <!-- LEFT PANEL -->
-  <div class="panel">
-    <div class="section-title">SONG</div>
+ <div class="panel">
 
-    <button class="cue" onclick="sendSlide(0)">Verse 1</button>
-    <button class="cue" onclick="sendSlide(1)">Verse 2</button>
-    <button class="cue" onclick="sendSlide(2)">Chorus</button>
+  <div class="section-title">SONGS</div>
 
-    <div class="section-title">BACKGROUND</div>
+  <button class="cue" onclick="loadSong(0)">Here as in Heaven</button>
+  <button class="cue" onclick="loadSong(1)">Amazing Grace</button>
 
-    <button class="cue bg-cue" id="firstBG" onclick="setBG('14122662_1920_1080_24fps.mp4')">Background1</button>
-    <button class="cue bg-cue" id="secondBG" onclick="setBG('bg2.mp4')">Worship 2</button>
+  <div class="section-title" id="songTitle">SELECT A SONG</div>
+
+  <div id="partsContainer">
+    <p style="opacity:0.5;font-size:12px;">No song selected</p>
   </div>
+
+  <div class="section-title">BACKGROUND</div>
+
+  <button class="cue bg-cue" onclick="setBG('14122662_1920_1080_24fps.mp4')">Background 1</button>
+  <button class="cue bg-cue" onclick="setBG('bg2.mp4')">Worship 2</button>
+
+</div>
 
   <!-- MAIN PANEL -->
   <div class="main">
@@ -147,6 +154,16 @@ const slides = [
   "Verse 2",
   "Chorus"
 ];
+const songs = [
+  {
+    title: "Here as in Heaven",
+    parts: ["Verse 1", "Verse 2", "Chorus"]
+  },
+  {
+    title: "Amazing Grace",
+    parts: ["Verse 1", "Verse 2", "Chorus", "Bridge"]
+  }
+];
 
 /* send controls */
 function sendSlide(index){
@@ -172,6 +189,24 @@ const secondBG = document.getElementById("secondBG");
   secondBG.addEventListener("click", function() {
     bgInfo.textContent = "Background Active: Background 2";
   });
+
+  function loadSong(index){
+  const song = songs[index];
+
+  document.getElementById("songTitle").innerText = song.title;
+
+  const container = document.getElementById("partsContainer");
+
+  container.innerHTML = "";
+
+  song.parts.forEach((part, i) => {
+    const btn = document.createElement("button");
+    btn.className = "cue";
+    btn.innerText = part;
+    btn.onclick = () => sendSlide(i);
+    container.appendChild(btn);
+  });
+}
 </script>
 
 </body>
