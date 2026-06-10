@@ -107,15 +107,15 @@ body{
 
     <div class="section-title">BACKGROUND</div>
 
-    <button class="cue bg-cue" onclick="setBG('14122662_1920_1080_24fps.mp4')">Background1</button>
-    <button class="cue bg-cue" onclick="setBG('bg2.mp4')">Worship 2</button>
+    <button class="cue bg-cue" id="firstBG" onclick="setBG('14122662_1920_1080_24fps.mp4')">Background1</button>
+    <button class="cue bg-cue" id="secondBG" onclick="setBG('bg2.mp4')">Worship 2</button>
   </div>
 
   <!-- MAIN PANEL -->
   <div class="main">
 
     <h2 style="opacity:0.7;">Preview Panel</h2>
-
+    <p id="bgInfo">Background Active:</p>
     <div class="preview" id="preview">
       Loading preview...
     </div>
@@ -161,11 +161,15 @@ db.ref("slide").on("value", (snap) => {
   document.getElementById("preview").innerHTML = slides[index];
 });
 
-db.ref("bg").on("value", (snap) => {
-  const bg = snap.val() || "";
-  document.getElementById("preview").innerHTML +=
-    `<div style="font-size:12px;opacity:0.5;margin-top:10px;">BG: ${bg}</div>`;
-});
+const bgInfo = document.getElementById("bgInfo");
+const firstBG = document.getElementById("firstBG");
+const secondBG = document.getElementById("secondBG");
+  firstBG.addEventListener("click", function() {
+    bgInfo.textContent = "Background Active: Background 1";
+  });
+  secondBG.addEventListener("click", function() {
+    bgInfo.textContent = "Background Active: Background 2";
+  });
 </script>
 
 </body>
