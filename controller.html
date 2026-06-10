@@ -2,31 +2,113 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Controller</title>
+<title>Worship Controller</title>
 
 <style>
 body{
-  font-family:sans-serif;
-  padding:20px;
+  margin:0;
+  font-family:Arial, sans-serif;
+  background:#111;
+  color:white;
 }
 
-button{
+/* top bar */
+.topbar{
+  padding:15px;
+  font-size:18px;
+  background:#1a1a1a;
+  border-bottom:1px solid #333;
+}
+
+/* layout */
+.container{
+  display:flex;
+  height:100vh;
+}
+
+/* left panel */
+.panel{
+  width:220px;
+  background:#161616;
+  padding:10px;
+  border-right:1px solid #333;
+}
+
+/* main grid */
+.main{
+  flex:1;
+  padding:15px;
+}
+
+/* section title */
+.section-title{
+  font-size:14px;
+  color:#888;
+  margin:15px 0 8px;
+}
+
+/* buttons like ProPresenter cues */
+.cue{
   width:100%;
-  padding:20px;
-  font-size:24px;
-  margin:10px 0;
+  padding:12px;
+  margin:6px 0;
+  background:#222;
+  border:1px solid #333;
+  color:white;
+  font-size:14px;
+  cursor:pointer;
+  border-radius:6px;
+}
+
+.cue:hover{
+  background:#333;
+}
+
+/* background buttons */
+.bg-cue{
+  background:#1d2a3a;
+}
+
+.bg-cue:hover{
+  background:#2b3d55;
+}
+
+/* active feel */
+.cue:active{
+  transform:scale(0.98);
 }
 </style>
 </head>
+
 <body>
 
-<h2>Worship Controller</h2>
+<div class="topbar">
+🎛 Worship Controller
+</div>
 
-<button onclick="sendSlide(0)">Verse 1</button>
-<button onclick="sendSlide(1)">Verse 2</button>
-<button onclick="sendSlide(2)">Chorus button</button>
-  <button onclick="setBG('14122662_1920_1080_24fps.mp4')">Background 1</button>
-<button onclick="setBG('bg2.mp4')">Background 2</button>
+<div class="container">
+
+  <!-- LEFT: Slides -->
+  <div class="panel">
+    <div class="section-title">SONG</div>
+
+    <button class="cue" onclick="sendSlide(0)">Verse 1</button>
+    <button class="cue" onclick="sendSlide(1)">Verse 2</button>
+    <button class="cue" onclick="sendSlide(2)">Chorus</button>
+
+    <div class="section-title">BACKGROUND</div>
+
+    <button class="cue bg-cue" onclick="setBG('14122662_1920_1080_24fps.mp4')">Worship 1</button>
+    <button class="cue bg-cue" onclick="setBG('bg2.mp4')">Worship 2</button>
+  </div>
+
+  <!-- MAIN AREA (future expansion) -->
+  <div class="main">
+    <h2 style="opacity:0.7;">Preview Panel</h2>
+    <p style="opacity:0.5;">(You can later add song list, thumbnails, etc.)</p>
+  </div>
+
+</div>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
@@ -51,7 +133,6 @@ function sendSlide(index){
 function setBG(name){
   db.ref("bg").set(name);
 }
-  
 </script>
 
 </body>
