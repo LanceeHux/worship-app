@@ -26,30 +26,35 @@ body {
   background: var(--bg);
   color: var(--text);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-  overflow: hidden;
+  overflow-x: hidden;
 }
 
 /* TOPBAR */
 .topbar {
-  padding: 16px 24px;
+  padding: 16px;
   background: var(--panel);
   border-bottom: 1px solid var(--border);
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
-.brand { font-weight: 700; font-size: 16px; }
+.brand { font-weight: 700; font-size: 15px; }
 .brand span { color: var(--accent); }
+.top-actions { display: flex; gap: 12px; align-items: center; }
 
-.top-actions { display: flex; gap: 16px; align-items: center; }
-
-/* LAYOUT */
-.container { display: flex; height: calc(100vh - 54px); }
+/* DESKTOP LAYOUT DEFINITION */
+.container { 
+  display: flex; 
+  height: calc(100vh - 54px); 
+}
 
 /* LEFT PANEL (SONGS & BG) */
 .panel {
-  width: 340px;
+  width: 320px;
   background: var(--panel);
   border-right: 1px solid var(--border);
   padding: 20px;
@@ -68,36 +73,37 @@ body {
   margin-bottom: 10px;
 }
 
-.song-list { display: flex; flex-direction: column; gap: 6px; }
+.song-list { display: flex; flex-direction: column; gap: 8px; }
 
 .cue {
   width: 100%;
-  padding: 12px;
+  padding: 14px;
   background: var(--panel2);
   border: 1px solid var(--border);
   color: var(--text);
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
   text-align: left;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  font-size: 14px;
 }
 
 .cue:hover { border-color: var(--accent); }
 .cue .delete-song-btn { 
-  background: transparent; border: none; color: var(--text-muted); cursor: pointer; font-size: 14px;
+  background: transparent; border: none; color: var(--text-muted); cursor: pointer; font-size: 16px; padding: 4px 8px;
 }
 .cue .delete-song-btn:hover { color: var(--danger); }
 
 /* BACKGROUND GRAPHICS */
-.bg-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.bg-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
 .bg-thumb {
   background: var(--panel2); border: 1px solid var(--border); border-radius: 6px;
-  cursor: pointer; overflow: hidden; height: 50px; padding: 0;
+  cursor: pointer; overflow: hidden; height: 55px; padding: 0; width: 100%;
 }
 .bg-thumb:hover, .bg-thumb.active { border-color: var(--accent); }
-.bg-thumb video { width: 100%; height: 100%; object-fit: cover; }
+.bg-thumb video { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
 
 /* CENTER WORKSPACE */
 .workspace { flex: 1; padding: 24px; overflow-y: auto; }
@@ -116,7 +122,7 @@ body {
 .lyric-box.active { border-color: var(--accent); background: rgba(var(--accent-rgb), 0.1); }
 
 /* RIGHT PANEL (MONITOR) */
-.main { width: 360px; background: var(--panel); border-left: 1px solid var(--border); padding: 24px; display: flex; flex-direction: column; gap: 12px; }
+.main { width: 340px; background: var(--panel); border-left: 1px solid var(--border); padding: 24px; display: flex; flex-direction: column; gap: 12px; }
 .main.hidden { display: none !important; }
 .preview-wrapper { position: relative; width: 100%; height: 200px; background: black; border-radius: 8px; border: 1px solid var(--border); overflow: hidden; }
 .preview-video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; opacity: 0.5; }
@@ -129,7 +135,7 @@ body {
 }
 .modal-content {
   background: var(--panel); border: 1px solid var(--border); border-radius: 12px;
-  width: 90%; max-width: 600px; max-height: 85vh; padding: 24px; overflow-y: auto;
+  width: 95%; max-width: 600px; max-height: 90vh; padding: 20px; overflow-y: auto;
 }
 .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
 .modal-title { font-size: 18px; font-weight: bold; color: var(--accent); }
@@ -137,11 +143,11 @@ body {
 /* FORMS */
 input, select, textarea {
   width: 100%; background: var(--panel2); border: 1px solid var(--border);
-  color: var(--text); padding: 10px; border-radius: 6px; margin-bottom: 12px; font-family: inherit;
+  color: var(--text); padding: 12px; border-radius: 6px; margin-bottom: 12px; font-family: inherit; font-size: 14px;
 }
 input:focus, select:focus, textarea:focus { border-color: var(--accent); outline: none; }
 .btn {
-  padding: 10px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; border: 1px solid transparent;
+  padding: 12px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; border: 1px solid transparent; font-size: 14px;
 }
 .btn-primary { background: var(--accent); color: black; }
 .btn-secondary { background: transparent; border-color: var(--border); color: var(--text); }
@@ -157,6 +163,48 @@ input:focus, select:focus, textarea:focus { border-color: var(--accent); outline
 .switch::after { content: ''; position: absolute; width: 12px; height: 12px; background: var(--text-muted); border-radius: 50%; top: 2px; left: 2px; transition: 0.2s; }
 input:checked + .switch { background: rgba(var(--accent-rgb), 0.3); border-color: var(--accent); }
 input:checked + .switch::after { left: 18px; background: var(--accent); }
+
+/* ==========================================================
+   MOBILE & TABLET RESPONSIVE FIXES
+   ========================================================== */
+@media (max-width: 900px) {
+  body {
+    overflow-y: auto; /* Allow full page scroll down on phones */
+  }
+
+  .container {
+    flex-direction: column;
+    height: auto; /* Unbind strict viewport limits */
+  }
+
+  /* Stack panels on top of each other */
+  .panel, .workspace, .main {
+    width: 100% !important;
+    height: auto !important;
+    border-right: none;
+    border-left: none;
+    border-bottom: 1px solid var(--border);
+    padding: 16px;
+  }
+
+  /* Order layouts chronologically for mobile workflows */
+  .panel { order: 2; }       /* Song List & Backgrounds go second */
+  .workspace { order: 1; }   /* Active Performance workspace stays right at the top! */
+  .main { order: 3; }        /* Live Monitor goes to the bottom */
+
+  /* Make lyrics easier to tap on portrait touchscreens */
+  .lyrics-grid {
+    grid-template-columns: 1fr; /* Single column layout on small screens */
+    gap: 8px;
+  }
+
+  .lyric-box {
+    min-height: 70px;
+    font-size: 16px; /* Slightly larger text target */
+    padding: 16px;
+  }
+}
+
 </style>
 </head>
 <body>
