@@ -1,154 +1,308 @@
+
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Worship Controller</title>
 
 <style>
-:root{
-  --accent:#ffcd00;
-  --bg:#0b0b0b;
-  --panel:#141414;
-  --panel2:#1a1a1a;
-  --text:#fff;
-  --muted:#888;
-  --border:#2a2a2a;
+:root {
+  --accent: #ffcd00;
+  --accent-rgb: 255, 205, 0;
+  --bg: #09090b;
+  --panel: #121214;
+  --panel2: #1a1a1e;
+  --border: #2a2a30;
+  --text: #f4f4f5;
+  --text-muted: #a1a1aa;
 }
 
-*{
-  box-sizing:border-box;
+* {
+  box-sizing: border-box;
 }
 
-body{
-  margin:0;
-  font-family:Arial, sans-serif;
-  background:var(--bg);
-  color:var(--text);
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  overflow: hidden;
 }
 
 /* TOPBAR */
-.topbar{
-  position:sticky;
-  top:0;
-  z-index:10;
-  padding:12px 14px;
-  background:linear-gradient(90deg,#111,#1a1a1a);
-  border-bottom:1px solid var(--border);
-  font-weight:bold;
-  letter-spacing:0.5px;
+.topbar {
+  padding: 16px 24px;
+  background: var(--panel);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.topbar span{
-  color:var(--accent);
+.brand {
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  font-size: 16px;
 }
 
-/* LAYOUT */
-.container{
-  display:flex;
-  height:calc(100vh - 50px);
+.brand span {
+  color: var(--accent);
 }
 
-/* LEFT PANEL */
-.panel{
-  width:260px;
-  background:var(--panel);
-  border-right:1px solid var(--border);
-  padding:12px;
-  overflow:auto;
+/* TOGGLE SWITCH */
+.toggle-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  user-select: none;
+  font-size: 14px;
+  color: var(--text-muted);
 }
 
-/* MAIN */
-.main{
-  flex:1;
-  padding:14px;
-  display:flex;
-  flex-direction:column;
-  gap:10px;
+.switch {
+  position: relative;
+  width: 44px;
+  height: 22px;
+  background: var(--panel2);
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  transition: 0.3s;
 }
 
-/* PREVIEW */
-.preview{
-  flex:1;
-  background:radial-gradient(circle at center,#111,#000);
-  border:1px solid var(--border);
-  border-radius:14px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:34px;
-  text-align:center;
-  padding:20px;
+.switch::after {
+  content: '';
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--text-muted);
+  top: 2px;
+  left: 2px;
+  transition: 0.3s;
 }
 
-/* SECTIONS */
-.section-title{
-  font-size:12px;
-  color:var(--muted);
-  margin:14px 0 6px;
-  letter-spacing:1px;
+#previewToggle:checked + .switch {
+  background: rgba(var(--accent-rgb), 0.2);
+  border-color: var(--accent);
 }
 
-/* BUTTONS */
-.cue{
-  width:100%;
-  padding:12px;
-  margin:6px 0;
-  background:var(--panel2);
-  border:1px solid var(--border);
-  color:var(--text);
-  font-size:14px;
-  cursor:pointer;
-  border-radius:10px;
-  transition:0.15s;
+#previewToggle:checked + .switch::after {
+  left: 24px;
+  background: var(--accent);
 }
 
-.cue:hover{
-  border-color:var(--accent);
-  transform:scale(1.01);
+/* MAIN LAYOUT */
+.container {
+  display: flex;
+  height: calc(100vh - 54px);
 }
 
-.cue:active{
-  transform:scale(0.98);
+/* LEFT CONTROL PANEL */
+.panel {
+  width: 360px;
+  background: var(--panel);
+  border-right: 1px solid var(--border);
+  padding: 20px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
-.accent{
-  border-left:4px solid var(--accent);
+.section-title {
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 10px;
 }
 
-.bg-cue{
-  background:#1a1605;
-  border:1px solid #3a3000;
+.song-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
-.bg-cue:hover{
-  border-color:var(--accent);
+.cue {
+  width: 100%;
+  padding: 14px;
+  background: var(--panel2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: left;
+  font-weight: 500;
+  transition: all 0.2s ease;
 }
 
-/* SONG TITLE */
-#songTitle{
-  color:var(--accent);
-  font-weight:bold;
+.cue:hover {
+  border-color: var(--accent);
+  background: rgba(var(--accent-rgb), 0.05);
 }
 
-/* MOBILE */
-@media (max-width: 768px){
-  .container{
-    flex-direction:column;
-  }
+#songTitle {
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 18px;
+  margin-top: 10px;
+  text-transform: none;
+  letter-spacing: normal;
+}
 
-  .panel{
-    width:100%;
-    height:45vh;
-  }
+/* BG SELECTION GRAPHICS */
+.bg-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
 
-  .main{
-    height:55vh;
-  }
+.bg-thumb {
+  background: var(--panel2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0;
+  cursor: pointer;
+  overflow: hidden;
+  height: 60px;
+  position: relative;
+  transition: border-color 0.2s;
+}
 
-  .preview{
-    font-size:26px;
-  }
+.bg-thumb:hover, .bg-thumb.active {
+  border-color: var(--accent);
+}
+
+.bg-thumb video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* CENTRAL WORKSPACE */
+.workspace {
+  flex: 1;
+  padding: 24px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.part-title {
+  color: var(--accent);
+  font-weight: 600;
+  margin: 20px 0 10px;
+  font-size: 14px;
+  letter-spacing: 0.5px;
+}
+
+.lyrics-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.lyric-box {
+  min-height: 90px;
+  background: var(--panel2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 16px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.4;
+  transition: all 0.15s ease;
+}
+
+.lyric-box:hover {
+  border-color: var(--accent);
+  background: rgba(var(--accent-rgb), 0.02);
+}
+
+.lyric-box.active {
+  border-color: var(--accent);
+  background: rgba(var(--accent-rgb), 0.1);
+  box-shadow: 0 0 12px rgba(var(--accent-rgb), 0.15);
+}
+
+/* RIGHT PREVIEW PANEL */
+.main {
+  width: 400px;
+  background: var(--panel);
+  border-left: 1px solid var(--border);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: all 0.3s ease;
+}
+
+.main.hidden {
+  display: none !important;
+}
+
+.preview-wrapper {
+  position: relative;
+  width: 100%;
+  height: 250px;
+  background: black;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.preview-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 1;
+  opacity: 0.6; /* Slight dimming to guarantee lyric readability */
+}
+
+.preview-text {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+  padding: 24px;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.9);
+}
+
+#bgInfo {
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+/* RESPONSIVE DESIGN */
+@media (max-width: 1024px) {
+  .container { flex-direction: column; overflow: auto; }
+  .panel { width: 100%; height: auto; border-right: none; border-bottom: 1px solid var(--border); }
+  .main { width: 100%; border-left: none; border-top: 1px solid var(--border); }
+  .lyrics-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (min-width: 1400px) {
+  .lyrics-grid { grid-template-columns: repeat(3, 1fr); }
 }
 </style>
 </head>
@@ -156,43 +310,56 @@ body{
 <body>
 
 <div class="topbar">
-🎛 <span>WORSHIP</span> CONTROLLER
+  <div class="brand">🎛 <span>WORSHIP</span> CONTROLLER</div>
+  <label class="toggle-container">
+    <span>Live Preview Panel</span>
+    <input type="checkbox" id="previewToggle" checked style="display:none;" onchange="togglePreview()">
+    <div class="switch"></div>
+  </label>
 </div>
 
 <div class="container">
 
-<!-- LEFT -->
-<div class="panel">
+  <div class="panel">
+    <div>
+      <div class="section-title">Songs</div>
+      <div class="song-buttons">
+        <button class="cue" onclick="loadSong(0)">Here as in Heaven</button>
+        <button class="cue" onclick="loadSong(1)">Amazing Grace</button>
+      </div>
+    </div>
 
-  <div class="section-title">SONGS</div>
-
-  <button class="cue accent" onclick="loadSong(0)">Here as in Heaven</button>
-
-  <div class="section-title" id="songTitle">SELECT SONG</div>
-
-  <div id="partsContainer" style="font-size:13px;opacity:0.9;"></div>
-
-  <div class="section-title">BACKGROUND</div>
-
-  <button class="cue bg-cue" onclick="setBG('bg1.mp4')">Background 1</button>
-  <button class="cue bg-cue" onclick="setBG('bg2.mp4')">Background 2</button>
-
-</div>
-
-<!-- MAIN -->
-<div class="main">
-
-  <div style="opacity:0.6;font-size:13px;">LIVE PREVIEW</div>
-
-  <div id="bgInfo" style="font-size:12px;opacity:0.5;">
-    Background: none
+    <div>
+      <div class="section-title">Backgrounds</div>
+      <div class="bg-grid">
+        <button class="bg-thumb" id="bg-bg2.mp4" onclick="setBG('bg2.mp4')">
+          <video muted autoplay loop><source src="bg2.mp4" type="video/mp4"></video>
+        </button>
+        <button class="bg-thumb" id="bg-lv_0_20260611103641.mp4" onclick="setBG('lv_0_20260611103641.mp4')">
+          <video muted autoplay loop><source src="lv_0_20260611103641.mp4" type="video/mp4"></video>
+        </button>
+        <button class="bg-thumb" id="bg-14122662_1920_1080_24fps.mp4" onclick="setBG('14122662_1920_1080_24fps.mp4')">
+          <video muted autoplay loop><source src="14122662_1920_1080_24fps.mp4" type="video/mp4"></video>
+        </button>
+      </div>
+    </div>
   </div>
 
-  <div class="preview" id="preview">
-    Ready
+  <div class="workspace">
+    <div class="section-title" id="songTitle">Select a Song to Display Lyrics</div>
+    <div id="partsContainer">
+      <p style="color: var(--text-muted); font-size: 13px;">No presentation loaded.</p>
+    </div>
   </div>
 
-</div>
+  <div class="main" id="previewPanel">
+    <div class="section-title">Output Layer Monitor</div>
+    <div id="bgInfo">Background Layer: Off</div>
+    <div class="preview-wrapper">
+      <video id="previewVideo" class="preview-video" muted autoplay loop style="display: none;"></video>
+      <div class="preview-text" id="preview">Ready</div>
+    </div>
+  </div>
 
 </div>
 
@@ -209,74 +376,118 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-/* DATA */
 const songs = [
   {
     title:"Here as in Heaven",
     parts:[
       {
         name:"Verse 1",
-        lyrics:[
-          "The atmosphere is changing now",
-          "For the Spirit of the Lord is here"
-        ]
+        lyrics:["The atmosphere is changing now", "For the Spirit of the Lord is here", "The evidence is all around", "That the Spirit of the Lord is here"]
       },
       {
         name:"Chorus",
-        lyrics:[
-          "Here as in heaven",
-          "Come move among us"
-        ]
+        lyrics:["Overflow in this place", "Fill our hearts with your love", "Your love surrounds us", "You're the reason we came", "to encounter Your love"]
+      },
+      {
+        name:"Verse 2",
+        lyrics:["A miracle can happen now", "for the Spirit of the Lord is here", "the evidence is all around", "that the Spirit of the Lord is here"]
+      },
+      {
+        name:"Bridge",
+        lyrics:["Spirit of God fall fresh on us", "we need Your Presence", "Your kingdom come", "Your will be done", "here as in heaven"]
+      }
+    ]
+  },
+  {
+    title:"Amazing Grace",
+    parts:[
+      {
+        name:"Verse 1",
+        lyrics:["Amazing grace", "How sweet the sound", "That saved a wretch", "Like me"]
       }
     ]
   }
 ];
 
-const slides = ["Verse 1","Verse 2","Chorus"];
+function togglePreview() {
+  const checkbox = document.getElementById("previewToggle");
+  const panel = document.getElementById("previewPanel");
+  if(checkbox.checked) {
+    panel.classList.remove("hidden");
+  } else {
+    panel.classList.add("hidden");
+  }
+}
 
-/* LIVE PREVIEW */
-db.ref("lyrics").on("value", snap=>{
-  document.getElementById("preview").innerText = snap.val() || "Ready";
-});
-
-/* BACKGROUND */
 function setBG(name){
   db.ref("bg").set(name);
-  document.getElementById("bgInfo").innerText = "Background: " + name;
 }
 
-/* SONG LOADER */
-function loadSong(i){
-  const song = songs[i];
-
+function loadSong(index){
+  const song = songs[index];
   document.getElementById("songTitle").innerText = song.title;
+  
+  const container = document.getElementById("partsContainer");
+  container.innerHTML = "";
 
-  const c = document.getElementById("partsContainer");
-  c.innerHTML = "";
+  song.parts.forEach(part => {
+    const title = document.createElement("div");
+    title.className = "part-title";
+    title.innerText = part.name;
+    container.appendChild(title);
 
-  song.parts.forEach(part=>{
+    const grid = document.createElement("div");
+    grid.className = "lyrics-grid";
 
-    const t = document.createElement("div");
-    t.innerText = part.name;
-    t.style.color="#ffcd00";
-    t.style.margin="10px 0 5px";
-    t.style.fontSize="12px";
-    c.appendChild(t);
+    part.lyrics.forEach(line => {
+      if(!line.trim()) return; // Skip empty line slots
+      const box = document.createElement("div");
+      box.className = "lyric-box";
+      box.innerText = line;
 
-    part.lyrics.forEach(line=>{
-      const b = document.createElement("button");
-      b.className="cue";
-      b.innerText=line;
-
-      b.onclick=()=>{
+      box.onclick = () => {
         db.ref("lyrics").set(line);
+        document.querySelectorAll(".lyric-box").forEach(el => el.classList.remove("active"));
+        box.classList.add("active");
       };
-
-      c.appendChild(b);
+      grid.appendChild(box);
     });
-
+    container.appendChild(grid);
   });
 }
+
+/* LIVE MONITOR SYNC */
+db.ref("lyrics").on("value", (snap) => {
+  const currentText = snap.val() || "Ready";
+  document.getElementById("preview").innerText = currentText;
+  
+  // Visual active link for manual clicks inside panel updates
+  document.querySelectorAll(".lyric-box").forEach(el => {
+    if(el.innerText === currentText) el.classList.add("active");
+    else el.classList.remove("active");
+  });
+});
+
+db.ref("bg").on("value", (snap) => {
+  const bgName = snap.val();
+  const videoElement = document.getElementById("previewVideo");
+  const bgInfoText = document.getElementById("bgInfo");
+  
+  document.querySelectorAll(".bg-thumb").forEach(el => el.classList.remove("active"));
+  
+  if (bgName) {
+    bgInfoText.innerText = "Background Layer: " + bgName;
+    videoElement.src = bgName;
+    videoElement.style.display = "block";
+    
+    const thumbMatch = document.getElementById("bg-" + bgName);
+    if(thumbMatch) thumbMatch.classList.add("active");
+  } else {
+    bgInfoText.innerText = "Background Layer: Off";
+    videoElement.style.display = "none";
+    videoElement.src = "";
+  }
+});
 </script>
 
 </body>
