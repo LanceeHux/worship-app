@@ -42,7 +42,7 @@ body {
   z-index: 100;
 }
 
-.brand { font-weight: 700; font-size: 15px; }
+.brand { font-weight: 700; font-size: 15px; display: flex; margin-left: 2px}
 .brand span { color: var(--accent); }
 .top-actions { display: flex; gap: 12px; align-items: center; }
 
@@ -204,15 +204,24 @@ input:checked + .switch::after { left: 18px; background: var(--accent); }
     padding: 16px;
   }
 }
-img {
-  object-fit: cover; 
+.logo {
+  display: flex;
+  align-items: center;
+  height: 32px;         /* Match this to your desired text height */
+}
+
+/* 3. Control the actual image size */
+.logo img {
+  height: 100%;         /* Fills the 32px height of the .logo div */
+  width: auto;          /* Automatically calculates correct width aspect ratio */
+  display: block;
 }
 </style>
 </head>
 <body>
 
 <div class="topbar">
-  <div class="brand"><img src="images/yalogo.png"/><span>WORSHIP</span> CONTROL</div>
+  <div class="brand"><div class="logo"><img src="https://uploads.onecompiler.io/44ryuxscs/1781186652765/yalogo.png"/></div><span>WORSHIP</span> CONTROL</div>
   <div class="top-actions">
     <button class="btn btn-primary" style="padding: 6px 12px; font-size: 13px;" onclick="openSongCreator()">+ New Song</button>
     <label class="switch-label">
