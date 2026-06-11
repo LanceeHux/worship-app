@@ -72,11 +72,12 @@ body{
 
 /* FULLSCREEN */
 function goFullscreen(){
+  document.getElementbYiD("fsbtn").style.display = "none";
   const elem = document.documentElement;
   if (elem.requestFullscreen) elem.requestFullscreen();
   else if (elem.webkitRequestFullscreen) elem.webkitRequestFullscreen();
   else if (elem.msRequestFullscreen) elem.msRequestFullscreen();
-  this.style.display = "none";
+  
 }
 
 /* FIREBASE CONFIG */
