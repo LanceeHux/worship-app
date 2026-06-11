@@ -117,8 +117,21 @@
     </ol>
   </div>
 
-  <a href="display.html">Display TV</a>
+  <p id="availableText" style="color:red"></p>
+  <a onclick="checkAvailability()">Display TV</a>
 </div>
+  <script>
+    // TV DISPLAY //
+    let isAvailable = false;
+    // TV DISPLAY: [TRUE / FALSE] //
+    function checkAvailability() {
+      if (!isAvailable) {
+        document.getElementById("availableText").textContent = "There's no active Praise & Worship at the moment.";
+      } else {
+        window.location.href = "display.html";
+      }
+    }
+  </script>
 
 </body>
 </html>
