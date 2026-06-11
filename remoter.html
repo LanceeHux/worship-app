@@ -182,6 +182,12 @@ body{
     font-size:24px;
   }
 }
+  .bg-thumb video{
+  width:100%;
+  height:90px;
+  object-fit:cover;
+  pointer-events:none;
+}
 </style>
 </head>
 
@@ -225,9 +231,21 @@ body{
     Background 2
   </button>
 
-  <button class="cue bg-cue" onclick="setBG('bg2.mp4')">
-    Background 2
+  <button class="bg-thumb" onclick="setBG('bg2.mp4')">
+  <video muted autoplay loop>
+    <source src="bg2.mp4" type="video/mp4">
+  </video>
   </button>
+  <button class="bg-thumb" onclick="setBG('lv_0_20260611103641.mp4')">
+  <video muted autoplay loop>
+    <source src="lv_0_20260611103641.mp4" type="video/mp4">
+  </video>
+</button>
+  <button class="bg-thumb" onclick="setBG('14122662_1920_1080_24fps.mp4')">
+  <video muted autoplay loop>
+    <source src='14122662_1920_1080_24fps.mp4' type="video/mp4">
+  </video>
+</button>
 
 </div>
 
