@@ -96,6 +96,9 @@
     font-weight: 400; 
     margin-bottom: 30px; 
   }
+a {
+margin: 3px;
+border: 2px solid black;
 </style>
 </head>
 <body>
@@ -118,9 +121,15 @@
 
   <p id="availableText" style="color:red"></p>
   <a onclick="checkAvailability()">Display TV</a>
-<a onclick="let pass=window.prompt('Remote Password:'); if(pass!=='trece'||'Trece'||'TRECE'){alert('Invalid Remote’s Password.')}else{window.location.href('controller.html');" style="background: #ffcd00;">Admin Remote</a>
+<a onclick="Admin()" style="background: #ffcd00;">Admin Remote</a>
 </div>
   <script>
+function Admin() {
+let pass=window.prompt('Remote Password:'); if(pass!=='trece'||'Trece'||'TRECE' { 
+alert('Invalid Remote’s Password.');
+} else { 
+window.location.href('controller.html');
+}
     // TV DISPLAY //
     let isAvailable = false;
     // TV DISPLAY: [TRUE / FALSE] //
