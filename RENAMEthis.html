@@ -99,6 +99,7 @@
 button, a {
 margin: 3px;
 border: 2px solid black;
+cursor: pointer;
 </style>
 </head>
 <body>
@@ -116,20 +117,22 @@ border: 2px solid black;
     <ol><strong>Phone B(Cast for TV)</strong>
       <li>Click `Display` for TV Casting</li>
 <strong>Phone A (Presenter Remote)</strong>
-<li><Click `Admin Remote` and enter the remote's password.</li>
+<li>Click `Admin Remote` and enter the remote's password.</li>
     </ol>
   </div>
 
   <p id="availableText" style="color:red"></p>
   <a onclick="checkAvailability()">Display TV</a>
-<button onclick="Admin()" style="background: #ffcd00;">Admin Remote</a>
+<a onclick="Admin()" style="background: #ffcd00;">Admin Remote</a>
 </div>
   <script>
 function Admin() {
-let pass=window.prompt('Remote Password:'); if(pass!=='trece'||'Trece'||'TRECE' { 
+let pass=window.prompt('Remote Password:'); 
+if(pass!=='trece'||'Trece'||'TRECE') { 
 alert('Invalid Remote’s Password.');
 } else { 
 window.location.href('controller.html');
+}
 }
     // TV DISPLAY //
     let isAvailable = false;
