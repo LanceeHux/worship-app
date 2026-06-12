@@ -49,7 +49,7 @@
     font-size: 0.9rem;
   }
 
-  a {
+  button, a {
     display: block;
     background: white;
     color: black;
@@ -59,7 +59,7 @@
     font-weight: bold;
     transition: background 0.3s;
   }
-  a:hover { background: #ccc; }
+  button, a:hover { background: #ccc; }
   .card {
     background: #111;
     padding: 3rem;
@@ -96,7 +96,7 @@
     font-weight: 400; 
     margin-bottom: 30px; 
   }
-a {
+button, a {
 margin: 3px;
 border: 2px solid black;
 </style>
@@ -112,16 +112,17 @@ border: 2px solid black;
   <h3>Praise & Worship Portal</h3>
 
   <div class="instruction-box">
-    <strong>Setup Instructions:</strong>
-    <ol>
-      <li><strong>Phone B(Cast for TV)\n</strong>Click `Display` for TV Casting</li>
-<li><strong>Phone A(Presenter Remote)\nClick `Admin Remote` and enter the remote's password.</strong></li>
+    <strong>Usage Instruction</strong>
+    <ol><strong>Phone B(Cast for TV)</strong>
+      <li>Click `Display` for TV Casting</li>
+<strong>Phone A (Presenter Remote)</strong>
+<li><Click `Admin Remote` and enter the remote's password.</li>
     </ol>
   </div>
 
   <p id="availableText" style="color:red"></p>
   <a onclick="checkAvailability()">Display TV</a>
-<a onclick="Admin()" style="background: #ffcd00;">Admin Remote</a>
+<button onclick="Admin()" style="background: #ffcd00;">Admin Remote</a>
 </div>
   <script>
 function Admin() {
