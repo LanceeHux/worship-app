@@ -128,10 +128,10 @@ cursor: pointer;
   <script>
 function Admin() {
 let pass=window.prompt('Remote Password:'); 
-if(pass!=='trece'||'Trece'||'TRECE') { 
-alert('Invalid Remote’s Password.');
+if(pass.toLowerCase()==="trece") { 
+window.location.href = "controller.html";
 } else { 
-window.location.href('controller.html');
+alert('Invalid Remote’s Password.');
 }
 }
     // TV DISPLAY //
