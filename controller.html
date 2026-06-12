@@ -194,7 +194,7 @@ input:checked + .switch::after { left: 18px; background: var(--accent); }
 
   /* Make lyrics easier to tap on portrait touchscreens */
   .lyrics-grid {
-    grid-template-columns: 1fr; /* Single column layout on small screens */
+    grid-template-columns: repeat(2, 1fr); /* Single column layout on small screens */
     gap: 8px;
   }
 
@@ -369,6 +369,8 @@ function renderActiveSong(firebaseKey) {
       const box = document.createElement("div");
       box.className = "lyric-box";
       box.innerText = line;
+
+
       box.onclick = () => db.ref("lyrics").set(line);
       grid.appendChild(box);
     });
