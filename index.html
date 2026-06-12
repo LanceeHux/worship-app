@@ -122,7 +122,7 @@ cursor: pointer;
   </div>
 
   <p id="availableText" style="color:red"></p>
-  <a onclick="checkAvailability()">Display TV</a>
+  <a onclick="checkAvailability()">Display</a>
 <a onclick="Admin()" style="background: #ffcd00;">Admin Remote</a>
 </div>
   <script>
@@ -134,14 +134,10 @@ window.location.href = "controller.html";
 alert('Invalid Remote’s Password.');
 }
 }
-    // TV DISPLAY //
-    let isAvailable = false;
+  
     // TV DISPLAY: [TRUE / FALSE] //
     function checkAvailability() {
-      if (!isAvailable) {
-        document.getElementById("availableText").textContent = "There's no active Praise & Worship at the moment.";
-      } else {
-        window.location.href = "display.html";
+      window.location.href = "bindex.html";
       }
     }
   </script>
