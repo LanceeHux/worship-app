@@ -50,7 +50,7 @@ body{
 
     z-index: 2;
 
-    animation: floatLogo 8s ease-in-out infinite;
+    animation: logoFloat 8s ease-in-out infinite;
 }
 
 #lyrics {
@@ -106,13 +106,15 @@ body{
   font-size:14px;
 }
 
-@keyframes floatLogo {
+@keyframes logoFloat {
     0%, 100% {
         transform: translate(-50%, -50%) scale(1);
+        opacity: .10;
     }
 
     50% {
-        transform: translate(-50%, -50%) scale(1.03);
+        transform: translate(-50%, -50%) scale(3);
+        opacity: 100%;
     }
 }
 </style>
