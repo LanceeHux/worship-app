@@ -192,6 +192,17 @@ db.ref("bg").on("value", (snap) => {
     };
   }, 300);
 });
+db.ref("logo").on("value", (snap) => {
+    const logo = document.getElementById("logoOverlay");
+    const file = snap.val();
+
+    if (file) {
+        logo.src = file;
+        logo.style.opacity = 0.15;
+    } else {
+        logo.style.opacity = 0;
+    }
+});
 
 </script>
 
