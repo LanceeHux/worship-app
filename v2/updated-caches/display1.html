@@ -172,86 +172,94 @@
         }
 
         function renderDisplay(state) {
-            const bgContainer = document.getElementById('displayBackgroundContainer');
-            const bgImgOverlay = document.getElementById('displayBgImageOverlay');
-            const bgVideoOverlay = document.getElementById('displayBgVideoOverlay');
-            const logoState = document.getElementById('displayLogoState');
-            const blackState = document.getElementById('displayBlackState');
-            const sectionLabel = document.getElementById('displaySectionLabel');
-            const lyricsText = document.getElementById('displayLyricsText');
-            const lyricsContainer = document.getElementById('displayLyricsContainer');
-            const stageMsgBar = document.getElementById('displayStageMsgBar');
-            const stageMsgText = document.getElementById('displayStageMsgText');
+    const bgContainer = document.getElementById('displayBackgroundContainer');
+    const bgImgOverlay = document.getElementById('displayBgImageOverlay');
+    const bgVideoOverlay = document.getElementById('displayBgVideoOverlay');
+    const logoState = document.getElementById('displayLogoState');
+    const blackState = document.getElementById('displayBlackState');
+    const sectionLabel = document.getElementById('displaySectionLabel');
+    const lyricsText = document.getElementById('displayLyricsText');
+    const lyricsContainer = document.getElementById('displayLyricsContainer');
+    const stageMsgBar = document.getElementById('displayStageMsgBar');
+    const stageMsgText = document.getElementById('displayStageMsgText');
+
+    // Background styling (Solid, Gradient, Image, or Video)
+    if (state.currentBackground.type === 'solid' || state.currentBackground.type === 'gradient') {
+        bgContainer.style.background = state.currentBackground.value;
+        bgImgOverlay.style.display = 'none';
+        bgVideoOverlay.style.display = 'none';
+        bgVideoOverlay.pause();
+    } else if (state.currentBackground.type === 'image') {
+        bgContainer.style.background = '#0f172a';
+        bgImgOverlay.style.display = 'block';
+        bgImgOverlay.style.backgroundImage = `url('${state.currentBackground.value}')`;
+        bgVideoOverlay.style.display = 'none';
+        bgVideoOverlay.pause();
+    } else if (state.currentBackground.type === 'video') {
+        bgContainer.style.background = '#0f172a';
+        bgImgOverlay.style.display = 'none';
         
-            // Background styling (Solid, Gradient, Image, or Video)
-            if (state.currentBackground.type === 'solid' || state.currentBackground.type === 'gradient') {
-                bgContainer.style.background = state.currentBackground.value;
-                bgImgOverlay.style.display = 'none';
-                bgVideoOverlay.style.display = 'none';
-                bgVideoOverlay.pause();
-            } else if (state.currentBackground.type === 'image') {
-                bgContainer.style.background = '#0f172a';
-                bgImgOverlay.style.display = 'block';
-                bgImgOverlay.style.backgroundImage = `url('${state.currentBackground.value}')`;
-                bgVideoOverlay.style.display = 'none';
-                bgVideoOverlay.pause();
-            } else if (state.currentBackground.type === 'video') {
-                bgContainer.style.background = '#0f172a';
-                bgImgOverlay.style.display = 'none';
-                bgVideoOverlay.style.display = 'block';
-                
-                // Only update source if it changed to prevent resetting the video playback loop
-                if (!bgVideoOverlay.src.endsWith(state.currentBackground.value)) {
-                    bgVideoOverlay.src = state.currentBackground.value;
-                    bgVideoOverlay.load();
-                    bgVideoOverlay.play().catch(e => console.log("Video autoplay blocked or loading error:", e));
-                }
-            }
-        
-            // State overlays (Logo / Black)
-            if (state.isLogoActive) {
-                logoState.classList.remove('hidden');
-                blackState.classList.add('hidden');
-            } else if (state.isBlackActive) {
-                blackState.classList.remove('hidden');
-                logoState.classList.add('hidden');
-            } else {
-                logoState.classList.add('hidden');
-                blackState.classList.add('hidden');
-            }
-        
-            // Stage Message
-            if (state.stageMessage && state.stageMessage.trim() !== '') {
-                stageMsgText.textContent = state.stageMessage;
-                stageMsgBar.classList.remove('-translate-y-full');
-            } else {
-                stageMsgBar.classList.add('-translate-y-full');
-            }
-        
-            // Lyrics & Section with Smooth Transition Trigger
-            const currentSlideKey = `${state.activeSong?.title || ''}-${state.activeSlideIndex}`;
-            
-            if (currentSlideKey !== lastSlideKey) {
-                // Trigger fade out / slide down effect
-                lyricsContainer.classList.add('opacity-0', 'translate-y-4');
-        
-                setTimeout(() => {
-                    if (state.activeSong && state.activeSong.sections && state.activeSong.sections[state.activeSlideIndex]) {
-                        const sec = state.activeSong.sections[state.activeSlideIndex];
-                        sectionLabel.textContent = sec.type;
-                        lyricsText.textContent = sec.lyrics;
-                    } else {
-                        sectionLabel.textContent = '';
-                        lyricsText.textContent = 'Ready for projection';
-                    }
-        
-                    // Trigger fade in / slide back to original position
-                    lyricsContainer.classList.remove('opacity-0', 'translate-y-4');
-                }, 200); // Matches half of the transition duration for a crisp swap
-        
-                lastSlideKey = currentSlideKey;
+        // Only update source if it's a different video to prevent reloading/refreshing disconnects
+        const newVideoSrc = state.currentBackground.value;
+        const currentSrcAttr = bgVideoOverlay.getAttribute('src');
+
+        if (currentSrcAttr !== newVideoSrc) {
+            bgVideoOverlay.style.display = 'block';
+            bgVideoOverlay.src = newVideoSrc;
+            bgVideoOverlay.load();
+            bgVideoOverlay.play().catch(e => console.log("Video autoplay blocked or loading error:", e));
+        } else {
+            bgVideoOverlay.style.display = 'block';
+            if (bgVideoOverlay.paused) {
+                bgVideoOverlay.play().catch(e => console.log("Play error:", e));
             }
         }
+    }
+
+    // State overlays (Logo / Black)
+    if (state.isLogoActive) {
+        logoState.classList.remove('hidden');
+        blackState.classList.add('hidden');
+    } else if (state.isBlackActive) {
+        blackState.classList.remove('hidden');
+        logoState.classList.add('hidden');
+    } else {
+        logoState.classList.add('hidden');
+        blackState.classList.add('hidden');
+    }
+
+    // Stage Message
+    if (state.stageMessage && state.stageMessage.trim() !== '') {
+        stageMsgText.textContent = state.stageMessage;
+        stageMsgBar.classList.remove('-translate-y-full');
+    } else {
+        stageMsgBar.classList.add('-translate-y-full');
+    }
+
+    // Lyrics & Section with Smooth Transition Trigger
+    const currentSlideKey = `${state.activeSong?.title || ''}-${state.activeSlideIndex}`;
+    
+    if (currentSlideKey !== lastSlideKey) {
+        // Trigger fade out / slide down effect
+        lyricsContainer.classList.add('opacity-0', 'translate-y-4');
+
+        setTimeout(() => {
+            if (state.activeSong && state.activeSong.sections && state.activeSong.sections[state.activeSlideIndex]) {
+                const sec = state.activeSong.sections[state.activeSlideIndex];
+                sectionLabel.textContent = sec.type;
+                lyricsText.textContent = sec.lyrics;
+            } else {
+                sectionLabel.textContent = '';
+                lyricsText.textContent = 'Ready for projection';
+            }
+
+            // Trigger fade in / slide back to original position
+            lyricsContainer.classList.remove('opacity-0', 'translate-y-4');
+        }, 200); // Matches half of the transition duration for a crisp swap
+
+        lastSlideKey = currentSlideKey;
+    }
+}
 
         function hideStageMessage() {
             document.getElementById('displayStageMsgBar').classList.add('-translate-y-full');
