@@ -2,14 +2,86 @@
 <html lang="en" class="h-full">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProPresenter - Display Output (Device A)</title>
     <!-- Tailwind CSS CDN for styling -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
+    <!-- Google Fonts for Church Typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Cinzel:wght@600;700&family=Playfair+Display:wght@600;700&family=EB+Garamond:wght@600;700&family=Inter:wght@500;700&display=swap" rel="stylesheet">
     <style>
-        .font-presentation { font-family: 'Montserrat', sans-serif; }
+        /* Font Family Definitions */
+        .font-montserrat { font-family: 'Montserrat', sans-serif; }
+        .font-cinzel { font-family: 'Cinzel', serif; }
+        .font-playfair { font-family: 'Playfair Display', serif; }
+        .font-garamond { font-family: 'EB Garamond', serif; }
+        .font-inter { font-family: 'Inter', sans-serif; }
+        
+        /* 1. Multi-speed Dynamic Gradient Shift */
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* 2. Curtain / Wave Shimmer Sweep Effect */
+        @keyframes curtainSweep {
+            0% { transform: translateX(-50%) scale(1); opacity: 0.3; }
+            50% { transform: translateX(50%) scale(1.2); opacity: 0.6; }
+            100% { transform: translateX(-50%) scale(1); opacity: 0.3; }
+        }
+
+        /* 3. Floating Ambient Glow Orbs */
+        @keyframes floatOrb1 {
+            0%, 100% { transform: translate(0px, 0px) scale(1); }
+            50% { transform: translate(50px, -40px) scale(1.15); }
+        }
+
+        @keyframes floatOrb2 {
+            0%, 100% { transform: translate(0px, 0px) scale(1); }
+            50% { transform: translate(-60px, 50px) scale(0.9); }
+        }
+
+        .animated-bg {
+            background-size: 250% 250%;
+            animation: gradientShift 15s ease infinite;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .animated-bg::before {
+            content: '';
+            position: absolute;
+            inset: -50%;
+            background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 60%);
+            animation: curtainSweep 10s ease-in-out infinite alternate;
+            pointer-events: none;
+        }
+
+        .ambient-orb-1 {
+            position: absolute;
+            top: -10%;
+            left: -10%;
+            width: 50vw;
+            height: 50vw;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.25) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: floatOrb1 12s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        .ambient-orb-2 {
+            position: absolute;
+            bottom: -10%;
+            right: -10%;
+            width: 60vw;
+            height: 60vw;
+            background: radial-gradient(circle, rgba(168, 85, 247, 0.2) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: floatOrb2 16s ease-in-out infinite;
+            pointer-events: none;
+        }
     </style>
 </head>
 <body class="bg-black h-full flex flex-col overflow-hidden select-none m-0 p-0">
@@ -50,7 +122,7 @@
     </div>
 
     <!-- Stage Message Overlay Bar (Top) -->
-    <div id="displayStageMsgBar" class="absolute top-0 inset-x-0 bg-amber-500 text-slate-950 px-8 py-3 font-bold text-base tracking-wide z-20 transform -translate-y-full transition-transform duration-300 flex items-center justify-between shadow-2xl">
+    <div id="displayStageMsgBar" class="absolute top-0 inset-x-0 bg-amber-500 text-slate-950 px-8 py-3 font-bold text-base tracking-wide z-30 transform -translate-y-full transition-transform duration-300 flex items-center justify-between shadow-2xl">
         <div class="flex items-center space-x-3">
             <i class="fa-solid fa-bullhorn text-lg"></i>
             <span id="displayStageMsgText">Stage Notice</span>
@@ -59,34 +131,39 @@
     </div>
 
     <!-- Main Presentation Screen Area -->
-    <div id="displayBackgroundContainer" class="flex-1 relative flex items-center justify-center p-12 overflow-hidden transition-all duration-700" style="background: #0f172a;">
-        <!-- Background Image Overlay -->
-        <div id="displayBgImageOverlay" class="absolute inset-0 bg-cover bg-center opacity-40 pointer-events-none transition-opacity duration-500" style="display: none;"></div>
-        <video id="displayBgVideoOverlay" class="absolute inset-0 w-full h-full object-cover opacity-50 pointer-events-none" style="display: none;" autoplay muted loop playsinline></video>
+    <div id="displayBackgroundContainer" class="flex-1 relative flex items-center justify-center p-12 overflow-hidden transition-all duration-700 animated-bg" style="background: linear-gradient(-45deg, #0f172a, #1e1b4b, #312e81, #0f172a);">
         
-        <!-- Logo View State -->
-        <div id="displayLogoState" class="absolute inset-0 flex flex-col items-center justify-center bg-slate-950 z-10 transition-opacity duration-500 hidden">
-            <div class="bg-indigo-600 p-8 rounded-3xl text-white shadow-2xl mb-4 animate-bounce">
-                <i class="fa-solid fa-church text-6xl"></i>
+        <!-- Ambient Moving Curtain / Light Orbs -->
+        <div class="ambient-orb-1"></div>
+        <div class="ambient-orb-2"></div>
+
+        <!-- YA Worship Logo View State -->
+        <div id="displayLogoState" class="absolute inset-0 flex flex-col items-center justify-center bg-slate-950 z-20 transition-opacity duration-500 hidden p-8">
+            <div class="relative flex items-center justify-center w-48 h-48 md:w-64 md:h-64 rounded-full border-4 border-white/80 p-4 shadow-[0_0_50px_rgba(99,102,241,0.4)] bg-gradient-to-br from-indigo-950 via-slate-900 to-slate-950 mb-6">
+                <div class="flex flex-col items-center justify-center text-center">
+                    <span class="font-montserrat font-black text-6xl md:text-8xl text-white tracking-tighter leading-none italic drop-shadow-lg">YA</span>
+                    <span class="text-[10px] md:text-xs font-bold text-indigo-400 tracking-[0.25em] uppercase mt-2">Ministry</span>
+                </div>
             </div>
-            <h2 class="font-presentation text-3xl font-bold tracking-widest text-slate-100">WORSHIP SERVICE</h2>
-            <p class="text-xs text-slate-400 mt-2 uppercase tracking-widest">Welcome & Prepare Your Hearts</p>
+            <h2 class="font-montserrat text-3xl md:text-5xl font-black tracking-widest text-white drop-shadow-lg">YA WORSHIP</h2>
+            <p class="text-xs md:text-sm text-slate-400 mt-2 uppercase tracking-[0.3em] font-medium">Welcome & Prepare Your Hearts</p>
         </div>
 
         <!-- Black / Blank State -->
-        <div id="displayBlackState" class="absolute inset-0 bg-black z-10 transition-opacity duration-500 hidden"></div>
+        <div id="displayBlackState" class="absolute inset-0 bg-black z-20 transition-opacity duration-500 hidden"></div>
 
         <!-- Main Lyrics Text Box -->
-        <div id="displayLyricsContainer" class="relative z-0 text-center max-w-6xl mx-auto px-4 transition-all duration-500 ease-in-out transform opacity-100 scale-100">
-            <h3 id="displaySectionLabel" class="text-indigo-400 font-bold uppercase tracking-widest text-sm md:text-base mb-4 opacity-90"></h3>
-            <p id="displayLyricsText" class="font-presentation font-bold text-3xl md:text-5xl xl:text-6xl text-white leading-relaxed tracking-wide drop-shadow-[0_4px_16px_rgba(0,0,0,0.9)] whitespace-pre-line">
-                Waiting for Controller connection...<br>Pair with Device B to begin projection.
-            </p>
+        <div id="displayLyricsContainer" class="relative z-10 text-center max-w-6xl mx-auto px-4 transition-all duration-500 ease-in-out transform opacity-100 scale-100 space-y-3">
+            <h3 id="displaySectionLabel" class="text-indigo-400 font-bold uppercase tracking-widest text-sm md:text-base mb-2 opacity-90"></h3>
+            <div id="displayLyricsLinesContainer" class="font-montserrat font-bold text-3xl md:text-5xl xl:text-6xl text-white tracking-wide drop-shadow-[0_4px_16px_rgba(0,0,0,0.9)] space-y-2">
+                <div>Waiting for Controller connection...</div>
+                <div>Pair with Device B to begin projection.</div>
+            </div>
         </div>
     </div>
 
     <!-- Footer Status Bar -->
-    <div class="bg-slate-950 border-t border-slate-900 px-6 py-2.5 flex items-center justify-between text-xs text-slate-500 z-20">
+    <div class="bg-slate-950 border-t border-slate-900 px-6 py-2.5 flex items-center justify-between text-xs text-slate-500 z-30">
         <div class="flex items-center space-x-2">
             <span id="connectionIndicatorDot" class="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse"></span>
             <span id="connectionIndicatorText">Waiting for connection...</span>
@@ -97,7 +174,7 @@
         </div>
     </div>
 
-    <!-- PeerJS CDN for offline local network P2P DataChannel -->
+    <!-- PeerJS CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.1/peerjs.min.js"></script>
     <script>
         let peer = null;
@@ -109,24 +186,16 @@
         };
 
         function initPeer() {
-            // Initialize Peer with random ID or let server assign one
-            peer = new Peer({
-                // Using free public signaling server; works completely offline if local PeerJS server is running, or standard STUN/TURN
-                debug: 1
-            });
-
+            peer = new Peer({ debug: 1 });
             peer.on('open', (id) => {
                 document.getElementById('displayCodeBox').textContent = id;
             });
-
             peer.on('connection', (incomingConn) => {
                 conn = incomingConn;
                 setupConnectionHandlers();
             });
-
             peer.on('error', (err) => {
                 console.error('Peer error:', err);
-                document.getElementById('connectionStatus').innerHTML = `<i class="fa-solid fa-triangle-exclamation text-rose-400 mr-2"></i><span class="text-rose-300">Connection notice: Ensure network is active or use local fallback.</span>`;
             });
         }
 
@@ -135,7 +204,6 @@
             document.getElementById('connectionIndicatorDot').className = "w-2.5 h-2.5 rounded-full bg-emerald-500";
             document.getElementById('connectionIndicatorText').textContent = "Connected to Controller";
             
-            // Hide modal after successful connection
             setTimeout(() => {
                 document.getElementById('connectionModal').classList.add('hidden');
             }, 1000);
@@ -172,94 +240,82 @@
         }
 
         function renderDisplay(state) {
-    const bgContainer = document.getElementById('displayBackgroundContainer');
-    const bgImgOverlay = document.getElementById('displayBgImageOverlay');
-    const bgVideoOverlay = document.getElementById('displayBgVideoOverlay');
-    const logoState = document.getElementById('displayLogoState');
-    const blackState = document.getElementById('displayBlackState');
-    const sectionLabel = document.getElementById('displaySectionLabel');
-    const lyricsText = document.getElementById('displayLyricsText');
-    const lyricsContainer = document.getElementById('displayLyricsContainer');
-    const stageMsgBar = document.getElementById('displayStageMsgBar');
-    const stageMsgText = document.getElementById('displayStageMsgText');
+            const bgContainer = document.getElementById('displayBackgroundContainer');
+            const logoState = document.getElementById('displayLogoState');
+            const blackState = document.getElementById('displayBlackState');
+            const sectionLabel = document.getElementById('displaySectionLabel');
+            const lyricsLinesContainer = document.getElementById('displayLyricsLinesContainer');
+            const lyricsContainer = document.getElementById('displayLyricsContainer');
+            const stageMsgBar = document.getElementById('displayStageMsgBar');
+            const stageMsgText = document.getElementById('displayStageMsgText');
 
-    // Background styling (Solid, Gradient, Image, or Video)
-    if (state.currentBackground.type === 'solid' || state.currentBackground.type === 'gradient') {
-        bgContainer.style.background = state.currentBackground.value;
-        bgImgOverlay.style.display = 'none';
-        bgVideoOverlay.style.display = 'none';
-        bgVideoOverlay.pause();
-    } else if (state.currentBackground.type === 'image') {
-        bgContainer.style.background = '#0f172a';
-        bgImgOverlay.style.display = 'block';
-        bgImgOverlay.style.backgroundImage = `url('${state.currentBackground.value}')`;
-        bgVideoOverlay.style.display = 'none';
-        bgVideoOverlay.pause();
-    } else if (state.currentBackground.type === 'video') {
-        bgContainer.style.background = '#0f172a';
-        bgImgOverlay.style.display = 'none';
-        
-        // Only update source if it's a different video to prevent reloading/refreshing disconnects
-        const newVideoSrc = state.currentBackground.value;
-        const currentSrcAttr = bgVideoOverlay.getAttribute('src');
+            // Handle Background Gradients vs Solid
+            if (state.currentBackground.type === 'animated-gradient') {
+                bgContainer.style.background = state.currentBackground.value;
+                bgContainer.classList.add('animated-bg');
+            } else if (state.currentBackground.type === 'solid') {
+                bgContainer.style.background = state.currentBackground.value;
+                bgContainer.classList.remove('animated-bg');
+            }
 
-        if (currentSrcAttr !== newVideoSrc) {
-            bgVideoOverlay.style.display = 'block';
-            bgVideoOverlay.src = newVideoSrc;
-            bgVideoOverlay.load();
-            bgVideoOverlay.play().catch(e => console.log("Video autoplay blocked or loading error:", e));
-        } else {
-            bgVideoOverlay.style.display = 'block';
-            if (bgVideoOverlay.paused) {
-                bgVideoOverlay.play().catch(e => console.log("Play error:", e));
+            // State overlays (Logo / Black)
+            if (state.isLogoActive) {
+                logoState.classList.remove('hidden');
+                blackState.classList.add('hidden');
+            } else if (state.isBlackActive) {
+                blackState.classList.remove('hidden');
+                logoState.classList.add('hidden');
+            } else {
+                logoState.classList.add('hidden');
+                blackState.classList.add('hidden');
+            }
+
+            // Stage Message
+            if (state.stageMessage && state.stageMessage.trim() !== '') {
+                stageMsgText.textContent = state.stageMessage;
+                stageMsgBar.classList.remove('-translate-y-full');
+            } else {
+                stageMsgBar.classList.add('-translate-y-full');
+            }
+
+            // Apply Song Custom Church Font Style
+            let selectedFontClass = 'font-montserrat';
+            if (state.activeSong && state.activeSong.fontFamily) {
+                selectedFontClass = state.activeSong.fontFamily;
+            }
+            lyricsLinesContainer.className = `font-bold text-3xl md:text-5xl xl:text-6xl text-white tracking-wide drop-shadow-[0_4px_16px_rgba(0,0,0,0.9)] space-y-2 ${selectedFontClass}`;
+
+            // Smooth Slide & Title Card Transition
+            const currentSlideKey = `${state.activeSong?.title || ''}-${state.activeSlideIndex}`;
+            
+            if (currentSlideKey !== lastSlideKey) {
+                lyricsContainer.classList.add('opacity-0', 'translate-y-4');
+
+                setTimeout(() => {
+                    if (state.flattenedSlides && state.flattenedSlides[state.activeSlideIndex]) {
+                        const currentSlide = state.flattenedSlides[state.activeSlideIndex];
+                        
+                        if (currentSlide.isTitleCard) {
+                            sectionLabel.textContent = "NOW PLAYING";
+                            lyricsLinesContainer.innerHTML = `
+                                <div class="text-4xl md:text-6xl tracking-wider text-indigo-200 drop-shadow-xl">${currentSlide.lyrics}</div>
+                                <div class="text-lg md:text-2xl text-slate-300 font-light tracking-widest uppercase mt-3 opacity-90">${state.activeSong?.artist || ''}</div>
+                            `;
+                        } else {
+                            sectionLabel.textContent = currentSlide.type;
+                            lyricsLinesContainer.innerHTML = `<div>${currentSlide.lyrics}</div>`;
+                        }
+                    } else {
+                        sectionLabel.textContent = '';
+                        lyricsLinesContainer.innerHTML = `<div>Ready for projection</div>`;
+                    }
+
+                    lyricsContainer.classList.remove('opacity-0', 'translate-y-4');
+                }, 200);
+
+                lastSlideKey = currentSlideKey;
             }
         }
-    }
-
-    // State overlays (Logo / Black)
-    if (state.isLogoActive) {
-        logoState.classList.remove('hidden');
-        blackState.classList.add('hidden');
-    } else if (state.isBlackActive) {
-        blackState.classList.remove('hidden');
-        logoState.classList.add('hidden');
-    } else {
-        logoState.classList.add('hidden');
-        blackState.classList.add('hidden');
-    }
-
-    // Stage Message
-    if (state.stageMessage && state.stageMessage.trim() !== '') {
-        stageMsgText.textContent = state.stageMessage;
-        stageMsgBar.classList.remove('-translate-y-full');
-    } else {
-        stageMsgBar.classList.add('-translate-y-full');
-    }
-
-    // Lyrics & Section with Smooth Transition Trigger
-    const currentSlideKey = `${state.activeSong?.title || ''}-${state.activeSlideIndex}`;
-    
-    if (currentSlideKey !== lastSlideKey) {
-        // Trigger fade out / slide down effect
-        lyricsContainer.classList.add('opacity-0', 'translate-y-4');
-
-        setTimeout(() => {
-            if (state.activeSong && state.activeSong.sections && state.activeSong.sections[state.activeSlideIndex]) {
-                const sec = state.activeSong.sections[state.activeSlideIndex];
-                sectionLabel.textContent = sec.type;
-                lyricsText.textContent = sec.lyrics;
-            } else {
-                sectionLabel.textContent = '';
-                lyricsText.textContent = 'Ready for projection';
-            }
-
-            // Trigger fade in / slide back to original position
-            lyricsContainer.classList.remove('opacity-0', 'translate-y-4');
-        }, 200); // Matches half of the transition duration for a crisp swap
-
-        lastSlideKey = currentSlideKey;
-    }
-}
 
         function hideStageMessage() {
             document.getElementById('displayStageMsgBar').classList.add('-translate-y-full');
