@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProPresenter - Display Output (Device A)</title>
+    <!-- Tailwind CSS CDN for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
+    <style>
+        .font-presentation { font-family: 'Montserrat', sans-serif; }
+    </style>
+</head>
+<body class="bg-black h-full flex flex-col overflow-hidden select-none m-0 p-0">
+
+    <!-- Connection Setup Modal -->
+    <div id="connectionModal" class="fixed inset-0 bg-slate-950/95 backdrop-blur-md z-50 flex items-center justify-center p-6">
+        <div class="bg-slate-900 border border-slate-800 w-full max-w-lg rounded-2xl p-6 shadow-2xl text-slate-100 space-y-4">
+            <div class="flex items-center space-x-3">
+                <div class="bg-emerald-600 p-3 rounded-xl text-white">
+                    <i class="fa-solid fa-desktop text-xl"></i>
+                </div>
+                <div>
+                    <h2 class="font-bold text-base text-slate-100">Display Station (Device A)</h2>
+                    <p class="text-xs text-slate-400">Establish local peer-to-peer connection with Controller (Device B)</p>
+                </div>
+            </div>
+
+            <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-3">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-semibold text-slate-300">Your Connection Code (Display ID):</span>
+                    <button onclick="copyDisplayCode()" class="text-xs text-indigo-400 hover:text-indigo-300 font-semibold"><i class="fa-solid fa-copy mr-1"></i>Copy Code</button>
+                </div>
+                <div id="displayCodeBox" class="bg-slate-900 border border-slate-700 rounded-lg p-3 font-mono text-xs text-emerald-400 break-all select-all">
+                    Generating code...
+                </div>
+                <p class="text-[11px] text-slate-500">Provide this code to your Controller device to pair instantly over the local network.</p>
+            </div>
+
+            <div id="connectionStatus" class="flex items-center space-x-2 text-xs text-amber-400 bg-amber-500/10 p-3 rounded-lg border border-amber-500/20">
+                <i class="fa-solid fa-circle-notch animate-spin"></i>
+                <span>Waiting for Controller to connect...</span>
+            </div>
+
+            <div class="flex justify-end pt-2">
+                <button onclick="skipConnectionModalForLocalTest()" class="text-xs text-slate-400 hover:text-slate-200 underline">Test Display Locally / Skip</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stage Message Overlay Bar (Top) -->
+    <div id="displayStageMsgBar" class="absolute top-0 inset-x-0 bg-amber-500 text-slate-950 px-8 py-3 font-bold text-base tracking-wide z-20 transform -translate-y-full transition-transform duration-300 flex items-center justify-between shadow-2xl">
+        <div class="flex items-center space-x-3">
+            <i class="fa-solid fa-bullhorn text-lg"></i>
+            <span id="displayStageMsgText">Stage Notice</span>
+        </div>
+        <button onclick="hideStageMessage()" class="text-xs uppercase bg-black/20 hover:bg-black/30 px-3 py-1 rounded">Dismiss</button>
+    </div>
+
+    <!-- Main Presentation Screen Area -->
+    <div id="displayBackgroundContainer" class="flex-1 relative flex items-center justify-center p-12 overflow-hidden transition-all duration-700" style="background: #0f172a;">
+        <!-- Background Image Overlay -->
+        <div id="displayBgImageOverlay" class="absolute inset-0 bg-cover bg-center opacity-40 pointer-events-none transition-opacity duration-500" style="display: none;"></div>
+        
+        <!-- Logo View State -->
+        <div id="displayLogoState" class="absolute inset-0 flex flex-col items-center justify-center bg-slate-950 z-10 transition-opacity duration-500 hidden">
+            <div class="bg-indigo-600 p-8 rounded-3xl text-white shadow-2xl mb-4 animate-bounce">
+                <i class="fa-solid fa-church text-6xl"></i>
+            </div>
+            <h2 class="font-presentation text-3xl font-bold tracking-widest text-slate-100">WORSHIP SERVICE</h2>
+            <p class="text-xs text-slate-400 mt-2 uppercase tracking-widest">Welcome & Prepare Your Hearts</p>
+        </div>
+
+        <!-- Black / Blank State -->
+        <div id="displayBlackState" class="absolute inset-0 bg-black z-10 transition-opacity duration-500 hidden"></div>
+
+        <!-- Main Lyrics Text Box -->
+        <div id="displayLyricsContainer" class="relative z-0 text-center max-w-6xl mx-auto px-4 transition-all duration-500 ease-in-out transform opacity-100 scale-100">
+            <h3 id="displaySectionLabel" class="text-indigo-400 font-bold uppercase tracking-widest text-sm md:text-base mb-4 opacity-90"></h3>
+            <p id="displayLyricsText" class="font-presentation font-bold text-3xl md:text-5xl xl:text-6xl text-white leading-relaxed tracking-wide drop-shadow-[0_4px_16px_rgba(0,0,0,0.9)] whitespace-pre-line">
+                Waiting for Controller connection...<br>Pair with Device B to begin projection.
+            </p>
+        </div>
+    </div>
+
+    <!-- Footer Status Bar -->
+    <div class="bg-slate-950 border-t border-slate-900 px-6 py-2.5 flex items-center justify-between text-xs text-slate-500 z-20">
+        <div class="flex items-center space-x-2">
+            <span id="connectionIndicatorDot" class="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse"></span>
+            <span id="connectionIndicatorText">Waiting for connection...</span>
+        </div>
+        <div class="flex items-center space-x-4">
+            <button onclick="document.getElementById('connectionModal').classList.remove('hidden')" class="text-indigo-400 hover:text-indigo-300 underline">Show Connection Code</button>
+            <span>Press F11 for Fullscreen</span>
+        </div>
+    </div>
+
+    <!-- PeerJS CDN for offline local network P2P DataChannel -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.1/peerjs.min.js"></script>
+    <script>
+        let peer = null;
+        let conn = null;
+        let lastSlideKey = '';
+
+        window.onload = function() {
+            initPeer();
+        };
+
+        function initPeer() {
+            // Initialize Peer with random ID or let server assign one
+            peer = new Peer({
+                // Using free public signaling server; works completely offline if local PeerJS server is running, or standard STUN/TURN
+                debug: 1
+            });
+
+            peer.on('open', (id) => {
+                document.getElementById('displayCodeBox').textContent = id;
+            });
+
+            peer.on('connection', (incomingConn) => {
+                conn = incomingConn;
+                setupConnectionHandlers();
+            });
+
+            peer.on('error', (err) => {
+                console.error('Peer error:', err);
+                document.getElementById('connectionStatus').innerHTML = `<i class="fa-solid fa-triangle-exclamation text-rose-400 mr-2"></i><span class="text-rose-300">Connection notice: Ensure network is active or use local fallback.</span>`;
+            });
+        }
+
+        function setupConnectionHandlers() {
+            document.getElementById('connectionStatus').innerHTML = `<i class="fa-solid fa-check-circle text-emerald-400 mr-2"></i><span class="text-emerald-300">Connected to Controller successfully!</span>`;
+            document.getElementById('connectionIndicatorDot').className = "w-2.5 h-2.5 rounded-full bg-emerald-500";
+            document.getElementById('connectionIndicatorText').textContent = "Connected to Controller";
+            
+            // Hide modal after successful connection
+            setTimeout(() => {
+                document.getElementById('connectionModal').classList.add('hidden');
+            }, 1000);
+
+            conn.on('data', (data) => {
+                if (data.type === 'STATE_UPDATE') {
+                    renderDisplay(data.state);
+                }
+            });
+
+            conn.on('close', () => {
+                document.getElementById('connectionStatus').innerHTML = `<i class="fa-solid fa-triangle-exclamation text-amber-400 mr-2"></i><span class="text-amber-300">Controller disconnected. Waiting...</span>`;
+                document.getElementById('connectionIndicatorDot').className = "w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse";
+                document.getElementById('connectionIndicatorText').textContent = "Disconnected - Waiting for reconnect";
+                document.getElementById('connectionModal').classList.remove('hidden');
+            });
+        }
+
+        function copyDisplayCode() {
+            const code = document.getElementById('displayCodeBox').textContent;
+            const textarea = document.createElement('textarea');
+            textarea.value = code;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+            alert('Display ID copied to clipboard!');
+        }
+
+        function skipConnectionModalForLocalTest() {
+            document.getElementById('connectionModal').classList.add('hidden');
+            document.getElementById('connectionIndicatorDot').className = "w-2.5 h-2.5 rounded-full bg-blue-500";
+            document.getElementById('connectionIndicatorText').textContent = "Standalone Test Mode";
+        }
+
+        function renderDisplay(state) {
+            const bgContainer = document.getElementById('displayBackgroundContainer');
+            const bgImgOverlay = document.getElementById('displayBgImageOverlay');
+            const logoState = document.getElementById('displayLogoState');
+            const blackState = document.getElementById('displayBlackState');
+            const sectionLabel = document.getElementById('displaySectionLabel');
+            const lyricsText = document.getElementById('displayLyricsText');
+            const lyricsContainer = document.getElementById('displayLyricsContainer');
+            const stageMsgBar = document.getElementById('displayStageMsgBar');
+            const stageMsgText = document.getElementById('displayStageMsgText');
+        
+            // Background styling
+            if (state.currentBackground.type === 'solid' || state.currentBackground.type === 'gradient') {
+                bgContainer.style.background = state.currentBackground.value;
+                bgImgOverlay.style.display = 'none';
+            } else if (state.currentBackground.type === 'image') {
+                bgContainer.style.background = '#0f172a';
+                bgImgOverlay.style.display = 'block';
+                bgImgOverlay.style.backgroundImage = `url('${state.currentBackground.value}')`;
+            }
+        
+            // State overlays (Logo / Black)
+            if (state.isLogoActive) {
+                logoState.classList.remove('hidden');
+                blackState.classList.add('hidden');
+            } else if (state.isBlackActive) {
+                blackState.classList.add('hidden'); // or remove hidden
+                blackState.classList.remove('hidden');
+                logoState.classList.add('hidden');
+            } else {
+                logoState.classList.add('hidden');
+                blackState.classList.add('hidden');
+            }
+        
+            // Stage Message
+            if (state.stageMessage && state.stageMessage.trim() !== '') {
+                stageMsgText.textContent = state.stageMessage;
+                stageMsgBar.classList.remove('-translate-y-full');
+            } else {
+                stageMsgBar.classList.add('-translate-y-full');
+            }
+        
+            // Lyrics & Section with Smooth Transition Trigger
+            const currentSlideKey = `${state.activeSong?.title || ''}-${state.activeSlideIndex}`;
+            
+            if (currentSlideKey !== lastSlideKey) {
+                // Trigger fade out / slide down effect
+                lyricsContainer.classList.add('opacity-0', 'translate-y-4');
+        
+                setTimeout(() => {
+                    if (state.activeSong && state.activeSong.sections && state.activeSong.sections[state.activeSlideIndex]) {
+                        const sec = state.activeSong.sections[state.activeSlideIndex];
+                        sectionLabel.textContent = sec.type;
+                        lyricsText.textContent = sec.lyrics;
+                    } else {
+                        sectionLabel.textContent = '';
+                        lyricsText.textContent = 'Ready for projection';
+                    }
+        
+                    // Trigger fade in / slide back to original position
+                    lyricsContainer.classList.remove('opacity-0', 'translate-y-4');
+                }, 200); // Matches half of the transition duration for a crisp swap
+        
+                lastSlideKey = currentSlideKey;
+            }
+        }
+
+        function hideStageMessage() {
+            document.getElementById('displayStageMsgBar').classList.add('-translate-y-full');
+        }
+    </script>
+</body>
+</html>
