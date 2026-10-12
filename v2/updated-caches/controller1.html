@@ -570,40 +570,43 @@
         function clearPlaylist() { playlist = []; saveToLocalStorage(); renderPlaylist(); renderSongList(); }
 
         function selectSong(songId) {
-            activeSongId = songId;
-            activeSlideIndex = 0;
-            isLogoActive = false;
-            isBlackActive = false;
-            isInstrumentalActive = false;
-            const song = songs.find(s => s.id === songId);
-            if (!song) return;
+          activeSongId = songId;
+          activeSlideIndex = 0; // Starts at title card
+          isLogoActive = false;
+          isBlackActive = false;
+          isInstrumentalActive = false;
+          isF4Active = false;
+          const song = songs.find(s => s.id === songId);
+          if (!song) return;
 
-            flattenedSlides = [
-                { type: 'SONG TITLE', lyrics: song.title, author: song.artist, isTitleCard: true }
-            ];
+          flattenedSlides = [
+              { type: 'SONG TITLE', lyrics: song.title, author: song.artist, isTitleCard: true }
+          ];
 
-            song.sections.forEach(sec => {
-                const lines = sec.lyrics.split('\n');
-                lines.forEach(line => {
-                    if (line.trim() !== '') {
-                        flattenedSlides.push({ type: sec.type, lyrics: line, isTitleCard: false });
-                    }
-                });
-            });
+          song.sections.forEach(sec => {
+              const lines = sec.lyrics.split('\n');
+              lines.forEach(line => {
+                  if (line.trim() !== '') {
+                      flattenedSlides.push({ type: sec.type, lyrics: line, isTitleCard: false });
+                  }
+              });
+          });
 
-            document.getElementById('activeSongTitle').textContent = song.title;
-            document.getElementById('activeSongArtist').textContent = song.artist + ' • ' + (flattenedSlides.length - 1) + ' line slides';
-            document.getElementById('currentActiveSongLabel').textContent = song.title;
-            document.getElementById('btnEditActive').classList.remove('hidden');
-            document.getElementById('btnExportActive').classList.remove('hidden');
+          document.getElementById('activeSongTitle').textContent = song.title;
+          document.getElementById('activeSongArtist').textContent = song.artist + ' • ' + (flattenedSlides.length - 1) + ' line slides';
+          document.getElementById('currentActiveSongLabel').textContent = song.title;
+          document.getElementById('btnEditActive').classList.remove('hidden');
+          document.getElementById('btnExportActive').classList.remove('hidden');
 
-            renderQuickJumpBar();
-            renderSlideGrid();
-            renderPlaylist();
-            broadcastState();
+          renderQuickJumpBar();
+          renderSlideGrid();
+          renderPlaylist();
+          
+          // Broadcast state so Display shows the Title Card immediately
+          broadcastState();
 
-            if (window.innerWidth < 1024) switchMobileView('workspace');
-        }
+          if (window.innerWidth < 1024) switchMobileView('workspace');
+      }
 
         function renderQuickJumpBar() {
             const bar = document.getElementById('quickJumpBar');
@@ -681,16 +684,30 @@
         }
 
         function sendClear(action) {
-            if (action === 'logo') { isLogoActive = !isLogoActive; isBlackActive = false; isInstrumentalActive = false; }
-            else if (action === 'instrumental') { isInstrumentalActive = !isInstrumentalActive; isLogoActive = false; isBlackActive = false; }
-            else if (action === 'f4') { isF4Active = !isF4Active; const btn = document.getElementById('btnF4Toggle'); if (isF4Active) { btn.className = "px-2 py-1 rounded bg-[#ffcd00] text-slate-950 font-bold text-[11px] transition shadow"; } else {
+    if (action === 'logo') { 
+        isLogoActive = !isLogoActive; isBlackActive = false; isInstrumentalActive = false; isF4Active = false; 
+    }
+    else if (action === 'instrumental') { 
+        isInstrumentalActive = !isInstrumentalActive; isLogoActive = false; isBlackActive = false; isF4Active = false; 
+    }
+    else if (action === 'f4') { 
+        isF4Active = !isF4Active; 
+        const btn = document.getElementById('btnF4Toggle'); 
+        if (isF4Active) { 
+            btn.className = "px-2 py-1 rounded bg-[#ffcd00] text-slate-950 font-bold text-[11px] transition shadow"; 
+        } else {
             btn.className = "px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 text-[11px] font-medium transition";
         }
     }
-            else if (action === 'black') { isBlackActive = !isBlackActive; isLogoActive = false; isInstrumentalActive = false; }
-            else if (action === 'clear') { isLogoActive = false; isBlackActive = false; isInstrumentalActive = false; }
-            broadcastState();
-        }
+    else if (action === 'black') { 
+        isBlackActive = !isBlackActive; isLogoActive = false; isInstrumentalActive = false; isF4Active = false; 
+    }
+    else if (action === 'clear') { 
+        isLogoActive = false; isBlackActive = false; isInstrumentalActive = false; isF4Active = false; 
+        document.getElementById('btnF4Toggle').className = "px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 text-[11px] font-medium transition"; 
+    }
+    broadcastState();
+}
 
         function sendStageMessage() { broadcastState(); }
 
