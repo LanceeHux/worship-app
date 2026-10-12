@@ -117,6 +117,7 @@
                 </div>
                 <div class="flex items-center space-x-1.5 shrink-0">
                     <button onclick="sendClear('logo')" class="px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 text-[11px] font-medium transition">Logo</button>
+                    <button onclick="sendClear('instrumental')" class="px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 text-[11px] font-medium transition" title="Fade lyrics for instrumental moments">Inst</button>
                     <button onclick="sendClear('black')" class="px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 text-[11px] font-medium transition">Clear</button>
                     <button onclick="sendClear('clear')" class="px-2 py-1 rounded bg-rose-600/20 hover:bg-rose-600/30 text-rose-300 border border-rose-500/30 text-[11px] font-medium transition">Reset</button>
                 </div>
@@ -262,6 +263,7 @@
         let currentBackground = { type: 'animated-gradient', value: 'linear-gradient(-45deg, #0f172a, #312e81, #4c1d95, #0f172a)' };
         let isLogoActive = false;
         let isBlackActive = false;
+        let isInstrumentalActive = false;
         let flattenedSlides = [];
 
         let peer = null;
@@ -305,7 +307,8 @@
                     flattenedSlides,
                     stageMessage: document.getElementById('stageMessageInput').value,
                     isLogoActive,
-                    isBlackActive
+                    isBlackActive,
+                    isInstrumentalActive
                 };
                 conn.send({ type: 'STATE_UPDATE', state });
             }
@@ -471,6 +474,7 @@
 
         function sendClear(action) {
             if (action === 'logo') { isLogoActive = !isLogoActive; isBlackActive = false; }
+            else if (action === 'instrumental') {isInstrumentalActive = !isInstrumentalActive; isLogoActive = false; isBlackActive = false; }
             else if (action === 'black') { isBlackActive = !isBlackActive; isLogoActive = false; }
             else if (action === 'clear') { isLogoActive = false; isBlackActive = false; }
             broadcastState();
