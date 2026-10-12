@@ -179,7 +179,7 @@
                 </div>
 
                 <!-- Slide Grid -->
-                <div id="slideGridContainer" class="flex-1 overflow-y-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 pr-2 pb-20">
+                <div id="slideGridContainer" class="flex-1 overflow-y-auto grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 pr-2 pb-20">
                     <div class="col-span-full flex flex-col items-center justify-center text-center p-12 border-2 border-dashed border-slate-800 rounded-xl">
                         <i class="fa-solid fa-music text-slate-600 text-4xl mb-3"></i>
                         <h3 class="text-sm font-semibold text-slate-400">No Song Loaded</h3>
@@ -188,19 +188,32 @@
                 </div>
             </div>
 
-            <!-- Bottom Control Bar -->
-            <div class="bg-slate-900 border-t border-slate-800 p-2.5 shrink-0 flex flex-wrap items-center justify-between gap-2 select-none">
+           <!-- Bottom Control Bar (Two Independent Components) -->
+            <div class="bg-slate-900 border-t border-slate-800 p-2.5 shrink-0 flex flex-wrap items-center justify-between gap-3 select-none">
+                
+                <!-- Component 1: Particle Types Control -->
                 <div class="flex items-center space-x-2 overflow-x-auto py-1">
-                    <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider shrink-0"><i class="fa-solid fa-wand-magic-sparkles mr-1 text-[#ffcd00]"></i> Motion Gradients:</span>
+                    <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider shrink-0"><i class="fa-solid fa-snowflake mr-1 text-[#ffcd00]"></i> Particles:</span>
                     <div class="flex items-center space-x-1.5 shrink-0">
-                        <button onclick="setBackground('animated-gradient', 'linear-gradient(-45deg, #181402, #3d3200, #574800, #181402)')" class="px-2.5 py-1 rounded bg-[#ffcd00]/10 border border-[#ffcd00]/40 hover:scale-105 text-xs text-[#ffcd00] transition shadow">Golden</button>
-                        <button onclick="setBackground('animated-gradient', 'linear-gradient(-45deg, #0f172a, #312e81, #4c1d95, #0f172a)')" class="px-2.5 py-1 rounded bg-indigo-950 border border-indigo-500/50 hover:scale-105 text-xs text-indigo-200 transition shadow">Aurora</button>
-                        <button onclick="setBackground('animated-gradient', 'linear-gradient(-45deg, #022c22, #065f46, #0d9488, #0f172a)')" class="px-2.5 py-1 rounded bg-emerald-950 border border-emerald-500/50 hover:scale-105 text-xs text-emerald-200 transition shadow">Emerald</button>
-                        <button onclick="setBackground('animated-gradient', 'linear-gradient(-45deg, #581c87, #831843, #4c1d95, #0f172a)')" class="px-2.5 py-1 rounded bg-purple-950 border border-purple-500/50 hover:scale-105 text-xs text-purple-200 transition shadow">Velvet</button>
+                        <button onclick="setParticleMode('smooth')" class="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs text-slate-200 transition shadow">🍃 Smooth / Slow</button>
+                        <button onclick="setParticleMode('fast')" class="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs text-slate-200 transition shadow">⚡ Fast</button>
+                        <button onclick="setParticleMode('flickery')" class="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs text-slate-200 transition shadow">✨ Flickery</button>
                     </div>
                 </div>
-
-                <div class="flex items-center space-x-2 flex-1 max-w-sm">
+            
+                <!-- Component 2: Gradient Moving Colors Control -->
+                <div class="flex items-center space-x-2 overflow-x-auto py-1">
+                    <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider shrink-0"><i class="fa-solid fa-palette mr-1 text-[#ffcd00]"></i> Colors:</span>
+                    <div class="flex items-center space-x-1.5 shrink-0">
+                        <button onclick="setBackgroundGradient('linear-gradient(-45deg, #181402, #3d3200, #574800, #181402)')" class="px-2.5 py-1 rounded bg-[#ffcd00]/10 border border-[#ffcd00]/40 hover:scale-105 text-xs text-[#ffcd00] transition shadow">Golden</button>
+                        <button onclick="setBackgroundGradient('linear-gradient(-45deg, #3d1200, #78280f, #b45309, #1c0a00)')" class="px-2.5 py-1 rounded bg-amber-600/20 border border-amber-500/50 hover:scale-105 text-xs text-amber-300 transition shadow">Praise Fire</button>
+                        <button onclick="setBackgroundGradient('linear-gradient(-45deg, #0f172a, #312e81, #4c1d95, #0f172a)')" class="px-2.5 py-1 rounded bg-indigo-950 border border-indigo-500/50 hover:scale-105 text-xs text-indigo-200 transition shadow">Aurora</button>
+                        <button onclick="setBackgroundGradient('linear-gradient(-45deg, #022c22, #065f46, #0d9488, #0f172a)')" class="px-2.5 py-1 rounded bg-emerald-950 border border-emerald-500/50 hover:scale-105 text-xs text-emerald-200 transition shadow">Emerald</button>
+                        <button onclick="setBackgroundGradient('linear-gradient(-45deg, #581c87, #831843, #4c1d95, #0f172a)')" class="px-2.5 py-1 rounded bg-purple-950 border border-purple-500/50 hover:scale-105 text-xs text-purple-200 transition shadow">Velvet</button>
+                    </div>
+                </div>
+            
+                <div class="flex items-center space-x-2 flex-1 max-w-xs">
                     <input type="text" id="stageMessageInput" placeholder="Stage notice..." onkeydown="if(event.key==='Enter') sendStageMessage()" class="flex-1 bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1 text-xs text-slate-200 focus:outline-none focus:border-[#ffcd00]">
                     <button onclick="sendStageMessage()" class="bg-[#ffcd00] hover:bg-[#e5b800] text-slate-950 px-2.5 py-1 rounded-lg text-xs font-bold shrink-0">Send</button>
                 </div>
@@ -389,6 +402,7 @@
         let isBlackActive = false;
         let isInstrumentalActive = false;
         let isF4Active = false;
+        let currentParticleMode = 'smooth';
         let flattenedSlides = [];
 
         let peer = null;
@@ -607,6 +621,7 @@
 
           if (window.innerWidth < 1024) switchMobileView('workspace');
       }
+     
 
         function renderQuickJumpBar() {
             const bar = document.getElementById('quickJumpBar');
@@ -645,6 +660,11 @@
                 slideCards[slideIdx].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
             }
         }
+        function setParticleMode(mode) {
+            currentParticleMode = mode;
+            currentBackground.particleMode = mode;
+            broadcastState();
+        }
 
         function renderSlideGrid() {
             const container = document.getElementById('slideGridContainer');
@@ -678,8 +698,18 @@
 
         function triggerFirstSlide() { if (activeSongId) selectSlide(0); }
 
-        function setBackground(type, value) {
-            currentBackground = { type, value };
+        /*
+        function setBackground(type, value, particleMode = 'serene') {
+            currentBackground = { type, value, particleMode };
+            broadcastState();
+        }
+        */
+        function setBackgroundGradient(value) {
+            currentBackground = {
+                type: 'animated-gradient',
+                value: value,
+                particleMode: currentParticleMode // preserves active particle type
+            };
             broadcastState();
         }
 
