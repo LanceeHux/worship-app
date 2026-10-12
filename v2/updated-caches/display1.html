@@ -320,22 +320,25 @@
                 persistentTitleCard.style.opacity = '0';
             }
 
+            if (state.isInstrumentalActive) {
+                    lyricsContainer.style.transition = 'opacity 0.4s ease-out, transform 0.4s ease-out';
+                    lyricsContainer.style.opacity = '0';
+                    lyricsContainer.style.transform = 'scale(0.95)';
+            } else if (!state.isInstrumentalActive) {
+                    lyricsContainer.style.transition = 'opacity 0.4s ease-in, transform 0.4s ease-in';
+                    lyricsContainer.style.opacity = '1';
+                    lyricsContainer.style.transform = 'scale(1)';
+            }
+
             // Handle F4 / Instrumental / Fade Lyrics State
-            if (state.isF4Active || state.isInstrumentalActive) {
+            if (state.isF4Active) {
 
                 // Slide out persistent title card to the right
                 persistentTitleCard.classList.add('title-card-hidden');
             } else {
-                // Bring back lyrics
-                if (!state.isLogoActive && !state.isBlackActive) {
-                    lyricsContainer.style.transition = 'opacity 0.4s ease-in, transform 0.4s ease-in';
-                    lyricsContainer.style.opacity = '1';
-                    lyricsContainer.style.transform = 'scale(1)';
-
-                    // Slide back persistent title card from the right
                     persistentTitleCard.classList.remove('title-card-hidden');
-                }
             }
+            
 
             if (state.stageMessage && state.stageMessage.trim() !== '') {
                 stageMsgText.textContent = state.stageMessage;
