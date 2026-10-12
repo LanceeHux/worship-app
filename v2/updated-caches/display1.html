@@ -14,7 +14,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=EB+Garamond:wght@600;700&family=Inter:wght@500;700&family=Lato:wght@700&family=Lora:ital,wght@0,600;1,600&family=Montserrat:wght@600;700;800&family=Oswald:wght@600;700&family=Playfair+Display:wght@600;700&family=Poppins:wght@600;700&family=Roboto+Slab:wght@700&display=swap" rel="stylesheet">
         
     <style>
-    /* Font Family Definitions */
     /* Church Typography Font Definitions */
     .font-montserrat { font-family: 'Montserrat', sans-serif; }
     .font-cinzel { font-family: 'Cinzel', serif; }
@@ -27,7 +26,6 @@
     .font-lora { font-family: 'Lora', serif; }
     .font-robotoslab { font-family: 'Roboto Slab', serif; }
     
-    /* Dynamic Motion Background Animations */
     @keyframes gradientShift {
         0% { background-position: 0% 50%; }
         50% { background-position: 100% 50%; }
@@ -48,6 +46,15 @@
     @keyframes floatOrb2 {
         0%, 100% { transform: translate(0px, 0px) scale(1); }
         50% { transform: translate(-90px, 70px) scale(0.85); }
+    }
+    /* Persistent Title Card Sliding Animations */
+    #persistentTitleCard {
+        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease-in-out;
+    }
+    .title-card-hidden {
+        transform: translateX(120%) translateY(0) !important;
+        opacity: 0 !important;
+        pointer-events: none;
     }
 
     .animated-bg {
@@ -118,7 +125,6 @@
                 <h2 class="font-bold text-base text-slate-100">Display Station Pairing</h2>
             </div>
 
-            <!-- QR Code Canvas Container -->
             <div class="bg-white p-4 rounded-xl inline-block shadow-inner mx-auto my-2 border-4 border-[#ffcd00]">
                 <div id="qrcodeCanvas"></div>
             </div>
@@ -176,6 +182,12 @@
         <!-- Black State -->
         <div id="displayBlackState" class="absolute inset-0 bg-black z-20 transition-opacity duration-500 hidden"></div>
 
+        <!-- Persistent Song Title Badge (Stays in top-right corner as a header) -->
+        <div id="persistentTitleCard" class="absolute top-8 right-8 z-20 text-right px-5 py-3 border-r border-white transition-all duration-500 opacity-0 transform translate-y-[-10px]">
+            <div id="persistentSongTitle" class="text-white font-bold text-sm md:text-base tracking-wide"></div>
+            <div id="persistentSongArtist" class="text-slate-400 font-light text-[11px] tracking-wider"></div>
+        </div>
+
         <!-- Main Lyrics Box -->
         <div id="displayLyricsContainer" class="relative z-10 text-center max-w-6xl mx-auto px-4 space-y-3">
             <h3 id="displaySectionLabel" class="text-[#ffcd00] font-bold uppercase tracking-widest text-sm md:text-base mb-2 opacity-90"></h3>
@@ -216,8 +228,6 @@
             peer = new Peer({ debug: 1 });
             peer.on('open', (id) => {
                 document.getElementById('displayCodeBox').textContent = id;
-                
-                // Render QR Code inside Canvas
                 document.getElementById('qrcodeCanvas').innerHTML = '';
                 new QRCode(document.getElementById('qrcodeCanvas'), {
                     text: id,
@@ -274,6 +284,9 @@
             const sectionLabel = document.getElementById('displaySectionLabel');
             const lyricsLinesContainer = document.getElementById('displayLyricsLinesContainer');
             const lyricsContainer = document.getElementById('displayLyricsContainer');
+            const persistentTitleCard = document.getElementById('persistentTitleCard');
+            const persistentSongTitle = document.getElementById('persistentSongTitle');
+            const persistentSongArtist = document.getElementById('persistentSongArtist');
             const stageMsgBar = document.getElementById('displayStageMsgBar');
             const stageMsgText = document.getElementById('displayStageMsgText');
 
@@ -288,18 +301,40 @@
             if (state.isLogoActive) {
                 logoState.classList.remove('hidden');
                 blackState.classList.add('hidden');
+                persistentTitleCard.style.opacity = '0';
             } else if (state.isBlackActive) {
                 blackState.classList.remove('hidden');
                 logoState.classList.add('hidden');
+                persistentTitleCard.style.opacity = '0';
             } else {
                 logoState.classList.add('hidden');
                 blackState.classList.add('hidden');
             }
 
-            if (state.isInstrumentalActive) {
-                lyricsContainer.style.opacity = '0';
+            if (state.activeSong) {
+                persistentSongTitle.textContent = state.activeSong.title;
+                persistentSongArtist.textContent = state.activeSong.artist;
+                persistentTitleCard.style.opacity = '1';
+                persistentTitleCard.style.transform = 'translateY(0)';
             } else {
-                if (!state.isLogoActive && !state.isBlackActive) lyricsContainer.style.opacity = '1';
+                persistentTitleCard.style.opacity = '0';
+            }
+
+            // Handle F4 / Instrumental / Fade Lyrics State
+            if (state.isF4Active || state.isInstrumentalActive) {
+
+                // Slide out persistent title card to the right
+                persistentTitleCard.classList.add('title-card-hidden');
+            } else {
+                // Bring back lyrics
+                if (!state.isLogoActive && !state.isBlackActive) {
+                    lyricsContainer.style.transition = 'opacity 0.4s ease-in, transform 0.4s ease-in';
+                    lyricsContainer.style.opacity = '1';
+                    lyricsContainer.style.transform = 'scale(1)';
+
+                    // Slide back persistent title card from the right
+                    persistentTitleCard.classList.remove('title-card-hidden');
+                }
             }
 
             if (state.stageMessage && state.stageMessage.trim() !== '') {
@@ -307,18 +342,6 @@
                 stageMsgBar.classList.remove('-translate-y-full');
             } else {
                 stageMsgBar.classList.add('-translate-y-full');
-            }
-
-            if (state.isF4Active || state.isInstrumentalActive) {
-                lyricsContainer.style.transition = 'opacity 0.4s ease-out, transform 0.4s ease-out';
-                lyricsContainer.style.opacity = '0';
-                lyricsContainer.style.transform = 'scale(0.95)';
-            } else {
-                if (!state.isLogoActive && !state.isBlackActive) {
-                    lyricsContainer.style.transition = 'opacity 0.4s ease-in, transform 0.4s ease-in';
-                    lyricsContainer.style.opacity = '1';
-                    lyricsContainer.style.transform = 'scale(1)';
-                }
             }
 
             let selectedFontClass = state.activeSong?.fontFamily || 'font-montserrat';
@@ -331,21 +354,12 @@
                 setTimeout(() => {
                     if (state.flattenedSlides && state.flattenedSlides[state.activeSlideIndex]) {
                         const currentSlide = state.flattenedSlides[state.activeSlideIndex];
-                        lyricsContainer.classList.remove('title-card-enter');
-
+                        
+                        // If it's the title card slide, show a clean welcome prompt in the center while keeping the corner badge active
                         if (currentSlide.isTitleCard) {
-                            lyricsContainer.className = "absolute top-12 right-12 z-10 text-right max-w-2xl px-6 title-card-enter space-y-2";
-                            sectionLabel.textContent = "NOW PLAYING";
-                            sectionLabel.className = "text-[#ffcd00] font-bold uppercase tracking-widest text-xs md:text-sm mb-1 opacity-90 text-right";
-                            
-                            lyricsLinesContainer.className = `font-bold text-2xl md:text-4xl text-white tracking-wide drop-shadow-[0_4px_16px_rgba(0,0,0,0.9)] space-y-1 ${selectedFontClass}`;
-                            lyricsLinesContainer.innerHTML = `
-                                <div class="text-amber-200 drop-shadow-xl">${currentSlide.lyrics}</div>
-                                <div class="text-sm md:text-lg text-slate-300 font-light tracking-widest uppercase opacity-90">${state.activeSong?.artist || ''}</div>
-                            `;
+                            lyricsLinesContainer.className = `font-bold text-3xl md:text-5xl text-amber-200 tracking-wide drop-shadow-[0_4px_16px_rgba(0,0,0,0.9)] space-y-2 ${selectedFontClass}`;
+                            lyricsLinesContainer.innerHTML = `<div></div><div class="text-lg text-slate-300 font-light"></div>`;
                         } else {
-                            lyricsContainer.className = "relative z-10 text-center max-w-6xl mx-auto px-4 space-y-3";
-                            sectionLabel.textContent = "";
                             lyricsLinesContainer.className = `font-bold text-3xl md:text-5xl xl:text-6xl text-white tracking-wide drop-shadow-[0_4px_16px_rgba(0,0,0,0.9)] space-y-2 ${selectedFontClass}`;
                             lyricsLinesContainer.innerHTML = `<div>${currentSlide.lyrics}</div>`;
                         }
