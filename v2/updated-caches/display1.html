@@ -309,6 +309,18 @@
                 stageMsgBar.classList.add('-translate-y-full');
             }
 
+            if (state.isF4Active || state.isInstrumentalActive) {
+                lyricsContainer.style.transition = 'opacity 0.4s ease-out, transform 0.4s ease-out';
+                lyricsContainer.style.opacity = '0';
+                lyricsContainer.style.transform = 'scale(0.95)';
+            } else {
+                if (!state.isLogoActive && !state.isBlackActive) {
+                    lyricsContainer.style.transition = 'opacity 0.4s ease-in, transform 0.4s ease-in';
+                    lyricsContainer.style.opacity = '1';
+                    lyricsContainer.style.transform = 'scale(1)';
+                }
+            }
+
             let selectedFontClass = state.activeSong?.fontFamily || 'font-montserrat';
             const currentSlideKey = `${state.activeSong?.title || ''}-${state.activeSlideIndex}`;
             
