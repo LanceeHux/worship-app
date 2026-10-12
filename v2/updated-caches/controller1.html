@@ -8,8 +8,10 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@600;700;800&family=Cinzel:wght@600;700&family=Playfair+Display:wght@600;700&family=EB+Garamond:wght@600;700&display=swap" rel="stylesheet">
+    <!-- Expanded Google Fonts Collection -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=EB+Garamond:wght@600;700&family=Inter:wght@500;700&family=Lato:wght@700&family=Lora:ital,wght@0,600;1,600&family=Montserrat:wght@600;700;800&family=Oswald:wght@600;700&family=Playfair+Display:wght@600;700&family=Poppins:wght@600;700&family=Roboto+Slab:wght@700&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -18,29 +20,50 @@
                     fontFamily: {
                         sans: ['Inter', 'sans-serif'],
                         presentation: ['Montserrat', 'sans-serif']
+                    },
+                    colors: {
+                        brand: {
+                            500: '#ffcd00',
+                            600: '#e5b800',
+                            400: '#ffd633'
+                        }
                     }
                 }
             }
         }
     </script>
     <style>
+      /* Church Typography Font Definitions */
+      .font-montserrat { font-family: 'Montserrat', sans-serif; }
+      .font-cinzel { font-family: 'Cinzel', serif; }
+      .font-playfair { font-family: 'Playfair Display', serif; }
+      .font-garamond { font-family: 'EB Garamond', serif; }
+      .font-inter { font-family: 'Inter', sans-serif; }
+      .font-poppins { font-family: 'Poppins', sans-serif; }
+      .font-oswald { font-family: 'Oswald', sans-serif; }
+      .font-lato { font-family: 'Lato', sans-serif; }
+      .font-lora { font-family: 'Lora', serif; }
+      .font-robotoslab { font-family: 'Roboto Slab', serif; }
         body { font-family: 'Inter', sans-serif; }
         .slide-card:hover { transform: translateY(-2px); transition: all 0.2s ease; }
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: #1e293b; }
         ::-webkit-scrollbar-thumb { background: #475569; border-radius: 3px; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
 <body class="bg-slate-950 text-slate-100 h-full flex flex-col overflow-hidden m-0 p-0">
 
     <!-- Top Navigation & Connection Bar -->
-    <header class="bg-slate-900 border-b border-slate-800 px-4 py-2.5 flex flex-wrap items-center justify-between shrink-0 select-none z-30 gap-2">
+    <header class="bg-slate-900 border-b border-slate-800 px-4 py-2 flex flex-wrap items-center justify-between shrink-0 select-none z-30 gap-2">
         <div class="flex items-center space-x-3">
-            <div class="bg-indigo-600 p-2 rounded-lg text-white font-bold text-lg shadow-md flex items-center justify-center w-9 h-9">
-                <i class="fa-solid fa-sliders"></i>
+            <!-- Custom YA Emblem Logo next to Header -->
+            <div class="relative flex items-center justify-center w-10 h-10 rounded-full border-2 border-[#ffcd00] bg-slate-950 shadow-md shrink-0">
+                <span class="font-montserrat font-black text-xs text-[#ffcd00] tracking-tighter italic">YA</span>
             </div>
             <div>
-                <h1 class="font-bold text-xs md:text-sm tracking-wide text-slate-100">YA WORSHIP <span class="text-indigo-400 font-light">CONTROLLER</span></h1>
+                <h1 class="font-bold text-xs md:text-sm tracking-wide text-slate-100">YA WORSHIP <span class="text-[#ffcd00] font-light">CONTROLLER</span></h1>
                 <p class="text-[10px] md:text-xs text-slate-400">Live Lyrics Operator & Fellowship Suite</p>
             </div>
         </div>
@@ -51,7 +74,7 @@
                 <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
                 <span id="connectionBadgeText">Disconnected</span>
             </div>
-            <button onclick="openConnectModal()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1.5 rounded-lg text-xs font-semibold transition shadow flex items-center space-x-1.5">
+            <button onclick="openConnectModal()" class="bg-[#ffcd00] hover:bg-[#e5b800] text-slate-950 px-3 py-1.5 rounded-lg text-xs font-bold transition shadow flex items-center space-x-1.5">
                 <i class="fa-solid fa-link"></i><span class="hidden xs:inline">Connect</span>
             </button>
         </div>
@@ -59,7 +82,7 @@
 
     <!-- Mobile Navigation Toggle Tabs -->
     <div class="lg:hidden flex bg-slate-900 border-b border-slate-800 text-xs font-bold shrink-0">
-        <button onclick="switchMobileView('sidebar')" id="mobileNavSidebar" class="flex-1 py-2.5 text-indigo-400 border-b-2 border-indigo-500 text-center"><i class="fa-solid fa-book-open mr-1"></i> Library & Queue</button>
+        <button onclick="switchMobileView('sidebar')" id="mobileNavSidebar" class="flex-1 py-2.5 text-[#ffcd00] border-b-2 border-[#ffcd00] text-center"><i class="fa-solid fa-book-open mr-1"></i> Library & Queue</button>
         <button onclick="switchMobileView('workspace')" id="mobileNavWorkspace" class="flex-1 py-2.5 text-slate-400 border-b-2 border-transparent text-center"><i class="fa-solid fa-photo-film mr-1"></i> Slides & Live</button>
     </div>
 
@@ -70,7 +93,7 @@
         <aside id="mobileSidebarPane" class="w-full lg:w-80 bg-slate-900/90 border-r border-slate-800 flex flex-col shrink-0 h-full absolute inset-0 lg:relative z-20 lg:z-auto transition-transform">
             <!-- Sidebar Header Tabs -->
             <div class="flex border-b border-slate-800 bg-slate-900/50">
-                <button onclick="switchSidebarTab('library')" id="tabLibrary" class="flex-1 py-3 text-xs font-bold text-indigo-400 border-b-2 border-indigo-500 transition">
+                <button onclick="switchSidebarTab('library')" id="tabLibrary" class="flex-1 py-3 text-xs font-bold text-[#ffcd00] border-b-2 border-[#ffcd00] transition">
                     <i class="fa-solid fa-book-open mr-1.5"></i> Song Library
                 </button>
                 <button onclick="switchSidebarTab('playlist')" id="tabPlaylist" class="flex-1 py-3 text-xs font-bold text-slate-400 hover:text-slate-200 border-b-2 border-transparent transition">
@@ -83,11 +106,15 @@
                 <div class="flex items-center space-x-2">
                     <div class="relative flex-1">
                         <i class="fa-solid fa-search absolute left-3 top-2.5 text-slate-400 text-xs"></i>
-                        <input type="text" id="songSearch" placeholder="Search songs..." oninput="filterSongs()" class="w-full bg-slate-950 border border-slate-800 rounded-lg pl-8 pr-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-indigo-500">
+                        <input type="text" id="songSearch" placeholder="Search songs..." oninput="filterSongs()" class="w-full bg-slate-950 border border-slate-800 rounded-lg pl-8 pr-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-[#ffcd00]">
                     </div>
-                    <button onclick="openSongEditorModal()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-2 rounded-lg text-xs font-semibold transition shadow flex items-center space-x-1" title="Add New Song">
+                    <button onclick="openSongEditorModal()" class="bg-[#ffcd00] hover:bg-[#e5b800] text-slate-950 px-2.5 py-2 rounded-lg text-xs font-bold transition shadow flex items-center space-x-1" title="Add New Song">
                         <i class="fa-solid fa-plus"></i>
                         <span class="hidden sm:inline">New</span>
+                    </button>
+                    <!-- Import Song Button -->
+                    <button onclick="openImportModal()" class="bg-slate-800 hover:bg-slate-700 text-[#ffcd00] px-2.5 py-2 rounded-lg text-xs font-bold transition shadow flex items-center space-x-1" title="Import Song Data">
+                        <i class="fa-solid fa-file-import"></i>
                     </button>
                 </div>
 
@@ -110,8 +137,8 @@
             <!-- Live Output Status Mini Bar -->
             <div class="bg-slate-900 border-b border-slate-800 px-4 py-2 flex items-center justify-between shrink-0">
                 <div class="flex items-center space-x-3 truncate">
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded text-[10px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 shrink-0">
-                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse mr-1.5"></span> LIVE
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded text-[10px] font-bold bg-[#ffcd00]/10 text-[#ffcd00] border border-[#ffcd00]/20 shrink-0">
+                        <span class="w-1.5 h-1.5 rounded-full bg-[#ffcd00] animate-pulse mr-1.5"></span> LIVE
                     </span>
                     <span id="currentActiveSongLabel" class="text-xs font-medium text-slate-300 truncate">No song selected</span>
                 </div>
@@ -125,7 +152,7 @@
 
             <!-- Main Slide Workspace -->
             <div class="flex-1 flex flex-col overflow-hidden p-3 md:p-4">
-                <div class="flex items-center justify-between mb-3 shrink-0">
+                <div class="flex items-center justify-between mb-2 shrink-0">
                     <div class="min-w-0 pr-2">
                         <h2 id="activeSongTitle" class="text-sm md:text-base font-bold text-slate-100 truncate">Select a song</h2>
                         <p id="activeSongArtist" class="text-[11px] text-slate-400 truncate">Choose any song to view slides.</p>
@@ -134,10 +161,20 @@
                         <button onclick="triggerFirstSlide()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition">
                             <i class="fa-solid fa-backward-step mr-1"></i> Start
                         </button>
-                        <button onclick="editCurrentSong()" id="btnEditActive" class="bg-slate-800 hover:bg-slate-700 text-indigo-400 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition hidden">
+                        <!-- Export Song Button in Active Header -->
+                        <button onclick="openExportModal()" id="btnExportActive" class="bg-slate-800 hover:bg-slate-700 text-[#ffcd00] px-2.5 py-1.5 rounded-lg text-xs font-semibold transition hidden" title="Export Song Sequence">
+                            <i class="fa-solid fa-share-nodes mr-1"></i> Export
+                        </button>
+                        <button onclick="editCurrentSong()" id="btnEditActive" class="bg-slate-800 hover:bg-slate-700 text-[#ffcd00] px-2.5 py-1.5 rounded-lg text-xs font-semibold transition hidden">
                             <i class="fa-solid fa-pen-to-square"></i>
                         </button>
                     </div>
+                </div>
+
+                <!-- Quick Section Jump Bar for Mobile & Fast Transitions -->
+                <div id="quickJumpBar" class="hidden flex items-center space-x-1.5 overflow-x-auto py-2 mb-2 border-y border-slate-800/80 shrink-0 no-scrollbar">
+                    <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider shrink-0 mr-1"><i class="fa-solid fa-bolt text-[#ffcd00] mr-1"></i>Jump:</span>
+                    <div id="quickJumpButtons" class="flex items-center space-x-1.5 shrink-0"></div>
                 </div>
 
                 <!-- Slide Grid -->
@@ -153,19 +190,18 @@
             <!-- Bottom Control Bar -->
             <div class="bg-slate-900 border-t border-slate-800 p-2.5 shrink-0 flex flex-wrap items-center justify-between gap-2 select-none">
                 <div class="flex items-center space-x-2 overflow-x-auto py-1">
-                    <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider shrink-0"><i class="fa-solid fa-wand-magic-sparkles mr-1 text-indigo-400"></i> Motion Gradients:</span>
+                    <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider shrink-0"><i class="fa-solid fa-wand-magic-sparkles mr-1 text-[#ffcd00]"></i> Motion Gradients:</span>
                     <div class="flex items-center space-x-1.5 shrink-0">
+                        <button onclick="setBackground('animated-gradient', 'linear-gradient(-45deg, #181402, #3d3200, #574800, #181402)')" class="px-2.5 py-1 rounded bg-[#ffcd00]/10 border border-[#ffcd00]/40 hover:scale-105 text-xs text-[#ffcd00] transition shadow">Golden</button>
                         <button onclick="setBackground('animated-gradient', 'linear-gradient(-45deg, #0f172a, #312e81, #4c1d95, #0f172a)')" class="px-2.5 py-1 rounded bg-indigo-950 border border-indigo-500/50 hover:scale-105 text-xs text-indigo-200 transition shadow">Aurora</button>
                         <button onclick="setBackground('animated-gradient', 'linear-gradient(-45deg, #022c22, #065f46, #0d9488, #0f172a)')" class="px-2.5 py-1 rounded bg-emerald-950 border border-emerald-500/50 hover:scale-105 text-xs text-emerald-200 transition shadow">Emerald</button>
-                        <button onclick="setBackground('animated-gradient', 'linear-gradient(-45deg, #451a03, #78350f, #b45309, #1e1b4b)')" class="px-2.5 py-1 rounded bg-amber-950 border border-amber-500/50 hover:scale-105 text-xs text-amber-200 transition shadow">Golden</button>
                         <button onclick="setBackground('animated-gradient', 'linear-gradient(-45deg, #581c87, #831843, #4c1d95, #0f172a)')" class="px-2.5 py-1 rounded bg-purple-950 border border-purple-500/50 hover:scale-105 text-xs text-purple-200 transition shadow">Velvet</button>
-                        <button onclick="setBackground('animated-gradient', 'linear-gradient(-45deg, #0c4a6e, #0369a1, #1e3a8a, #020617)')" class="px-2.5 py-1 rounded bg-sky-950 border border-sky-500/50 hover:scale-105 text-xs text-sky-200 transition shadow">Celestial</button>
                     </div>
                 </div>
 
                 <div class="flex items-center space-x-2 flex-1 max-w-sm">
-                    <input type="text" id="stageMessageInput" placeholder="Stage notice..." onkeydown="if(event.key==='Enter') sendStageMessage()" class="flex-1 bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1 text-xs text-slate-200 focus:outline-none focus:border-indigo-500">
-                    <button onclick="sendStageMessage()" class="bg-indigo-600 text-white px-2.5 py-1 rounded-lg text-xs font-semibold shrink-0">Send</button>
+                    <input type="text" id="stageMessageInput" placeholder="Stage notice..." onkeydown="if(event.key==='Enter') sendStageMessage()" class="flex-1 bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1 text-xs text-slate-200 focus:outline-none focus:border-[#ffcd00]">
+                    <button onclick="sendStageMessage()" class="bg-[#ffcd00] hover:bg-[#e5b800] text-slate-950 px-2.5 py-1 rounded-lg text-xs font-bold shrink-0">Send</button>
                 </div>
             </div>
 
@@ -176,20 +212,42 @@
     <div id="connectModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
         <div class="bg-slate-900 border border-slate-800 w-full max-w-md rounded-2xl shadow-2xl p-6 space-y-4">
             <div class="flex items-center justify-between">
-                <h3 class="text-base font-bold text-slate-100 flex items-center"><i class="fa-solid fa-link text-indigo-400 mr-2"></i>Connect to Display (Device A)</h3>
+                <h3 class="text-base font-bold text-slate-100 flex items-center"><i class="fa-solid fa-link text-[#ffcd00] mr-2"></i>Connect to Display (Device A)</h3>
                 <button onclick="closeConnectModal()" class="text-slate-400 hover:text-slate-200"><i class="fa-solid fa-xmark text-lg"></i></button>
             </div>
-            <p class="text-xs text-slate-400">Enter the Connection Code displayed on Device A to pair both devices.</p>
+            
+            <!-- Scan QR Button -->
+            <button onclick="startQrScanner()" class="w-full bg-slate-800 hover:bg-slate-700 text-[#ffcd00] border border-[#ffcd00]/30 py-2.5 rounded-lg text-xs font-bold transition flex items-center justify-center space-x-2">
+                <i class="fa-solid fa-qrcode text-sm"></i>
+                <span>Scan QR Code with Camera</span>
+            </button>
+
+            <div class="relative flex py-1 items-center">
+                <div class="flex-grow border-t border-slate-800"></div>
+                <span class="flex-shrink mx-3 text-[10px] text-slate-500 uppercase font-semibold">Or Enter Display ID</span>
+                <div class="flex-grow border-t border-slate-800"></div>
+            </div>
             
             <div class="space-y-2">
-                <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider">Display Peer ID</label>
-                <input type="text" id="targetPeerIdInput" placeholder="Paste Display ID here..." class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2.5 text-xs font-mono text-emerald-400 focus:outline-none focus:border-indigo-500">
+                <input type="text" id="targetPeerIdInput" placeholder="Paste Display ID here..." class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2.5 text-xs font-mono text-emerald-400 focus:outline-none focus:border-[#ffcd00]">
             </div>
 
             <div class="flex justify-end space-x-2 pt-2">
                 <button onclick="closeConnectModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2 rounded-lg text-xs font-semibold transition">Cancel</button>
-                <button onclick="connectToDisplay()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-5 py-2 rounded-lg text-xs font-semibold transition shadow">Connect Now</button>
+                <button onclick="connectToDisplay()" class="bg-[#ffcd00] hover:bg-[#e5b800] text-slate-950 px-5 py-2 rounded-lg text-xs font-bold transition shadow">Connect Now</button>
             </div>
+        </div>
+    </div>
+
+    <!-- QR Scanner Camera Modal -->
+    <div id="qrScannerModal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-slate-900 border border-slate-800 w-full max-w-sm rounded-2xl shadow-2xl p-6 space-y-4 text-center">
+            <div class="flex items-center justify-between">
+                <h3 class="text-sm font-bold text-slate-100 flex items-center"><i class="fa-solid fa-qrcode text-[#ffcd00] mr-2"></i>Scan Display QR Code</h3>
+                <button onclick="closeQrScannerModal()" class="text-slate-400 hover:text-slate-200"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div id="reader" class="overflow-hidden rounded-xl border-2 border-[#ffcd00] bg-black"></div>
+            <p class="text-xs text-slate-400">Point your camera at the QR code on Device A display.</p>
         </div>
     </div>
 
@@ -206,29 +264,37 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-xs font-semibold text-slate-400 mb-1 uppercase tracking-wider">Song Title</label>
-                        <input type="text" id="inputSongTitle" placeholder="e.g. Way Maker" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-indigo-500">
+                        <input type="text" id="inputSongTitle" placeholder="e.g. Way Maker" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-[#ffcd00]">
                     </div>
                     <div>
                         <label class="block text-xs font-semibold text-slate-400 mb-1 uppercase tracking-wider">Artist / Author</label>
-                        <input type="text" id="inputSongArtist" placeholder="e.g. Leeland" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-indigo-500">
+                        <input type="text" id="inputSongArtist" placeholder="e.g. Leeland" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-[#ffcd00]">
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-xs font-semibold text-slate-400 mb-1 uppercase tracking-wider">Church Presentation Font Style</label>
-                    <select id="inputSongFont" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-indigo-500">
-                        <option value="font-montserrat">Montserrat (Modern / Contemporary Worship)</option>
-                        <option value="font-cinzel">Cinzel (Classic / Traditional Hymns)</option>
-                        <option value="font-playfair">Playfair Display (Elegant / Reverent)</option>
-                        <option value="font-garamond">EB Garamond (Traditional Liturgy)</option>
-                        <option value="font-inter">Inter (Clean / High Legibility)</option>
-                    </select>
-                </div>
+                  <label class="block text-xs font-semibold text-slate-400 mb-1 uppercase tracking-wider">Church Presentation Font Style</label>
+                  <select id="inputSongFont" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-[#ffcd00]" onchange="this.className = 'w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-[#ffcd00] ' + this.value">
+                      <!-- Sans-Serif / Modern -->
+                      <option value="font-montserrat" class="font-montserrat bg-slate-900 text-slate-100 py-1">Montserrat — Modern / Contemporary Worship</option>
+                      <option value="font-poppins" class="font-poppins bg-slate-900 text-slate-100 py-1">Poppins — Clean Bold & Geometric</option>
+                      <option value="font-inter" class="font-inter bg-slate-900 text-slate-100 py-1">Inter — High Legibility Screen Display</option>
+                      <option value="font-lato" class="font-lato bg-slate-900 text-slate-100 py-1">Lato — Warm & Balanced Sans</option>
+                      <option value="font-oswald" class="font-oswald bg-slate-900 text-slate-100 py-1">Oswald — Compact Tall Bold Title</option>
+
+                      <!-- Serif / Classic & Reverent -->
+                      <option value="font-cinzel" class="font-cinzel bg-slate-900 text-slate-100 py-1">Cinzel — Classic Classical / Traditional Hymns</option>
+                      <option value="font-playfair" class="font-playfair bg-slate-900 text-slate-100 py-1">Playfair Display — Elegant & Reverent</option>
+                      <option value="font-garamond" class="font-garamond bg-slate-900 text-slate-100 py-1">EB Garamond — Traditional Liturgical Serifs</option>
+                      <option value="font-lora" class="font-lora bg-slate-900 text-slate-100 py-1">Lora — Contemporary Literary Serif</option>
+                      <option value="font-robotoslab" class="font-robotoslab bg-slate-900 text-slate-100 py-1">Roboto Slab — Strong & Readable Slab Serif</option>
+                  </select>
+              </div>
 
                 <div>
                     <div class="flex items-center justify-between mb-1">
                         <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider">Song Sections & Lyrics</label>
-                        <button onclick="addSectionEditorRow()" class="text-xs text-indigo-400 hover:text-indigo-300 font-semibold"><i class="fa-solid fa-plus mr-1"></i>Add Section</button>
+                        <button onclick="addSectionEditorRow()" class="text-xs text-[#ffcd00] hover:text-[#e5b800] font-semibold"><i class="fa-solid fa-plus mr-1"></i>Add Section</button>
                     </div>
                     <div id="sectionsEditorContainer" class="space-y-3"></div>
                 </div>
@@ -236,13 +302,70 @@
 
             <div class="px-6 py-4 border-t border-slate-800 bg-slate-900/50 flex items-center justify-end space-x-3">
                 <button onclick="closeSongEditorModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2 rounded-lg text-xs font-semibold transition">Cancel</button>
-                <button onclick="saveSongFromModal()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-5 py-2 rounded-lg text-xs font-semibold transition shadow">Save Song</button>
+                <button onclick="saveSongFromModal()" class="bg-[#ffcd00] hover:bg-[#e5b800] text-slate-950 px-5 py-2 rounded-lg text-xs font-bold transition shadow">Save Song</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Export Song Sequence Modal -->
+    <div id="exportModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-slate-900 border border-slate-800 w-full max-w-lg rounded-2xl shadow-2xl p-6 space-y-4">
+            <div class="flex items-center justify-between">
+                <h3 class="text-base font-bold text-slate-100 flex items-center"><i class="fa-solid fa-share-nodes text-[#ffcd00] mr-2"></i>Export Song Data</h3>
+                <button onclick="closeExportModal()" class="text-slate-400 hover:text-slate-200"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <p class="text-xs text-slate-400">Copy the JSON song sequence string or download a `.json` file to import into another YA Worship device.</p>
+            
+            <div class="space-y-2">
+                <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider">Song JSON String</label>
+                <textarea id="exportJsonTextarea" rows="6" readonly class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 font-mono text-xs text-[#ffcd00] focus:outline-none select-all resize-none"></textarea>
+            </div>
+
+            <div class="flex flex-wrap items-center justify-between gap-2 pt-2">
+                <button onclick="downloadSongJson()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3.5 py-2 rounded-lg text-xs font-semibold transition flex items-center space-x-1.5">
+                    <i class="fa-solid fa-download"></i><span>Download .JSON File</span>
+                </button>
+                <div class="flex items-center space-x-2">
+                    <button onclick="closeExportModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2 rounded-lg text-xs font-semibold transition">Close</button>
+                    <button onclick="copyExportJson()" class="bg-[#ffcd00] hover:bg-[#e5b800] text-slate-950 px-4 py-2 rounded-lg text-xs font-bold transition shadow flex items-center space-x-1">
+                        <i class="fa-solid fa-copy"></i><span>Copy String</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Import Song Sequence Modal -->
+    <div id="importModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-slate-900 border border-slate-800 w-full max-w-lg rounded-2xl shadow-2xl p-6 space-y-4">
+            <div class="flex items-center justify-between">
+                <h3 class="text-base font-bold text-slate-100 flex items-center"><i class="fa-solid fa-file-import text-[#ffcd00] mr-2"></i>Import Song Data</h3>
+                <button onclick="closeImportModal()" class="text-slate-400 hover:text-slate-200"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <p class="text-xs text-slate-400">Paste a YA Worship JSON string below OR select a downloaded `.json` file to load into your library.</p>
+            
+            <div class="space-y-2">
+                <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider">Select JSON File</label>
+                <input type="file" id="importFileInput" accept=".json" onchange="handleFileImport(event)" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-xs text-slate-300 focus:outline-none">
+            </div>
+
+            <div class="space-y-2">
+                <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider">Or Paste JSON String</label>
+                <textarea id="importJsonTextarea" rows="5" placeholder="Paste JSON song payload here..." class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 font-mono text-xs text-slate-200 focus:outline-none focus:border-[#ffcd00] resize-none"></textarea>
+            </div>
+
+            <div class="flex justify-end space-x-2 pt-2">
+                <button onclick="closeImportModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2 rounded-lg text-xs font-semibold transition">Cancel</button>
+                <button onclick="processJsonImport()" class="bg-[#ffcd00] hover:bg-[#e5b800] text-slate-950 px-5 py-2 rounded-lg text-xs font-bold transition shadow">Import Song</button>
             </div>
         </div>
     </div>
 
     <!-- PeerJS CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.1/peerjs.min.js"></script>
+    <!-- HTML5 QR Code Reader CDN -->
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+
     <script>
         let songs = [
             {
@@ -260,7 +383,7 @@
         let playlist = ['song-1'];
         let activeSongId = null;
         let activeSlideIndex = 0;
-        let currentBackground = { type: 'animated-gradient', value: 'linear-gradient(-45deg, #0f172a, #312e81, #4c1d95, #0f172a)' };
+        let currentBackground = { type: 'animated-gradient', value: 'linear-gradient(-45deg, #181402, #3d3200, #574800, #181402)' };
         let isLogoActive = false;
         let isBlackActive = false;
         let isInstrumentalActive = false;
@@ -268,6 +391,7 @@
 
         let peer = null;
         let conn = null;
+        let html5QrCode = null;
 
         window.onload = function() {
             loadFromLocalStorage();
@@ -285,9 +409,42 @@
         function openConnectModal() { document.getElementById('connectModal').classList.remove('hidden'); }
         function closeConnectModal() { document.getElementById('connectModal').classList.add('hidden'); }
 
+        function startQrScanner() {
+            closeConnectModal();
+            document.getElementById('qrScannerModal').classList.remove('hidden');
+            
+            html5QrCode = new Html5Qrcode("reader");
+            html5QrCode.start(
+                { facingMode: "environment" },
+                { fps: 10, qrbox: { width: 220, height: 220 } },
+                (decodedText) => {
+                    document.getElementById('targetPeerIdInput').value = decodedText;
+                    closeQrScannerModal();
+                    connectToDisplay();
+                },
+                (errorMessage) => { /* scanning */ }
+            ).catch(err => {
+                alert("Camera access denied or unavailable.");
+                closeQrScannerModal();
+            });
+        }
+
+        function closeQrScannerModal() {
+            if (html5QrCode) {
+                html5QrCode.stop().then(() => {
+                    html5QrCode.clear();
+                    document.getElementById('qrScannerModal').classList.add('hidden');
+                }).catch(() => {
+                    document.getElementById('qrScannerModal').classList.add('hidden');
+                });
+            } else {
+                document.getElementById('qrScannerModal').classList.add('hidden');
+            }
+        }
+
         function connectToDisplay() {
             const targetId = document.getElementById('targetPeerIdInput').value.trim();
-            if (!targetId) { alert('Please enter the Display Peer ID.'); return; }
+            if (!targetId) { alert('Please enter or scan a Display Peer ID.'); return; }
             conn = peer.connect(targetId);
             conn.on('open', () => {
                 document.getElementById('connectionBadge').className = "flex items-center space-x-2 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 rounded-lg text-xs font-semibold text-emerald-400";
@@ -333,12 +490,12 @@
             const tabPlayContent = document.getElementById('sidebarPlaylist');
 
             if (tab === 'library') {
-                btnLib.className = "flex-1 py-3 text-xs font-bold text-indigo-400 border-b-2 border-indigo-500 transition";
+                btnLib.className = "flex-1 py-3 text-xs font-bold text-[#ffcd00] border-b-2 border-[#ffcd00] transition";
                 tabLibContent.classList.remove('hidden');
                 btnPlay.className = "flex-1 py-3 text-xs font-bold text-slate-400 hover:text-slate-200 border-b-2 border-transparent transition";
                 tabPlayContent.classList.add('hidden');
             } else {
-                btnPlay.className = "flex-1 py-3 text-xs font-bold text-indigo-400 border-b-2 border-indigo-500 transition";
+                btnPlay.className = "flex-1 py-3 text-xs font-bold text-[#ffcd00] border-b-2 border-[#ffcd00] transition";
                 tabPlayContent.classList.remove('hidden');
                 btnLib.className = "flex-1 py-3 text-xs font-bold text-slate-400 hover:text-slate-200 border-b-2 border-transparent transition";
                 tabLibContent.classList.add('hidden');
@@ -359,6 +516,7 @@
                             <p class="text-[11px] text-slate-400 truncate">${song.artist}</p>
                         </div>
                         <div class="flex items-center space-x-1">
+                            <button onclick="event.stopPropagation(); exportSpecificSong('${song.id}')" class="p-1.5 rounded hover:bg-slate-700 text-slate-400 hover:text-[#ffcd00] text-xs" title="Export Song"><i class="fa-solid fa-share-nodes"></i></button>
                             <button onclick="event.stopPropagation(); togglePlaylist('${song.id}')" class="p-1.5 rounded hover:bg-slate-700 text-xs ${inPlaylist ? 'text-emerald-400' : 'text-slate-500'}"><i class="fa-solid ${inPlaylist ? 'fa-check-circle' : 'fa-plus-circle'}"></i></button>
                             <button onclick="event.stopPropagation(); deleteSong('${song.id}')" class="p-1.5 rounded hover:bg-rose-500/20 text-slate-500 hover:text-rose-400 text-xs"><i class="fa-solid fa-trash"></i></button>
                         </div>
@@ -377,11 +535,11 @@
                 if (!song) return '';
                 const isActive = activeSongId === song.id;
                 return `
-                    <div class="group bg-slate-950/60 hover:bg-slate-800/80 border ${isActive ? 'border-indigo-500 shadow-md' : 'border-slate-800'} rounded-lg p-2.5 flex items-center justify-between transition cursor-pointer" onclick="selectSong('${song.id}')">
+                    <div class="group bg-slate-950/60 hover:bg-slate-800/80 border ${isActive ? 'border-[#ffcd00] shadow-md' : 'border-slate-800'} rounded-lg p-2.5 flex items-center justify-between transition cursor-pointer" onclick="selectSong('${song.id}')">
                         <div class="flex items-center space-x-2.5 min-w-0 flex-1">
                             <span class="text-[11px] font-bold text-slate-500 w-4">${idx + 1}</span>
                             <div class="min-w-0 flex-1">
-                                <h4 class="text-xs font-semibold ${isActive ? 'text-indigo-400' : 'text-slate-200'} truncate">${song.title}</h4>
+                                <h4 class="text-xs font-semibold ${isActive ? 'text-[#ffcd00]' : 'text-slate-200'} truncate">${song.title}</h4>
                                 <p class="text-[11px] text-slate-400 truncate">${song.artist}</p>
                             </div>
                         </div>
@@ -403,9 +561,10 @@
 
         function selectSong(songId) {
             activeSongId = songId;
-            activeSlideIndex = 0; // Starts at Title Slide (Index 0)
+            activeSlideIndex = 0;
             isLogoActive = false;
             isBlackActive = false;
+            isInstrumentalActive = false;
             const song = songs.find(s => s.id === songId);
             if (!song) return;
 
@@ -426,7 +585,9 @@
             document.getElementById('activeSongArtist').textContent = song.artist + ' • ' + (flattenedSlides.length - 1) + ' line slides';
             document.getElementById('currentActiveSongLabel').textContent = song.title;
             document.getElementById('btnEditActive').classList.remove('hidden');
+            document.getElementById('btnExportActive').classList.remove('hidden');
 
+            renderQuickJumpBar();
             renderSlideGrid();
             renderPlaylist();
             broadcastState();
@@ -434,18 +595,56 @@
             if (window.innerWidth < 1024) switchMobileView('workspace');
         }
 
+        function renderQuickJumpBar() {
+            const bar = document.getElementById('quickJumpBar');
+            const container = document.getElementById('quickJumpButtons');
+            
+            const uniqueSections = [];
+            const sectionIndices = {};
+
+            flattenedSlides.forEach((slide, idx) => {
+                if (!slide.isTitleCard && !sectionIndices[slide.type]) {
+                    sectionIndices[slide.type] = idx;
+                    uniqueSections.push(slide.type);
+                }
+            });
+
+            if (uniqueSections.length === 0) {
+                bar.classList.add('hidden');
+                return;
+            }
+
+            bar.classList.remove('hidden');
+            container.innerHTML = uniqueSections.map(secName => {
+                const targetIdx = sectionIndices[secName];
+                return `
+                    <button onclick="jumpToSection(${targetIdx})" class="px-2.5 py-1 rounded-full bg-slate-900 border border-slate-700 hover:border-[#ffcd00] hover:text-[#ffcd00] text-[11px] font-semibold text-slate-300 transition whitespace-nowrap shadow-sm">
+                        ${secName}
+                    </button>
+                `;
+            }).join('');
+        }
+
+        function jumpToSection(slideIdx) {
+            selectSlide(slideIdx);
+            const slideCards = document.querySelectorAll('.slide-card');
+            if (slideCards[slideIdx]) {
+                slideCards[slideIdx].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        }
+
         function renderSlideGrid() {
             const container = document.getElementById('slideGridContainer');
             container.innerHTML = flattenedSlides.map((slide, idx) => {
                 const isActive = activeSlideIndex === idx;
                 return `
-                    <div onclick="selectSlide(${idx})" class="slide-card bg-slate-900 border ${isActive ? 'border-indigo-500 ring-2 ring-indigo-500/30 shadow-lg' : 'border-slate-800 hover:border-slate-700'} rounded-xl p-3 flex flex-col justify-between cursor-pointer transition relative group select-none">
+                    <div onclick="selectSlide(${idx})" class="slide-card bg-slate-900 border ${isActive ? 'border-[#ffcd00] ring-2 ring-[#ffcd00]/30 shadow-lg' : 'border-slate-800 hover:border-slate-700'} rounded-xl p-3 flex flex-col justify-between cursor-pointer transition relative group select-none">
                         <div class="flex items-center justify-between mb-2">
-                            <span class="px-2 py-0.5 rounded text-[10px] font-bold ${isActive ? 'bg-indigo-600 text-white' : 'bg-slate-800 text-indigo-400'}">${slide.type}</span>
+                            <span class="px-2 py-0.5 rounded text-[10px] font-bold ${isActive ? 'bg-[#ffcd00] text-slate-950 font-bold' : 'bg-slate-800 text-[#ffcd00]'}">${slide.type}</span>
                             <span class="text-[10px] font-mono text-slate-500">${idx + 1}</span>
                         </div>
                         <div class="font-presentation text-sm font-semibold text-slate-200 py-2">
-                            ${slide.isTitleCard ? `<span class="text-indigo-400 italic">🎵 Title: ${slide.lyrics}</span>` : slide.lyrics}
+                            ${slide.isTitleCard ? `<span class="text-[#ffcd00] italic">🎵 Title: ${slide.lyrics}</span>` : slide.lyrics}
                         </div>
                         <div class="mt-2 pt-2 border-t border-slate-800/80 flex items-center justify-between text-[10px] text-slate-500">
                             <span>${isActive ? '<span class="text-emerald-400 font-semibold"><i class="fa-solid fa-circle text-[8px] mr-1"></i> Live</span>' : 'Click to project'}</span>
@@ -459,13 +658,12 @@
             activeSlideIndex = idx;
             isLogoActive = false;
             isBlackActive = false;
+            isInstrumentalActive = false;
             renderSlideGrid();
             broadcastState();
         }
 
-        function triggerFirstSlide() { 
-            if (activeSongId) selectSlide(0); 
-        }
+        function triggerFirstSlide() { if (activeSongId) selectSlide(0); }
 
         function setBackground(type, value) {
             currentBackground = { type, value };
@@ -473,14 +671,91 @@
         }
 
         function sendClear(action) {
-            if (action === 'logo') { isLogoActive = !isLogoActive; isBlackActive = false; }
-            else if (action === 'instrumental') {isInstrumentalActive = !isInstrumentalActive; isLogoActive = false; isBlackActive = false; }
-            else if (action === 'black') { isBlackActive = !isBlackActive; isLogoActive = false; }
-            else if (action === 'clear') { isLogoActive = false; isBlackActive = false; }
+            if (action === 'logo') { isLogoActive = !isLogoActive; isBlackActive = false; isInstrumentalActive = false; }
+            else if (action === 'instrumental') { isInstrumentalActive = !isInstrumentalActive; isLogoActive = false; isBlackActive = false; }
+            else if (action === 'black') { isBlackActive = !isBlackActive; isLogoActive = false; isInstrumentalActive = false; }
+            else if (action === 'clear') { isLogoActive = false; isBlackActive = false; isInstrumentalActive = false; }
             broadcastState();
         }
 
         function sendStageMessage() { broadcastState(); }
+
+        function openExportModal() {
+            if (!activeSongId) return;
+            exportSpecificSong(activeSongId);
+        }
+
+        function exportSpecificSong(songId) {
+            const song = songs.find(s => s.id === songId);
+            if (!song) return;
+            document.getElementById('exportJsonTextarea').value = JSON.stringify(song, null, 2);
+            document.getElementById('exportModal').classList.remove('hidden');
+        }
+
+        function closeExportModal() { document.getElementById('exportModal').classList.add('hidden'); }
+
+        function copyExportJson() {
+            const textarea = document.getElementById('exportJsonTextarea');
+            textarea.select();
+            document.execCommand('copy');
+            alert('Song JSON sequence copied to clipboard!');
+        }
+
+        function downloadSongJson() {
+            const songJson = document.getElementById('exportJsonTextarea').value;
+            if (!songJson) return;
+            const parsed = JSON.parse(songJson);
+            const blob = new Blob([songJson], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${parsed.title || 'song'}-worship-sequence.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function openImportModal() {
+            document.getElementById('importJsonTextarea').value = '';
+            document.getElementById('importFileInput').value = '';
+            document.getElementById('importModal').classList.remove('hidden');
+        }
+
+        function closeImportModal() { document.getElementById('importModal').classList.add('hidden'); }
+
+        function handleFileImport(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('importJsonTextarea').value = e.target.result;
+            };
+            reader.readAsText(file);
+        }
+
+        function processJsonImport() {
+            const rawJson = document.getElementById('importJsonTextarea').value.trim();
+            if (!rawJson) { alert('Please paste or select a JSON file to import.'); return; }
+
+            try {
+                const importedSong = JSON.parse(rawJson);
+                if (!importedSong.title || !importedSong.sections) {
+                    throw new Error('Invalid YA Worship song format.');
+                }
+
+                importedSong.id = 'song-' + Date.now();
+                songs.push(importedSong);
+                playlist.push(importedSong.id);
+
+                saveToLocalStorage();
+                renderSongList();
+                renderPlaylist();
+                closeImportModal();
+                selectSong(importedSong.id);
+                alert(`Successfully imported: "${importedSong.title}"!`);
+            } catch (err) {
+                alert('Failed to import song. Please check if the JSON data is valid.');
+            }
+        }
 
         function openSongEditorModal(songId = null) {
             const modal = document.getElementById('songEditorModal');
@@ -518,10 +793,10 @@
             return `
                 <div class="section-row bg-slate-950 border border-slate-800 rounded-lg p-3 space-y-2">
                     <div class="flex items-center justify-between">
-                        <input type="text" value="${type}" class="sec-type bg-slate-900 border border-slate-700 rounded px-2 py-1 text-xs font-bold text-indigo-400 w-36 focus:outline-none">
+                        <input type="text" value="${type}" class="sec-type bg-slate-900 border border-slate-700 rounded px-2 py-1 text-xs font-bold text-[#ffcd00] w-36 focus:outline-none">
                         <button onclick="this.closest('.section-row').remove()" class="text-xs text-rose-400 hover:text-rose-300"><i class="fa-solid fa-trash"></i></button>
                     </div>
-                    <textarea rows="3" class="sec-lyrics w-full bg-slate-900 border border-slate-800 rounded p-2 text-xs text-slate-200 focus:outline-none focus:border-indigo-500">${lyrics}</textarea>
+                    <textarea rows="3" class="sec-lyrics w-full bg-slate-900 border border-slate-800 rounded p-2 text-xs text-slate-200 focus:outline-none focus:border-[#ffcd00]">${lyrics}</textarea>
                 </div>
             `;
         }
@@ -576,13 +851,13 @@
             if (view === 'sidebar') {
                 sidebarPane.classList.remove('hidden');
                 workspacePane.classList.add('hidden');
-                navSidebar.className = "flex-1 py-2.5 text-indigo-400 border-b-2 border-indigo-500 text-center";
+                navSidebar.className = "flex-1 py-2.5 text-[#ffcd00] border-b-2 border-[#ffcd00] text-center";
                 navWorkspace.className = "flex-1 py-2.5 text-slate-400 border-b-2 border-transparent text-center";
             } else {
                 sidebarPane.classList.add('hidden');
                 workspacePane.classList.remove('hidden');
                 workspacePane.classList.add('flex');
-                navWorkspace.className = "flex-1 py-2.5 text-indigo-400 border-b-2 border-indigo-500 text-center";
+                navWorkspace.className = "flex-1 py-2.5 text-[#ffcd00] border-b-2 border-[#ffcd00] text-center";
                 navSidebar.className = "flex-1 py-2.5 text-slate-400 border-b-2 border-transparent text-center";
             }
         }
