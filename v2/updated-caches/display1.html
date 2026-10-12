@@ -47,10 +47,36 @@
         0%, 100% { transform: translate(0px, 0px) scale(1); }
         50% { transform: translate(-90px, 70px) scale(0.85); }
     }
+    #particleCanvas {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 2;
+    }
     /* Persistent Title Card Sliding Animations */
     #persistentTitleCard {
         transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease-in-out;
     }
+
+    #displayBackgroundContainer {
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* Background transition crossfade layer */
+    #displayBackgroundContainer::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: inherit;
+        opacity: 0;
+        transition: opacity 1.2s ease-in-out;
+        pointer-events: none;
+        z-index: 0;
+    }
+
     .title-card-hidden {
         transform: translateX(120%) translateY(0) !important;
         opacity: 0 !important;
@@ -162,10 +188,16 @@
     </div>
 
     <!-- Main Presentation Screen Area -->
-    <div id="displayBackgroundContainer" class="flex-1 relative flex items-center justify-center p-12 overflow-hidden transition-all duration-700 animated-bg" style="background: linear-gradient(-45deg, #181402, #3d3200, #574800, #181402);">
-        
-        <div class="ambient-orb-1"></div>
-        <div class="ambient-orb-2"></div>
+    <div id="displayBackgroundContainer" class="flex-1 relative flex items-center justify-center p-12 overflow-hidden animated-bg" style="background: linear-gradient(-45deg, #181402, #3d3200, #574800, #181402);">
+    
+    <!-- Background Layer 2 (Crossfade Target) -->
+    <div id="bgTransitionLayer" class="absolute inset-0 opacity-0 transition-opacity duration-1000 pointer-events-none" style="background: linear-gradient(-45deg, #181402, #3d3200, #574800, #181402);"></div>
+
+    <!-- Particle Engine Canvas -->
+    <canvas id="particleCanvas"></canvas>
+
+    <div class="ambient-orb-1"></div>
+    <div class="ambient-orb-2"></div>
 
         <!-- YA Worship Logo View State -->
         <div id="displayLogoState" class="absolute inset-0 flex flex-col items-center justify-center bg-slate-950 z-20 transition-opacity duration-500 hidden p-8">
@@ -290,12 +322,34 @@
             const stageMsgBar = document.getElementById('displayStageMsgBar');
             const stageMsgText = document.getElementById('displayStageMsgText');
 
-            if (state.currentBackground.type === 'animated-gradient') {
-                bgContainer.style.background = state.currentBackground.value;
-                bgContainer.classList.add('animated-bg');
-            } else if (state.currentBackground.type === 'solid') {
-                bgContainer.style.background = state.currentBackground.value;
-                bgContainer.classList.remove('animated-bg');
+            if (state.currentBackground) {
+                const newBgValue = state.currentBackground.value;
+                const transitionLayer = document.getElementById('bgTransitionLayer');
+
+                // If the background value changed, perform a smooth crossfade
+                if (bgContainer.dataset.currentBg !== newBgValue) {
+                    bgContainer.dataset.currentBg = newBgValue;
+
+                    // Set the new gradient onto the transition layer while it's hidden
+                    transitionLayer.style.background = newBgValue;
+                    
+                    // Fade it in smoothly
+                    transitionLayer.style.opacity = '1';
+
+                    setTimeout(() => {
+                        // Apply it to the main container behind the scenes, then reset the transition layer
+                        bgContainer.style.background = newBgValue;
+                        transitionLayer.style.opacity = '0';
+                    }, 1000); // Matches the 1s duration
+
+                    if (state.currentBackground.type === 'animated-gradient') {
+                        bgContainer.classList.add('animated-bg');
+                        transitionLayer.classList.add('animated-bg');
+                    } else {
+                        bgContainer.classList.remove('animated-bg');
+                        transitionLayer.classList.remove('animated-bg');
+                    }
+                }
             }
 
             if (state.isLogoActive) {
@@ -339,6 +393,12 @@
                     persistentTitleCard.classList.remove('title-card-hidden');
             }
             
+            // Handle Particle Style Updates
+            if (state.currentBackground && state.currentBackground.particleMode) {
+                if (particleMode !== state.currentBackground.particleMode) {
+                    initParticles(state.currentBackground.particleMode);
+                }
+            }
 
             if (state.stageMessage && state.stageMessage.trim() !== '') {
                 stageMsgText.textContent = state.stageMessage;
@@ -381,6 +441,81 @@
         function hideStageMessage() {
             document.getElementById('displayStageMsgBar').classList.add('-translate-y-full');
         }
+
+        // --- Enhanced Particle Background Engine ---
+        const canvas = document.getElementById('particleCanvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        let particleMode = 'smooth'; // 'smooth', 'fast', 'flickery'
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        function initParticles(mode) {
+            particleMode = mode;
+            particles = [];
+            let count = 45;
+            if (mode === 'fast') count = 75;
+            if (mode === 'flickery') count = 60;
+
+            for (let i = 0; i < count; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: mode === 'fast' ? Math.random() * 3.5 + 1.5 : Math.random() * 3 + 1,
+                    speedY: mode === 'fast' ? -(Math.random() * 3 + 1.5) : (mode === 'smooth' ? -(Math.random() * 0.5 + 0.2) : -(Math.random() * 1 + 0.5)),
+                    speedX: (Math.random() - 0.5) * (mode === 'fast' ? 1.2 : 0.4),
+                    opacity: Math.random() * 0.7 + 0.3,
+                    flickerSpeed: Math.random() * 0.05 + 0.01 // For flickering starry effect
+                });
+            }
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.y += p.speedY;
+                p.x += p.speedX;
+
+                // Handle Flickering effect
+                if (particleMode === 'flickery') {
+                    p.opacity += (Math.random() - 0.5) * 0.1;
+                    if (p.opacity > 0.9) p.opacity = 0.9;
+                    if (p.opacity < 0.1) p.opacity = 0.1;
+                }
+
+                // Wrap around screen edges
+                if (p.y < -10) p.y = canvas.height + 10;
+                if (p.x < 0) p.x = canvas.width;
+                if (p.x > canvas.width) p.x = 0;
+
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                
+                if (particleMode === 'fast') {
+                    ctx.fillStyle = `rgba(255, 220, 50, ${p.opacity})`;
+                    ctx.shadowBlur = 12;
+                    ctx.shadowColor = '#ffcd00';
+                } else if (particleMode === 'flickery') {
+                    ctx.fillStyle = `rgba(255, 255, 255, ${p.opacity})`;
+                    ctx.shadowBlur = 15;
+                    ctx.shadowColor = '#ffffff';
+                } else {
+                    // Smooth
+                    ctx.fillStyle = `rgba(255, 205, 0, ${p.opacity * 0.6})`;
+                    ctx.shadowBlur = 6;
+                    ctx.shadowColor = '#ffcd00';
+                }
+                ctx.fill();
+            });
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+        initParticles('smooth');
     </script>
 </body>
 </html>
