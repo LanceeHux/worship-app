@@ -4,55 +4,134 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ProPresenter - Display Output (Device A)</title>
-    <!-- Tailwind CSS CDN for styling -->
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome for icons -->
+    <!-- FontAwesome icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Cinzel:wght@600;700&family=Playfair+Display:wght@600;700&family=EB+Garamond:wght@600;700&family=Inter:wght@500;700&display=swap" rel="stylesheet">
+    
     <style>
-        .font-presentation { font-family: 'Montserrat', sans-serif; }
+        .font-montserrat { font-family: 'Montserrat', sans-serif; }
+        .font-cinzel { font-family: 'Cinzel', serif; }
+        .font-playfair { font-family: 'Playfair Display', serif; }
+        .font-garamond { font-family: 'EB Garamond', serif; }
+        .font-inter { font-family: 'Inter', sans-serif; }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes curtainSweep {
+            0% { transform: translateX(-50%) scale(1); opacity: 0.3; }
+            50% { transform: translateX(50%) scale(1.2); opacity: 0.6; }
+            100% { transform: translateX(-50%) scale(1); opacity: 0.3; }
+        }
+
+        @keyframes floatOrb1 {
+            0%, 100% { transform: translate(0px, 0px) scale(1); }
+            50% { transform: translate(50px, -40px) scale(1.15); }
+        }
+
+        @keyframes floatOrb2 {
+            0%, 100% { transform: translate(0px, 0px) scale(1); }
+            50% { transform: translate(-60px, 50px) scale(0.9); }
+        }
+
+        .animated-bg {
+            background-size: 250% 250%;
+            animation: gradientShift 15s ease infinite;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .animated-bg::before {
+            content: '';
+            position: absolute;
+            inset: -50%;
+            background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 60%);
+            animation: curtainSweep 10s ease-in-out infinite alternate;
+            pointer-events: none;
+        }
+
+        .ambient-orb-1 {
+            position: absolute;
+            top: -10%;
+            left: -10%;
+            width: 50vw;
+            height: 50vw;
+            background: radial-gradient(circle, rgba(255, 205, 0, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: floatOrb1 12s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        .ambient-orb-2 {
+            position: absolute;
+            bottom: -10%;
+            right: -10%;
+            width: 60vw;
+            height: 60vw;
+            background: radial-gradient(circle, rgba(255, 180, 0, 0.12) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: floatOrb2 16s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes slideInRight {
+            0% { transform: translateX(100%); opacity: 0; }
+            100% { transform: translateX(0); opacity: 1; }
+        }
+
+        .title-card-enter {
+            animation: slideInRight 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
     </style>
 </head>
 <body class="bg-black h-full flex flex-col overflow-hidden select-none m-0 p-0">
 
-    <!-- Connection Setup Modal -->
+    <!-- Connection Setup Modal with QR Code -->
     <div id="connectionModal" class="fixed inset-0 bg-slate-950/95 backdrop-blur-md z-50 flex items-center justify-center p-6">
-        <div class="bg-slate-900 border border-slate-800 w-full max-w-lg rounded-2xl p-6 shadow-2xl text-slate-100 space-y-4">
-            <div class="flex items-center space-x-3">
-                <div class="bg-emerald-600 p-3 rounded-xl text-white">
-                    <i class="fa-solid fa-desktop text-xl"></i>
+        <div class="bg-slate-900 border border-slate-800 w-full max-w-sm rounded-2xl p-6 shadow-2xl text-slate-100 space-y-4 text-center">
+            <div class="flex items-center justify-center space-x-2">
+                <div class="relative flex items-center justify-center w-8 h-8 rounded-full border-2 border-[#ffcd00] bg-slate-950 shadow-md shrink-0">
+                    <span class="font-montserrat font-black text-[10px] text-[#ffcd00] tracking-tighter italic">YA</span>
                 </div>
-                <div>
-                    <h2 class="font-bold text-base text-slate-100">Display Station (Device A)</h2>
-                    <p class="text-xs text-slate-400">Establish local peer-to-peer connection with Controller (Device B)</p>
-                </div>
+                <h2 class="font-bold text-base text-slate-100">Display Station Pairing</h2>
             </div>
 
-            <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-3">
+            <!-- QR Code Canvas Container -->
+            <div class="bg-white p-4 rounded-xl inline-block shadow-inner mx-auto my-2 border-4 border-[#ffcd00]">
+                <div id="qrcodeCanvas"></div>
+            </div>
+
+            <p class="text-xs text-slate-300">Scan this QR Code using the controller device to pair instantly.</p>
+
+            <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-1 text-left">
                 <div class="flex items-center justify-between">
-                    <span class="text-xs font-semibold text-slate-300">Your Connection Code (Display ID):</span>
-                    <button onclick="copyDisplayCode()" class="text-xs text-indigo-400 hover:text-indigo-300 font-semibold"><i class="fa-solid fa-copy mr-1"></i>Copy Code</button>
+                    <span class="text-[11px] font-semibold text-slate-400">Display ID Code:</span>
+                    <button onclick="copyDisplayCode()" class="text-[11px] text-[#ffcd00] hover:underline font-semibold"><i class="fa-solid fa-copy mr-1"></i>Copy</button>
                 </div>
-                <div id="displayCodeBox" class="bg-slate-900 border border-slate-700 rounded-lg p-3 font-mono text-xs text-emerald-400 break-all select-all">
-                    Generating code...
+                <div id="displayCodeBox" class="bg-slate-900 border border-slate-700 rounded-lg p-2 font-mono text-[11px] text-emerald-400 break-all select-all">
+                    Generating...
                 </div>
-                <p class="text-[11px] text-slate-500">Provide this code to your Controller device to pair instantly over the local network.</p>
             </div>
 
-            <div id="connectionStatus" class="flex items-center space-x-2 text-xs text-amber-400 bg-amber-500/10 p-3 rounded-lg border border-amber-500/20">
+            <div id="connectionStatus" class="flex items-center justify-center space-x-2 text-xs text-amber-400 bg-amber-500/10 p-2.5 rounded-lg border border-amber-500/20">
                 <i class="fa-solid fa-circle-notch animate-spin"></i>
                 <span>Waiting for Controller to connect...</span>
             </div>
 
-            <div class="flex justify-end pt-2">
-                <button onclick="skipConnectionModalForLocalTest()" class="text-xs text-slate-400 hover:text-slate-200 underline">Test Display Locally / Skip</button>
+            <div class="pt-1">
+                <button onclick="skipConnectionModalForLocalTest()" class="text-xs text-slate-500 hover:text-slate-300 underline">Standalone / Test Display</button>
             </div>
         </div>
     </div>
 
     <!-- Stage Message Overlay Bar (Top) -->
-    <div id="displayStageMsgBar" class="absolute top-0 inset-x-0 bg-amber-500 text-slate-950 px-8 py-3 font-bold text-base tracking-wide z-20 transform -translate-y-full transition-transform duration-300 flex items-center justify-between shadow-2xl">
+    <div id="displayStageMsgBar" class="absolute top-0 inset-x-0 bg-[#ffcd00] text-slate-950 px-8 py-3 font-bold text-base tracking-wide z-30 transform -translate-y-full transition-transform duration-300 flex items-center justify-between shadow-2xl">
         <div class="flex items-center space-x-3">
             <i class="fa-solid fa-bullhorn text-lg"></i>
             <span id="displayStageMsgText">Stage Notice</span>
@@ -61,137 +140,135 @@
     </div>
 
     <!-- Main Presentation Screen Area -->
-    <div id="displayBackgroundContainer" class="flex-1 relative flex items-center justify-center p-12 overflow-hidden transition-all duration-700" style="background: #0f172a;">
-        <!-- Background Image Overlay -->
-        <div id="displayBgImageOverlay" class="absolute inset-0 bg-cover bg-center opacity-40 pointer-events-none transition-opacity duration-500" style="display: none;"></div>
+    <div id="displayBackgroundContainer" class="flex-1 relative flex items-center justify-center p-12 overflow-hidden transition-all duration-700 animated-bg" style="background: linear-gradient(-45deg, #181402, #3d3200, #574800, #181402);">
         
-        <!-- Logo View State -->
-        <div id="displayLogoState" class="absolute inset-0 flex flex-col items-center justify-center bg-slate-950 z-10 transition-opacity duration-500 hidden">
-            <div class="bg-indigo-600 p-8 rounded-3xl text-white shadow-2xl mb-4 animate-bounce">
-                <i class="fa-solid fa-church text-6xl"></i>
+        <div class="ambient-orb-1"></div>
+        <div class="ambient-orb-2"></div>
+
+        <!-- YA Worship Logo View State -->
+        <div id="displayLogoState" class="absolute inset-0 flex flex-col items-center justify-center bg-slate-950 z-20 transition-opacity duration-500 hidden p-8">
+            <div class="relative flex items-center justify-center w-48 h-48 md:w-64 md:h-64 rounded-full border-4 border-[#ffcd00] p-4 shadow-[0_0_50px_rgba(255,205,0,0.3)] bg-gradient-to-br from-amber-950 via-slate-900 to-slate-950 mb-6">
+                <div class="flex flex-col items-center justify-center text-center">
+                    <span class="font-montserrat font-black text-6xl md:text-8xl text-[#ffcd00] tracking-tighter leading-none italic drop-shadow-lg">YA</span>
+                    <span class="text-[10px] md:text-xs font-bold text-amber-300 tracking-[0.25em] uppercase mt-2">Ministry</span>
+                </div>
             </div>
-            <h2 class="font-presentation text-3xl font-bold tracking-widest text-slate-100">WORSHIP SERVICE</h2>
-            <p class="text-xs text-slate-400 mt-2 uppercase tracking-widest">Welcome & Prepare Your Hearts</p>
+            <h2 class="font-montserrat text-3xl md:text-5xl font-black tracking-widest text-[#ffcd00] drop-shadow-lg">YA WORSHIP</h2>
+            <p class="text-xs md:text-sm text-slate-400 mt-2 uppercase tracking-[0.3em] font-medium">Welcome & Prepare Your Hearts</p>
         </div>
 
-        <!-- Black / Blank State -->
-        <div id="displayBlackState" class="absolute inset-0 bg-black z-10 transition-opacity duration-500 hidden"></div>
+        <!-- Black State -->
+        <div id="displayBlackState" class="absolute inset-0 bg-black z-20 transition-opacity duration-500 hidden"></div>
 
-        <!-- Main Lyrics Text Box -->
-        <div id="displayLyricsContainer" class="relative z-0 text-center max-w-6xl mx-auto px-4 transition-all duration-300 transform scale-100">
-            <h3 id="displaySectionLabel" class="text-indigo-400 font-bold uppercase tracking-widest text-sm md:text-base mb-4 opacity-90"></h3>
-            <p id="displayLyricsText" class="font-presentation font-bold text-3xl md:text-5xl xl:text-6xl text-white leading-relaxed tracking-wide drop-shadow-[0_4px_16px_rgba(0,0,0,0.9)] whitespace-pre-line">
-                Waiting for Controller connection...<br>Pair with Device B to begin projection.
-            </p>
+        <!-- Main Lyrics Box -->
+        <div id="displayLyricsContainer" class="relative z-10 text-center max-w-6xl mx-auto px-4 space-y-3">
+            <h3 id="displaySectionLabel" class="text-[#ffcd00] font-bold uppercase tracking-widest text-sm md:text-base mb-2 opacity-90"></h3>
+            <div id="displayLyricsLinesContainer" class="font-montserrat font-bold text-3xl md:text-5xl xl:text-6xl text-white tracking-wide drop-shadow-[0_4px_16px_rgba(0,0,0,0.9)] space-y-2">
+                <div>Waiting for Controller connection...</div>
+                <div>Scan QR Code with Device B to begin.</div>
+            </div>
         </div>
     </div>
 
     <!-- Footer Status Bar -->
-    <div class="bg-slate-950 border-t border-slate-900 px-6 py-2.5 flex items-center justify-between text-xs text-slate-500 z-20">
+    <div class="bg-slate-950 border-t border-slate-900 px-6 py-2.5 flex items-center justify-between text-xs text-slate-500 z-30">
         <div class="flex items-center space-x-2">
             <span id="connectionIndicatorDot" class="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse"></span>
             <span id="connectionIndicatorText">Waiting for connection...</span>
         </div>
         <div class="flex items-center space-x-4">
-            <button onclick="document.getElementById('connectionModal').classList.remove('hidden')" class="text-indigo-400 hover:text-indigo-300 underline">Show Connection Code</button>
+            <button onclick="document.getElementById('connectionModal').classList.remove('hidden')" class="text-[#ffcd00] hover:underline">Show QR / Code</button>
             <span>Press F11 for Fullscreen</span>
         </div>
     </div>
 
-    <!-- PeerJS CDN for offline local network P2P DataChannel -->
+    <!-- PeerJS CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.1/peerjs.min.js"></script>
+    <!-- QRCode.js CDN for Generating QR Code -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    
     <script>
         let peer = null;
         let conn = null;
+        let lastSlideKey = '';
 
         window.onload = function() {
             initPeer();
         };
 
         function initPeer() {
-            // Initialize Peer with random ID or let server assign one
-            peer = new Peer({
-                // Using free public signaling server; works completely offline if local PeerJS server is running, or standard STUN/TURN
-                debug: 1
-            });
-
+            peer = new Peer({ debug: 1 });
             peer.on('open', (id) => {
                 document.getElementById('displayCodeBox').textContent = id;
+                
+                // Render QR Code inside Canvas
+                document.getElementById('qrcodeCanvas').innerHTML = '';
+                new QRCode(document.getElementById('qrcodeCanvas'), {
+                    text: id,
+                    width: 160,
+                    height: 160,
+                    colorDark: "#020617",
+                    colorLight: "#ffffff",
+                    correctLevel: QRCode.CorrectLevel.H
+                });
             });
 
             peer.on('connection', (incomingConn) => {
                 conn = incomingConn;
                 setupConnectionHandlers();
             });
-
-            peer.on('error', (err) => {
-                console.error('Peer error:', err);
-                document.getElementById('connectionStatus').innerHTML = `<i class="fa-solid fa-triangle-exclamation text-rose-400 mr-2"></i><span class="text-rose-300">Connection notice: Ensure network is active or use local fallback.</span>`;
-            });
+            peer.on('error', (err) => { console.error('Peer error:', err); });
         }
 
         function setupConnectionHandlers() {
-            document.getElementById('connectionStatus').innerHTML = `<i class="fa-solid fa-check-circle text-emerald-400 mr-2"></i><span class="text-emerald-300">Connected to Controller successfully!</span>`;
+            document.getElementById('connectionStatus').innerHTML = `<i class="fa-solid fa-check-circle text-emerald-400 mr-2"></i><span class="text-emerald-300">Connected to Controller!</span>`;
             document.getElementById('connectionIndicatorDot').className = "w-2.5 h-2.5 rounded-full bg-emerald-500";
             document.getElementById('connectionIndicatorText').textContent = "Connected to Controller";
             
-            // Hide modal after successful connection
             setTimeout(() => {
                 document.getElementById('connectionModal').classList.add('hidden');
             }, 1000);
 
             conn.on('data', (data) => {
-                if (data.type === 'STATE_UPDATE') {
-                    renderDisplay(data.state);
-                }
+                if (data.type === 'STATE_UPDATE') renderDisplay(data.state);
             });
 
             conn.on('close', () => {
-                document.getElementById('connectionStatus').innerHTML = `<i class="fa-solid fa-triangle-exclamation text-amber-400 mr-2"></i><span class="text-amber-300">Controller disconnected. Waiting...</span>`;
+                document.getElementById('connectionStatus').innerHTML = `<i class="fa-solid fa-triangle-exclamation text-amber-400 mr-2"></i><span class="text-amber-300">Disconnected. Waiting...</span>`;
                 document.getElementById('connectionIndicatorDot').className = "w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse";
-                document.getElementById('connectionIndicatorText').textContent = "Disconnected - Waiting for reconnect";
+                document.getElementById('connectionIndicatorText').textContent = "Disconnected";
                 document.getElementById('connectionModal').classList.remove('hidden');
             });
         }
 
         function copyDisplayCode() {
             const code = document.getElementById('displayCodeBox').textContent;
-            const textarea = document.createElement('textarea');
-            textarea.value = code;
-            document.body.appendChild(textarea);
-            textarea.select();
-            document.execCommand('copy');
-            document.body.removeChild(textarea);
-            alert('Display ID copied to clipboard!');
+            navigator.clipboard.writeText(code);
+            alert('Display ID copied!');
         }
 
         function skipConnectionModalForLocalTest() {
             document.getElementById('connectionModal').classList.add('hidden');
-            document.getElementById('connectionIndicatorDot').className = "w-2.5 h-2.5 rounded-full bg-blue-500";
-            document.getElementById('connectionIndicatorText').textContent = "Standalone Test Mode";
         }
 
         function renderDisplay(state) {
             const bgContainer = document.getElementById('displayBackgroundContainer');
-            const bgImgOverlay = document.getElementById('displayBgImageOverlay');
             const logoState = document.getElementById('displayLogoState');
             const blackState = document.getElementById('displayBlackState');
             const sectionLabel = document.getElementById('displaySectionLabel');
-            const lyricsText = document.getElementById('displayLyricsText');
+            const lyricsLinesContainer = document.getElementById('displayLyricsLinesContainer');
+            const lyricsContainer = document.getElementById('displayLyricsContainer');
             const stageMsgBar = document.getElementById('displayStageMsgBar');
             const stageMsgText = document.getElementById('displayStageMsgText');
 
-            // Background styling
-            if (state.currentBackground.type === 'solid' || state.currentBackground.type === 'gradient') {
+            if (state.currentBackground.type === 'animated-gradient') {
                 bgContainer.style.background = state.currentBackground.value;
-                bgImgOverlay.style.display = 'none';
-            } else if (state.currentBackground.type === 'image') {
-                bgContainer.style.background = '#0f172a';
-                bgImgOverlay.style.display = 'block';
-                bgImgOverlay.style.backgroundImage = `url('${state.currentBackground.value}')`;
+                bgContainer.classList.add('animated-bg');
+            } else if (state.currentBackground.type === 'solid') {
+                bgContainer.style.background = state.currentBackground.value;
+                bgContainer.classList.remove('animated-bg');
             }
 
-            // State overlays (Logo / Black)
             if (state.isLogoActive) {
                 logoState.classList.remove('hidden');
                 blackState.classList.add('hidden');
@@ -203,7 +280,12 @@
                 blackState.classList.add('hidden');
             }
 
-            // Stage Message
+            if (state.isInstrumentalActive) {
+                lyricsContainer.style.opacity = '0';
+            } else {
+                if (!state.isLogoActive && !state.isBlackActive) lyricsContainer.style.opacity = '1';
+            }
+
             if (state.stageMessage && state.stageMessage.trim() !== '') {
                 stageMsgText.textContent = state.stageMessage;
                 stageMsgBar.classList.remove('-translate-y-full');
@@ -211,14 +293,43 @@
                 stageMsgBar.classList.add('-translate-y-full');
             }
 
-            // Lyrics & Section
-            if (state.activeSong && state.activeSong.sections && state.activeSong.sections[state.activeSlideIndex]) {
-                const sec = state.activeSong.sections[state.activeSlideIndex];
-                sectionLabel.textContent = sec.type;
-                lyricsText.textContent = sec.lyrics;
-            } else {
-                sectionLabel.textContent = '';
-                lyricsText.textContent = 'Ready for projection';
+            let selectedFontClass = state.activeSong?.fontFamily || 'font-montserrat';
+            const currentSlideKey = `${state.activeSong?.title || ''}-${state.activeSlideIndex}`;
+            
+            if (currentSlideKey !== lastSlideKey) {
+                lyricsContainer.style.transition = 'opacity 0.25s ease-out';
+                lyricsContainer.style.opacity = '0';
+
+                setTimeout(() => {
+                    if (state.flattenedSlides && state.flattenedSlides[state.activeSlideIndex]) {
+                        const currentSlide = state.flattenedSlides[state.activeSlideIndex];
+                        lyricsContainer.classList.remove('title-card-enter');
+
+                        if (currentSlide.isTitleCard) {
+                            lyricsContainer.className = "absolute top-12 right-12 z-10 text-right max-w-2xl px-6 title-card-enter space-y-2";
+                            sectionLabel.textContent = "NOW PLAYING";
+                            sectionLabel.className = "text-[#ffcd00] font-bold uppercase tracking-widest text-xs md:text-sm mb-1 opacity-90 text-right";
+                            
+                            lyricsLinesContainer.className = `font-bold text-2xl md:text-4xl text-white tracking-wide drop-shadow-[0_4px_16px_rgba(0,0,0,0.9)] space-y-1 ${selectedFontClass}`;
+                            lyricsLinesContainer.innerHTML = `
+                                <div class="text-amber-200 drop-shadow-xl">${currentSlide.lyrics}</div>
+                                <div class="text-sm md:text-lg text-slate-300 font-light tracking-widest uppercase opacity-90">${state.activeSong?.artist || ''}</div>
+                            `;
+                        } else {
+                            lyricsContainer.className = "relative z-10 text-center max-w-6xl mx-auto px-4 space-y-3";
+                            sectionLabel.textContent = "";
+                            lyricsLinesContainer.className = `font-bold text-3xl md:text-5xl xl:text-6xl text-white tracking-wide drop-shadow-[0_4px_16px_rgba(0,0,0,0.9)] space-y-2 ${selectedFontClass}`;
+                            lyricsLinesContainer.innerHTML = `<div>${currentSlide.lyrics}</div>`;
+                        }
+
+                        setTimeout(() => {
+                            lyricsContainer.style.transition = 'opacity 0.35s ease-in';
+                            lyricsContainer.style.opacity = '1';
+                        }, 50);
+                    }
+                }, 250);
+
+                lastSlideKey = currentSlideKey;
             }
         }
 
