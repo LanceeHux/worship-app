@@ -145,6 +145,7 @@
                 <div class="flex items-center space-x-1.5 shrink-0">
                     <button onclick="sendClear('logo')" class="px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 text-[11px] font-medium transition">Logo</button>
                     <button onclick="sendClear('instrumental')" class="px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 text-[11px] font-medium transition" title="Fade lyrics for instrumental moments">Inst</button>
+                    <button onclick="sendClear('f4')" id="btnF4Toggle" class="px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 text-[11px] font-medium transition" title="Press F4 to toggle lyrics fade">F4</button>
                     <button onclick="sendClear('black')" class="px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 text-[11px] font-medium transition">Clear</button>
                     <button onclick="sendClear('clear')" class="px-2 py-1 rounded bg-rose-600/20 hover:bg-rose-600/30 text-rose-300 border border-rose-500/30 text-[11px] font-medium transition">Reset</button>
                 </div>
@@ -387,6 +388,7 @@
         let isLogoActive = false;
         let isBlackActive = false;
         let isInstrumentalActive = false;
+        let isF4Active = false;
         let flattenedSlides = [];
 
         let peer = null;
@@ -400,6 +402,13 @@
             if (playlist.length > 0) selectSong(playlist[0]);
             initPeer();
         };
+
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'F4') {
+                e.preventDefault(); // Prevent browser default F4 behavior if any
+                sendClear('f4');
+            }
+        });
 
         function initPeer() {
             peer = new Peer({ debug: 1 });
@@ -465,7 +474,8 @@
                     stageMessage: document.getElementById('stageMessageInput').value,
                     isLogoActive,
                     isBlackActive,
-                    isInstrumentalActive
+                    isInstrumentalActive,
+                    isF4Active
                 };
                 conn.send({ type: 'STATE_UPDATE', state });
             }
@@ -673,6 +683,10 @@
         function sendClear(action) {
             if (action === 'logo') { isLogoActive = !isLogoActive; isBlackActive = false; isInstrumentalActive = false; }
             else if (action === 'instrumental') { isInstrumentalActive = !isInstrumentalActive; isLogoActive = false; isBlackActive = false; }
+            else if (action === 'f4') { isF4Active = !isF4Active; const btn = document.getElementById('btnF4Toggle'); if (isF4Active) { btn.className = "px-2 py-1 rounded bg-[#ffcd00] text-slate-950 font-bold text-[11px] transition shadow"; } else {
+            btn.className = "px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 text-[11px] font-medium transition";
+        }
+    }
             else if (action === 'black') { isBlackActive = !isBlackActive; isLogoActive = false; isInstrumentalActive = false; }
             else if (action === 'clear') { isLogoActive = false; isBlackActive = false; isInstrumentalActive = false; }
             broadcastState();
