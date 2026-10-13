@@ -1,38 +1,21 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full">
+<html lang="en" style="height: 100%;">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ProPresenter - Controller Suite (Device B)</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Expanded Google Fonts Collection -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=EB+Garamond:wght@600;700&family=Inter:wght@500;700&family=Lato:wght@700&family=Lora:ital,wght@0,600;1,600&family=Montserrat:wght@600;700;800&family=Oswald:wght@600;700&family=Playfair+Display:wght@600;700&family=Poppins:wght@600;700&family=Roboto+Slab:wght@700&display=swap" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        presentation: ['Montserrat', 'sans-serif']
-                    },
-                    colors: {
-                        brand: {
-                            500: '#ffcd00',
-                            600: '#e5b800',
-                            400: '#ffd633'
-                        }
-                    }
-                }
-            }
-        }
-    </script>
+    
     <style>
+      /* Compact Offline Custom Stylesheet */
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      body { background-color: #020617; color: #f1f5f9; height: 100%; display: flex; flex-direction: column; overflow: hidden; font-family: 'Inter', sans-serif; user-select: none; }
+
       /* Church Typography Font Definitions */
       .font-montserrat { font-family: 'Montserrat', sans-serif; }
       .font-cinzel { font-family: 'Cinzel', serif; }
@@ -44,178 +27,193 @@
       .font-lato { font-family: 'Lato', sans-serif; }
       .font-lora { font-family: 'Lora', serif; }
       .font-robotoslab { font-family: 'Roboto Slab', serif; }
-        body { font-family: 'Inter', sans-serif; }
-        .slide-card:hover { transform: translateY(-2px); transition: all 0.2s ease; }
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: #1e293b; }
-        ::-webkit-scrollbar-thumb { background: #475569; border-radius: 3px; }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      .font-presentation { font-family: 'Montserrat', sans-serif; }
+
+      .slide-card:hover { transform: translateY(-2px); transition: all 0.2s ease; }
+      ::-webkit-scrollbar { width: 6px; height: 6px; }
+      ::-webkit-scrollbar-track { background: #1e293b; }
+      ::-webkit-scrollbar-thumb { background: #475569; border-radius: 3px; }
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+      /* UI Component Classes */
+      .header-bar { background-color: #0f172a; border-bottom: 1px solid #1e293b; padding: 0.5rem 1rem; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; flex-shrink: 0; z-index: 30; gap: 0.5rem; }
+      .mobile-tabs { display: flex; background-color: #0f172a; border-bottom: 1px solid #1e293b; font-size: 0.75rem; font-weight: bold; flex-shrink: 0; }
+      .main-workspace { flex: 1; position: relative; overflow: hidden; display: flex; flex-direction: column; background-color: #020617; }
+      @media (min-width: 1024px) { .main-workspace { flex-direction: row; } }
+      
+      .sidebar-pane { width: 100%; background-color: rgba(15, 23, 42, 0.9); border-right: 1px solid #1e293b; display: flex; flex-direction: column; flex-shrink: 0; height: 100%; position: absolute; inset: 0; z-index: 20; transition: transform 0.3s ease; }
+      @media (min-width: 1024px) { .sidebar-pane { width: 20rem; position: relative; z-index: auto; } }
+
+      .workspace-pane { flex: 1; display: flex; flex-direction: column; height: 100%; overflow: hidden; background-color: #020617; position: absolute; inset: 0; z-index: 10; display: none; }
+      @media (min-width: 1024px) { .workspace-pane { position: relative; z-index: auto; display: flex; } }
+
+      .btn-brand { background-color: #ffcd00; color: #020617; font-weight: bold; border: none; cursor: pointer; transition: background 0.2s; }
+      .btn-brand:hover { background-color: #e5b800; }
+      .input-dark { background-color: #020617; border: 1px solid #1e293b; border-radius: 0.5rem; padding: 0.5rem 0.75rem; font-size: 0.75rem; color: #f1f5f9; outline: none; }
+      .input-dark:focus { border-color: #ffcd00; }
+      .modal-backdrop { position: fixed; inset: 0; background-color: rgba(2, 6, 23, 0.8); backdrop-filter: blur(4px); z-index: 50; display: flex; align-items: center; justify-content: center; padding: 1rem; }
+      .modal-card { background-color: #0f172a; border: 1px solid #1e293b; width: 100%; max-width: 28rem; border-radius: 1rem; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; }
+      .hidden-element { display: none !important; }
     </style>
 </head>
-<body class="bg-slate-950 text-slate-100 h-full flex flex-col overflow-hidden m-0 p-0">
+<body>
 
     <!-- Top Navigation & Connection Bar -->
-    <header class="bg-slate-900 border-b border-slate-800 px-4 py-2 flex flex-wrap items-center justify-between shrink-0 select-none z-30 gap-2">
-        <div class="flex items-center space-x-3">
-            <!-- Custom YA Emblem Logo next to Header -->
-            <div class="relative flex items-center justify-center w-10 h-10 rounded-full border-2 border-[#ffcd00] bg-slate-950 shadow-md shrink-0">
-                <span class="font-montserrat font-black text-xs text-[#ffcd00] tracking-tighter italic">YA</span>
+    <header class="header-bar">
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <div style="position: relative; display: flex; align-items: center; justify-content: center; width: 2.5rem; height: 2.5rem; border-radius: 9999px; border: 2px solid #ffcd00; background-color: #020617; flex-shrink: 0;">
+                <span class="font-montserrat" style="font-weight: 900; font-size: 0.75rem; color: #ffcd00; font-style: italic;">YA</span>
             </div>
             <div>
-                <h1 class="font-bold text-xs md:text-sm tracking-wide text-slate-100">YA WORSHIP <span class="text-[#ffcd00] font-light">CONTROLLER</span></h1>
-                <p class="text-[10px] md:text-xs text-slate-400">Live Lyrics Operator & Fellowship Suite</p>
+                <h1 style="font-weight: bold; font-size: 0.75rem; letter-spacing: 0.025em; color: #f1f5f9;">YA WORSHIP <span style="color: #ffcd00; font-weight: 300;">CONTROLLER</span></h1>
+                <p style="font-size: 10px; color: #94a3b8;">Live Lyrics Operator & Fellowship Suite</p>
             </div>
         </div>
 
-        <!-- Connection Status & Pair Modal Trigger -->
-        <div class="flex items-center space-x-2">
-            <div id="connectionBadge" class="hidden sm:flex items-center space-x-2 bg-amber-500/10 border border-amber-500/20 px-3 py-1.5 rounded-lg text-xs font-semibold text-amber-400">
-                <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <div id="connectionBadge" class="hidden-element" style="display: none; align-items: center; gap: 0.5rem; background-color: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.2); padding: 0.375rem 0.75rem; border-radius: 0.5rem; font-size: 0.75rem; font-weight: 600; color: #fbbf24;">
+                <span style="width: 0.5rem; height: 0.5rem; border-radius: 9999px; background-color: #f59e0b;" class="animate-pulse"></span>
                 <span id="connectionBadgeText">Disconnected</span>
             </div>
-            <button onclick="openConnectModal()" class="bg-[#ffcd00] hover:bg-[#e5b800] text-slate-950 px-3 py-1.5 rounded-lg text-xs font-bold transition shadow flex items-center space-x-1.5">
-                <i class="fa-solid fa-link"></i><span class="hidden xs:inline">Connect</span>
+            <button onclick="openConnectModal()" class="btn-brand" style="padding: 0.375rem 0.75rem; border-radius: 0.5rem; font-size: 0.75rem; display: flex; align-items: center; gap: 0.375rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);">
+                <i class="fa-solid fa-link"></i><span>Connect</span>
             </button>
         </div>
     </header>
 
     <!-- Mobile Navigation Toggle Tabs -->
-    <div class="lg:hidden flex bg-slate-900 border-b border-slate-800 text-xs font-bold shrink-0">
-        <button onclick="switchMobileView('sidebar')" id="mobileNavSidebar" class="flex-1 py-2.5 text-[#ffcd00] border-b-2 border-[#ffcd00] text-center"><i class="fa-solid fa-book-open mr-1"></i> Library & Queue</button>
-        <button onclick="switchMobileView('workspace')" id="mobileNavWorkspace" class="flex-1 py-2.5 text-slate-400 border-b-2 border-transparent text-center"><i class="fa-solid fa-photo-film mr-1"></i> Slides & Live</button>
+    <div class="mobile-tabs lg:hidden">
+        <button onclick="switchMobileView('sidebar')" id="mobileNavSidebar" style="flex: 1; padding: 0.625rem; color: #ffcd00; border-bottom: 2px solid #ffcd00; text-align: center; background: none; border-top: none; border-left: none; border-right: none; cursor: pointer;"><i class="fa-solid fa-book-open" style="margin-right: 0.25rem;"></i> Library & Queue</button>
+        <button onclick="switchMobileView('workspace')" id="mobileNavWorkspace" style="flex: 1; padding: 0.625rem; color: #94a3b8; border-bottom: 2px solid transparent; text-align: center; background: none; border-top: none; border-left: none; border-right: none; cursor: pointer;"><i class="fa-solid fa-photo-film" style="margin-right: 0.25rem;"></i> Slides & Live</button>
     </div>
 
     <!-- Main Controller Workspace -->
-    <main class="flex-1 relative overflow-hidden flex flex-col lg:flex-row bg-slate-950">
+    <main class="main-workspace">
         
         <!-- Left Sidebar: Song Library & Playlist -->
-        <aside id="mobileSidebarPane" class="w-full lg:w-80 bg-slate-900/90 border-r border-slate-800 flex flex-col shrink-0 h-full absolute inset-0 lg:relative z-20 lg:z-auto transition-transform">
-            <!-- Sidebar Header Tabs -->
-            <div class="flex border-b border-slate-800 bg-slate-900/50">
-                <button onclick="switchSidebarTab('library')" id="tabLibrary" class="flex-1 py-3 text-xs font-bold text-[#ffcd00] border-b-2 border-[#ffcd00] transition">
-                    <i class="fa-solid fa-book-open mr-1.5"></i> Song Library
+        <aside id="mobileSidebarPane" class="sidebar-pane">
+            <div style="display: flex; border-bottom: 1px solid #1e293b; background-color: rgba(15, 23, 42, 0.5);">
+                <button onclick="switchSidebarTab('library')" id="tabLibrary" style="flex: 1; padding: 0.75rem; font-size: 0.75rem; font-weight: bold; color: #ffcd00; border-bottom: 2px solid #ffcd00; background: none; border-top: none; border-left: none; border-right: none; cursor: pointer; transition: all 0.2s;">
+                    <i class="fa-solid fa-book-open" style="margin-right: 0.375rem;"></i> Song Library
                 </button>
-                <button onclick="switchSidebarTab('playlist')" id="tabPlaylist" class="flex-1 py-3 text-xs font-bold text-slate-400 hover:text-slate-200 border-b-2 border-transparent transition">
-                    <i class="fa-solid fa-list-check mr-1.5"></i> Queue (<span id="playlistCount">0</span>)
+                <button onclick="switchSidebarTab('playlist')" id="tabPlaylist" style="flex: 1; padding: 0.75rem; font-size: 0.75rem; font-weight: bold; color: #94a3b8; border-bottom: 2px solid transparent; background: none; border-top: none; border-left: none; border-right: none; cursor: pointer; transition: all 0.2s;">
+                    <i class="fa-solid fa-list-check" style="margin-right: 0.375rem;"></i> Queue (<span id="playlistCount">0</span>)
                 </button>
             </div>
 
             <!-- Tab 1: Library Content -->
-            <div id="sidebarLibrary" class="flex-1 flex flex-col overflow-hidden p-3 space-y-3">
-                <div class="flex items-center space-x-2">
-                    <div class="relative flex-1">
-                        <i class="fa-solid fa-search absolute left-3 top-2.5 text-slate-400 text-xs"></i>
-                        <input type="text" id="songSearch" placeholder="Search songs..." oninput="filterSongs()" class="w-full bg-slate-950 border border-slate-800 rounded-lg pl-8 pr-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-[#ffcd00]">
+            <div id="sidebarLibrary" style="flex: 1; display: flex; flex-direction: column; overflow: hidden; padding: 0.75rem; gap: 0.75rem;">
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <div style="position: relative; flex: 1;">
+                        <i class="fa-solid fa-search" style="position: absolute; left: 0.75rem; top: 0.625rem; color: #94a3b8; font-size: 0.75rem;"></i>
+                        <input type="text" id="songSearch" placeholder="Search songs..." oninput="filterSongs()" class="input-dark" style="width: 100%; padding-left: 2rem; padding-right: 0.75rem;">
                     </div>
-                    <button onclick="openSongEditorModal()" class="bg-[#ffcd00] hover:bg-[#e5b800] text-slate-950 px-2.5 py-2 rounded-lg text-xs font-bold transition shadow flex items-center space-x-1" title="Add New Song">
-                        <i class="fa-solid fa-plus"></i>
-                        <span class="hidden sm:inline">New</span>
+                    <button onclick="openSongEditorModal()" class="btn-brand" style="padding: 0.5rem 0.625rem; border-radius: 0.5rem; font-size: 0.75rem; display: flex; align-items: center; gap: 0.25rem;" title="Add New Song">
+                        <i class="fa-solid fa-plus"></i><span>New</span>
                     </button>
-                    <!-- Import Song Button -->
-                    <button onclick="openImportModal()" class="bg-slate-800 hover:bg-slate-700 text-[#ffcd00] px-2.5 py-2 rounded-lg text-xs font-bold transition shadow flex items-center space-x-1" title="Import Song Data">
+                    <button onclick="openImportModal()" style="background-color: #1e293b; color: #ffcd00; border: none; padding: 0.5rem 0.625rem; border-radius: 0.5rem; font-size: 0.75rem; cursor: pointer;" title="Import Song Data">
                         <i class="fa-solid fa-file-import"></i>
                     </button>
                 </div>
 
-                <div id="songListContainer" class="flex-1 overflow-y-auto space-y-1.5 pr-1"></div>
+                <div id="songListContainer" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 0.375rem; padding-right: 0.25rem;"></div>
             </div>
 
             <!-- Tab 2: Playlist Content -->
-            <div id="sidebarPlaylist" class="flex-1 flex flex-col overflow-hidden p-3 space-y-3 hidden">
-                <div class="flex items-center justify-between">
-                    <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Service Order</span>
-                    <button onclick="clearPlaylist()" class="text-xs text-rose-400 hover:text-rose-300 transition">Clear All</button>
+            <div id="sidebarPlaylist" class="hidden-element" style="flex: 1; display: flex; flex-direction: column; overflow: hidden; padding: 0.75rem; gap: 0.75rem;">
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                    <span style="font-size: 0.75rem; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em;">Service Order</span>
+                    <button onclick="clearPlaylist()" style="font-size: 0.75rem; color: #fb7185; background: none; border: none; cursor: pointer;">Clear All</button>
                 </div>
-                <div id="playlistContainer" class="flex-1 overflow-y-auto space-y-2 pr-1"></div>
+                <div id="playlistContainer" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 0.5rem; padding-right: 0.25rem;"></div>
             </div>
         </aside>
 
         <!-- Center: Slide Grid & Live Presentation View -->
-        <div id="mobileWorkspacePane" class="flex-1 flex flex-col h-full overflow-hidden bg-slate-950 absolute inset-0 lg:relative z-10 lg:z-auto hidden lg:flex">
+        <div id="mobileWorkspacePane" class="workspace-pane">
             
             <!-- Live Output Status Mini Bar -->
-            <div class="bg-slate-900 border-b border-slate-800 px-4 py-2 flex items-center justify-between shrink-0">
-                <div class="flex items-center space-x-3 truncate">
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded text-[10px] font-bold bg-[#ffcd00]/10 text-[#ffcd00] border border-[#ffcd00]/20 shrink-0">
-                        <span class="w-1.5 h-1.5 rounded-full bg-[#ffcd00] animate-pulse mr-1.5"></span> LIVE
+            <div style="background-color: #0f172a; border-bottom: 1px solid #1e293b; padding: 0.5rem 1rem; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;">
+                <div style="display: flex; align-items: center; gap: 0.75rem; overflow: hidden;">
+                    <span style="display: inline-flex; align-items: center; padding: 0.125rem 0.625rem; border-radius: 0.25rem; font-size: 10px; font-weight: bold; background-color: rgba(255,205,0,0.1); color: #ffcd00; border: 1px solid rgba(255,205,0,0.2); flex-shrink: 0;">
+                        <span style="width: 0.375rem; height: 0.375rem; border-radius: 9999px; background-color: #ffcd00; margin-right: 0.375rem;" class="animate-pulse"></span> LIVE
                     </span>
-                    <span id="currentActiveSongLabel" class="text-xs font-medium text-slate-300 truncate">No song selected</span>
+                    <span id="currentActiveSongLabel" style="font-size: 0.75rem; font-weight: 500; color: #cbd5e1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">No song selected</span>
                 </div>
-                <div class="flex items-center space-x-1.5 shrink-0">
-                    <button onclick="sendClear('logo')" class="px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 text-[11px] font-medium transition">Logo</button>
-                    <button onclick="sendClear('instrumental')" class="px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 text-[11px] font-medium transition" title="Fade lyrics for instrumental moments">Inst</button>
-                    <button onclick="sendClear('f4')" id="btnF4Toggle" class="px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 text-[11px] font-medium transition" title="Press F4 to toggle lyrics fade">F4</button>
-                    <button onclick="sendClear('black')" class="px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 text-[11px] font-medium transition">Clear</button>
-                    <button onclick="sendClear('clear')" class="px-2 py-1 rounded bg-rose-600/20 hover:bg-rose-600/30 text-rose-300 border border-rose-500/30 text-[11px] font-medium transition">Reset</button>
+                <div style="display: flex; align-items: center; gap: 0.375rem; flex-shrink: 0;">
+                    <button onclick="sendClear('logo')" style="padding: 0.25rem 0.5rem; border-radius: 0.25rem; background-color: #1e293b; color: #cbd5e1; border: none; font-size: 11px; cursor: pointer;">Logo</button>
+                    <button onclick="sendClear('instrumental')" style="padding: 0.25rem 0.5rem; border-radius: 0.25rem; background-color: #1e293b; color: #cbd5e1; border: none; font-size: 11px; cursor: pointer;" title="Fade lyrics for instrumental moments">Inst</button>
+                    <button onclick="sendClear('f4')" id="btnF4Toggle" style="padding: 0.25rem 0.5rem; border-radius: 0.25rem; background-color: #1e293b; color: #cbd5e1; border: none; font-size: 11px; cursor: pointer;" title="Press F4 to toggle lyrics fade">F4</button>
+                    <button onclick="sendClear('black')" style="padding: 0.25rem 0.5rem; border-radius: 0.25rem; background-color: #1e293b; color: #cbd5e1; border: none; font-size: 11px; cursor: pointer;">Clear</button>
+                    <button onclick="sendClear('clear')" style="padding: 0.25rem 0.5rem; border-radius: 0.25rem; background-color: rgba(225,29,72,0.2); color: #fda4af; border: 1px solid rgba(244,63,94,0.3); font-size: 11px; cursor: pointer;">Reset</button>
                 </div>
             </div>
 
             <!-- Main Slide Workspace -->
-            <div class="flex-1 flex flex-col overflow-hidden p-3 md:p-4">
-                <div class="flex items-center justify-between mb-2 shrink-0">
-                    <div class="min-w-0 pr-2">
-                        <h2 id="activeSongTitle" class="text-sm md:text-base font-bold text-slate-100 truncate">Select a song</h2>
-                        <p id="activeSongArtist" class="text-[11px] text-slate-400 truncate">Choose any song to view slides.</p>
+            <div style="flex: 1; display: flex; flex-direction: column; overflow: hidden; padding: 0.75rem 1rem;">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem; flex-shrink: 0;">
+                    <div style="min-width: 0; padding-right: 0.5rem;">
+                        <h2 id="activeSongTitle" style="font-size: 0.875rem; font-weight: bold; color: #f1f5f9; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Select a song</h2>
+                        <p id="activeSongArtist" style="font-size: 11px; color: #94a3b8; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Choose any song to view slides.</p>
                     </div>
-                    <div class="flex items-center space-x-2 shrink-0">
-                        <button onclick="triggerFirstSlide()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition">
-                            <i class="fa-solid fa-backward-step mr-1"></i> Start
+                    <div style="display: flex; align-items: center; gap: 0.5rem; flex-shrink: 0;">
+                        <button onclick="triggerFirstSlide()" style="background-color: #1e293b; color: #e2e8f0; border: none; padding: 0.375rem 0.625rem; border-radius: 0.5rem; font-size: 0.75rem; font-weight: 600; cursor: pointer;">
+                            <i class="fa-solid fa-backward-step" style="margin-right: 0.25rem;"></i> Start
                         </button>
-                        <!-- Export Song Button in Active Header -->
-                        <button onclick="openExportModal()" id="btnExportActive" class="bg-slate-800 hover:bg-slate-700 text-[#ffcd00] px-2.5 py-1.5 rounded-lg text-xs font-semibold transition hidden" title="Export Song Sequence">
-                            <i class="fa-solid fa-share-nodes mr-1"></i> Export
+                        <button onclick="openExportModal()" id="btnExportActive" class="hidden-element" style="background-color: #1e293b; color: #ffcd00; border: none; padding: 0.375rem 0.625rem; border-radius: 0.5rem; font-size: 0.75rem; font-weight: 600; cursor: pointer;" title="Export Song Sequence">
+                            <i class="fa-solid fa-share-nodes" style="margin-right: 0.25rem;"></i> Export
                         </button>
-                        <button onclick="editCurrentSong()" id="btnEditActive" class="bg-slate-800 hover:bg-slate-700 text-[#ffcd00] px-2.5 py-1.5 rounded-lg text-xs font-semibold transition hidden">
+                        <button onclick="editCurrentSong()" id="btnEditActive" class="hidden-element" style="background-color: #1e293b; color: #ffcd00; border: none; padding: 0.375rem 0.625rem; border-radius: 0.5rem; font-size: 0.75rem; font-weight: 600; cursor: pointer;">
                             <i class="fa-solid fa-pen-to-square"></i>
                         </button>
                     </div>
                 </div>
 
-                <!-- Quick Section Jump Bar for Mobile & Fast Transitions -->
-                <div id="quickJumpBar" class="hidden flex items-center space-x-1.5 overflow-x-auto py-2 mb-2 border-y border-slate-800/80 shrink-0 no-scrollbar">
-                    <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider shrink-0 mr-1"><i class="fa-solid fa-bolt text-[#ffcd00] mr-1"></i>Jump:</span>
-                    <div id="quickJumpButtons" class="flex items-center space-x-1.5 shrink-0"></div>
+                <!-- Quick Section Jump Bar -->
+                <div id="quickJumpBar" class="hidden-element no-scrollbar" style="display: flex; align-items: center; gap: 0.375rem; overflow-x: auto; padding: 0.5rem 0; margin-bottom: 0.5rem; border-top: 1px solid rgba(30,41,59,0.8); border-bottom: 1px solid rgba(30,41,59,0.8); flex-shrink: 0;">
+                    <span style="font-size: 10px; font-weight: bold; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; flex-shrink: 0; margin-right: 0.25rem;"><i class="fa-solid fa-bolt" style="color: #ffcd00; margin-right: 0.25rem;"></i>Jump:</span>
+                    <div id="quickJumpButtons" style="display: flex; align-items: center; gap: 0.375rem; flex-shrink: 0;"></div>
                 </div>
 
                 <!-- Slide Grid -->
-                <div id="slideGridContainer" class="flex-1 overflow-y-auto grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 pr-2 pb-20">
-                    <div class="col-span-full flex flex-col items-center justify-center text-center p-12 border-2 border-dashed border-slate-800 rounded-xl">
-                        <i class="fa-solid fa-music text-slate-600 text-4xl mb-3"></i>
-                        <h3 class="text-sm font-semibold text-slate-400">No Song Loaded</h3>
-                        <p class="text-xs text-slate-500 mt-1 max-w-sm">Pick a song from the library tab to view slides.</p>
+                <div id="slideGridContainer" style="flex: 1; overflow-y: auto; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem; padding-right: 0.5rem; padding-bottom: 5rem;">
+                    <div style="grid-column: span 2 / span 2; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 3rem; border: 2px dashed #1e293b; border-radius: 0.75rem;">
+                        <i class="fa-solid fa-music" style="color: #475569; font-size: 2.25rem; margin-bottom: 0.75rem;"></i>
+                        <h3 style="font-size: 0.75rem; font-weight: 600; color: #94a3b8;">No Song Loaded</h3>
+                        <p style="font-size: 0.75rem; color: #64748b; margin-top: 0.25rem; max-width: 20rem;">Pick a song from the library tab to view slides.</p>
                     </div>
                 </div>
             </div>
 
-           <!-- Bottom Control Bar (Two Independent Components) -->
-            <div class="bg-slate-900 border-t border-slate-800 p-2.5 shrink-0 flex flex-wrap items-center justify-between gap-3 select-none">
+            <!-- Bottom Control Bar -->
+            <div style="background-color: #0f172a; border-top: 1px solid #1e293b; padding: 0.625rem; flex-shrink: 0; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem;">
                 
                 <!-- Component 1: Particle Types Control -->
-                <div class="flex items-center space-x-2 overflow-x-auto py-1">
-                    <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider shrink-0"><i class="fa-solid fa-snowflake mr-1 text-[#ffcd00]"></i> Particles:</span>
-                    <div class="flex items-center space-x-1.5 shrink-0">
-                        <button onclick="setParticleMode('smooth')" class="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs text-slate-200 transition shadow">🍃 Smooth / Slow</button>
-                        <button onclick="setParticleMode('fast')" class="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs text-slate-200 transition shadow">⚡ Fast</button>
-                        <button onclick="setParticleMode('flickery')" class="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 border border-slate-700 text-xs text-slate-200 transition shadow">✨ Flickery</button>
+                <div style="display: flex; align-items: center; gap: 0.5rem; overflow-x: auto; padding: 0.25rem 0;">
+                    <span style="font-size: 11px; font-weight: bold; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; flex-shrink: 0;"><i class="fa-solid fa-snowflake" style="margin-right: 0.25rem; color: #ffcd00;"></i> Particles:</span>
+                    <div style="display: flex; align-items: center; gap: 0.375rem; flex-shrink: 0;">
+                        <button onclick="setParticleMode('smooth')" style="padding: 0.25rem 0.5rem; border-radius: 0.25rem; background-color: #1e293b; border: 1px solid #334155; font-size: 0.75rem; color: #e2e8f0; cursor: pointer;">🍃 Smooth / Slow</button>
+                        <button onclick="setParticleMode('fast')" style="padding: 0.25rem 0.5rem; border-radius: 0.25rem; background-color: #1e293b; border: 1px solid #334155; font-size: 0.75rem; color: #e2e8f0; cursor: pointer;">⚡ Fast</button>
+                        <button onclick="setParticleMode('flickery')" style="padding: 0.25rem 0.5rem; border-radius: 0.25rem; background-color: #1e293b; border: 1px solid #334155; font-size: 0.75rem; color: #e2e8f0; cursor: pointer;">✨ Flickery</button>
                     </div>
                 </div>
             
-                <!-- Component 2: Gradient Moving Colors Control -->
-                <div class="flex items-center space-x-2 overflow-x-auto py-1">
-                    <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider shrink-0"><i class="fa-solid fa-palette mr-1 text-[#ffcd00]"></i> Colors:</span>
-                    <div class="flex items-center space-x-1.5 shrink-0">
-                        <button onclick="setBackgroundGradient('linear-gradient(-45deg, #181402, #3d3200, #574800, #181402)')" class="px-2.5 py-1 rounded bg-[#ffcd00]/10 border border-[#ffcd00]/40 hover:scale-105 text-xs text-[#ffcd00] transition shadow">Golden</button>
-                        <button onclick="setBackgroundGradient('linear-gradient(-45deg, #3d1200, #78280f, #b45309, #1c0a00)')" class="px-2.5 py-1 rounded bg-amber-600/20 border border-amber-500/50 hover:scale-105 text-xs text-amber-300 transition shadow">Praise Fire</button>
-                        <button onclick="setBackgroundGradient('linear-gradient(-45deg, #0f172a, #312e81, #4c1d95, #0f172a)')" class="px-2.5 py-1 rounded bg-indigo-950 border border-indigo-500/50 hover:scale-105 text-xs text-indigo-200 transition shadow">Aurora</button>
-                        <button onclick="setBackgroundGradient('linear-gradient(-45deg, #022c22, #065f46, #0d9488, #0f172a)')" class="px-2.5 py-1 rounded bg-emerald-950 border border-emerald-500/50 hover:scale-105 text-xs text-emerald-200 transition shadow">Emerald</button>
-                        <button onclick="setBackgroundGradient('linear-gradient(-45deg, #581c87, #831843, #4c1d95, #0f172a)')" class="px-2.5 py-1 rounded bg-purple-950 border border-purple-500/50 hover:scale-105 text-xs text-purple-200 transition shadow">Velvet</button>
+                <!-- Component 2: Gradient Colors Control -->
+                <div style="display: flex; align-items: center; gap: 0.5rem; overflow-x: auto; padding: 0.25rem 0;">
+                    <span style="font-size: 11px; font-weight: bold; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; flex-shrink: 0;"><i class="fa-solid fa-palette" style="margin-right: 0.25rem; color: #ffcd00;"></i> Colors:</span>
+                    <div style="display: flex; align-items: center; gap: 0.375rem; flex-shrink: 0;">
+                        <button onclick="setBackgroundGradient('linear-gradient(-45deg, #181402, #3d3200, #574800, #181402)')" style="padding: 0.25rem 0.5rem; border-radius: 0.25rem; background-color: rgba(255,205,0,0.1); border: 1px solid rgba(255,205,0,0.4); font-size: 0.75rem; color: #ffcd00; cursor: pointer;">Golden</button>
+                        <button onclick="setBackgroundGradient('linear-gradient(-45deg, #3d1200, #78280f, #b45309, #1c0a00)')" style="padding: 0.25rem 0.5rem; border-radius: 0.25rem; background-color: rgba(217,119,6,0.2); border: 1px solid rgba(245,158,11,0.5); font-size: 0.75rem; color: #fde047; cursor: pointer;">Praise Fire</button>
+                        <button onclick="setBackgroundGradient('linear-gradient(-45deg, #0f172a, #312e81, #4c1d95, #0f172a)')" style="padding: 0.25rem 0.5rem; border-radius: 0.25rem; background-color: #1e1b4b; border: 1px solid rgba(99,102,241,0.5); font-size: 0.75rem; color: #c7d2fe; cursor: pointer;">Aurora</button>
+                        <button onclick="setBackgroundGradient('linear-gradient(-45deg, #022c22, #065f46, #0d9488, #0f172a)')" style="padding: 0.25rem 0.5rem; border-radius: 0.25rem; background-color: #022c22; border: 1px solid rgba(20,184,166,0.5); font-size: 0.75rem; color: #99f6e4; cursor: pointer;">Emerald</button>
+                        <button onclick="setBackgroundGradient('linear-gradient(-45deg, #581c87, #831843, #4c1d95, #0f172a)')" style="padding: 0.25rem 0.5rem; border-radius: 0.25rem; background-color: #3b0764; border: 1px solid rgba(168,85,247,0.5); font-size: 0.75rem; color: #e9d5ff; cursor: pointer;">Velvet</button>
                     </div>
                 </div>
             
-                <div class="flex items-center space-x-2 flex-1 max-w-xs">
-                    <input type="text" id="stageMessageInput" placeholder="Stage notice..." onkeydown="if(event.key==='Enter') sendStageMessage()" class="flex-1 bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1 text-xs text-slate-200 focus:outline-none focus:border-[#ffcd00]">
-                    <button onclick="sendStageMessage()" class="bg-[#ffcd00] hover:bg-[#e5b800] text-slate-950 px-2.5 py-1 rounded-lg text-xs font-bold shrink-0">Send</button>
+                <div style="display: flex; align-items: center; gap: 0.5rem; flex: 1; max-width: 20rem;">
+                    <input type="text" id="stageMessageInput" placeholder="Stage notice..." onkeydown="if(event.key==='Enter') sendStageMessage()" class="input-dark" style="flex: 1; padding: 0.375rem 0.625rem;">
+                    <button onclick="sendStageMessage()" class="btn-brand" style="padding: 0.375rem 0.75rem; border-radius: 0.5rem; font-size: 0.75rem; flex-shrink: 0;">Send</button>
                 </div>
             </div>
 
@@ -223,125 +221,122 @@
     </main>
 
     <!-- Connection Modal -->
-    <div id="connectModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-slate-900 border border-slate-800 w-full max-w-md rounded-2xl shadow-2xl p-6 space-y-4">
-            <div class="flex items-center justify-between">
-                <h3 class="text-base font-bold text-slate-100 flex items-center"><i class="fa-solid fa-link text-[#ffcd00] mr-2"></i>Connect to Display (Device A)</h3>
-                <button onclick="closeConnectModal()" class="text-slate-400 hover:text-slate-200"><i class="fa-solid fa-xmark text-lg"></i></button>
+    <div id="connectModal" class="modal-backdrop hidden-element">
+        <div class="modal-card">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+                <h3 style="font-size: 0.875rem; font-weight: bold; color: #f1f5f9; display: flex; align-items: center;"><i class="fa-solid fa-link" style="color: #ffcd00; margin-right: 0.5rem;"></i>Connect to Display (Device A)</h3>
+                <button onclick="closeConnectModal()" style="color: #94a3b8; background: none; border: none; cursor: pointer;"><i class="fa-solid fa-xmark" style="font-size: 1.125rem;"></i></button>
             </div>
             
-            <!-- Scan QR Button -->
-            <button onclick="startQrScanner()" class="w-full bg-slate-800 hover:bg-slate-700 text-[#ffcd00] border border-[#ffcd00]/30 py-2.5 rounded-lg text-xs font-bold transition flex items-center justify-center space-x-2">
-                <i class="fa-solid fa-qrcode text-sm"></i>
+            <button onclick="startQrScanner()" style="width: 100%; background-color: #1e293b; color: #ffcd00; border: 1px solid rgba(255,205,0,0.3); padding: 0.625rem; border-radius: 0.5rem; font-size: 0.75rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                <i class="fa-solid fa-qrcode" style="font-size: 0.875rem;"></i>
                 <span>Scan QR Code with Camera</span>
             </button>
 
-            <div class="relative flex py-1 items-center">
-                <div class="flex-grow border-t border-slate-800"></div>
-                <span class="flex-shrink mx-3 text-[10px] text-slate-500 uppercase font-semibold">Or Enter Display ID</span>
-                <div class="flex-grow border-t border-slate-800"></div>
+            <div style="display: flex; align-items: center; padding: 0.25rem 0;">
+                <div style="flex-grow: 1; border-top: 1px solid #1e293b;"></div>
+                <span style="flex-shrink: 0; margin: 0 0.75rem; font-size: 10px; color: #64748b; text-transform: uppercase; font-weight: 600;">Or Enter Display ID</span>
+                <div style="flex-grow: 1; border-top: 1px solid #1e293b;"></div>
             </div>
             
-            <div class="space-y-2">
-                <input type="text" id="targetPeerIdInput" placeholder="Paste Display ID here..." class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2.5 text-xs font-mono text-emerald-400 focus:outline-none focus:border-[#ffcd00]">
+            <div>
+                <input type="text" id="targetPeerIdInput" placeholder="Paste Display ID here..." class="input-dark" style="width: 100%; font-family: monospace; color: #34d399;">
             </div>
 
-            <div class="flex justify-end space-x-2 pt-2">
-                <button onclick="closeConnectModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2 rounded-lg text-xs font-semibold transition">Cancel</button>
-                <button onclick="connectToDisplay()" class="bg-[#ffcd00] hover:bg-[#e5b800] text-slate-950 px-5 py-2 rounded-lg text-xs font-bold transition shadow">Connect Now</button>
+            <div style="display: flex; justify-content: flex-end; gap: 0.5rem; padding-top: 0.5rem;">
+                <button onclick="closeConnectModal()" style="background-color: #1e293b; color: #cbd5e1; border: none; padding: 0.5rem 1rem; border-radius: 0.5rem; font-size: 0.75rem; font-weight: 600; cursor: pointer;">Cancel</button>
+                <button onclick="connectToDisplay()" class="btn-brand" style="padding: 0.5rem 1.25rem; border-radius: 0.5rem; font-size: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);">Connect Now</button>
             </div>
         </div>
     </div>
 
     <!-- QR Scanner Camera Modal -->
-    <div id="qrScannerModal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-slate-900 border border-slate-800 w-full max-w-sm rounded-2xl shadow-2xl p-6 space-y-4 text-center">
-            <div class="flex items-center justify-between">
-                <h3 class="text-sm font-bold text-slate-100 flex items-center"><i class="fa-solid fa-qrcode text-[#ffcd00] mr-2"></i>Scan Display QR Code</h3>
-                <button onclick="closeQrScannerModal()" class="text-slate-400 hover:text-slate-200"><i class="fa-solid fa-xmark text-lg"></i></button>
+    <div id="qrScannerModal" class="modal-backdrop hidden-element">
+        <div class="modal-card" style="text-align: center; max-width: 22rem;">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+                <h3 style="font-size: 0.75rem; font-weight: bold; color: #f1f5f9; display: flex; align-items: center;"><i class="fa-solid fa-qrcode" style="color: #ffcd00; margin-right: 0.5rem;"></i>Scan Display QR Code</h3>
+                <button onclick="closeQrScannerModal()" style="color: #94a3b8; background: none; border: none; cursor: pointer;"><i class="fa-solid fa-xmark" style="font-size: 1.125rem;"></i></button>
             </div>
-            <div id="reader" class="overflow-hidden rounded-xl border-2 border-[#ffcd00] bg-black"></div>
-            <p class="text-xs text-slate-400">Point your camera at the QR code on Device A display.</p>
+            <div id="reader" style="overflow: hidden; border-radius: 0.75rem; border: 2px solid #ffcd00; background-color: #000000;"></div>
+            <p style="font-size: 0.75rem; color: #94a3b8;">Point your camera at the QR code on Device A display.</p>
         </div>
     </div>
 
     <!-- Song Editor Modal -->
-    <div id="songEditorModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-slate-900 border border-slate-800 w-full max-w-2xl rounded-2xl shadow-2xl flex flex-col max-h-[90vh] overflow-hidden">
-            <div class="px-6 py-4 border-b border-slate-800 flex items-center justify-between">
-                <h3 id="modalSongTitle" class="text-base font-bold text-slate-100">Add / Edit Song</h3>
-                <button onclick="closeSongEditorModal()" class="text-slate-400 hover:text-slate-200"><i class="fa-solid fa-xmark text-lg"></i></button>
+    <div id="songEditorModal" class="modal-backdrop hidden-element">
+        <div class="modal-card" style="max-width: 40rem; max-height: 90vh; overflow: hidden; padding: 0;">
+            <div style="padding: 1rem 1.5rem; border-bottom: 1px solid #1e293b; display: flex; align-items: center; justify-content: space-between;">
+                <h3 id="modalSongTitle" style="font-size: 0.875rem; font-weight: bold; color: #f1f5f9;">Add / Edit Song</h3>
+                <button onclick="closeSongEditorModal()" style="color: #94a3b8; background: none; border: none; cursor: pointer;"><i class="fa-solid fa-xmark" style="font-size: 1.125rem;"></i></button>
             </div>
             
-            <div class="p-6 overflow-y-auto space-y-4 flex-1">
+            <div style="padding: 1.5rem; overflow-y: auto; display: flex; flex-direction: column; gap: 1rem; flex: 1;">
                 <input type="hidden" id="editSongId">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div style="display: grid; grid-template-columns: repeat(1, minmax(0, 1fr)); gap: 1rem;">
+                    @media (min-width: 768px) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
                     <div>
-                        <label class="block text-xs font-semibold text-slate-400 mb-1 uppercase tracking-wider">Song Title</label>
-                        <input type="text" id="inputSongTitle" placeholder="e.g. Way Maker" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-[#ffcd00]">
+                        <label style="display: block; font-size: 0.75rem; font-weight: 600; color: #94a3b8; margin-bottom: 0.25rem; text-transform: uppercase; letter-spacing: 0.05em;">Song Title</label>
+                        <input type="text" id="inputSongTitle" placeholder="e.g. Way Maker" class="input-dark" style="width: 100%;">
                     </div>
                     <div>
-                        <label class="block text-xs font-semibold text-slate-400 mb-1 uppercase tracking-wider">Artist / Author</label>
-                        <input type="text" id="inputSongArtist" placeholder="e.g. Leeland" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-[#ffcd00]">
+                        <label style="display: block; font-size: 0.75rem; font-weight: 600; color: #94a3b8; margin-bottom: 0.25rem; text-transform: uppercase; letter-spacing: 0.05em;">Artist / Author</label>
+                        <input type="text" id="inputSongArtist" placeholder="e.g. Leeland" class="input-dark" style="width: 100%;">
                     </div>
                 </div>
 
                 <div>
-                  <label class="block text-xs font-semibold text-slate-400 mb-1 uppercase tracking-wider">Church Presentation Font Style</label>
-                  <select id="inputSongFont" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-[#ffcd00]" onchange="this.className = 'w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-[#ffcd00] ' + this.value">
-                      <!-- Sans-Serif / Modern -->
-                      <option value="font-montserrat" class="font-montserrat bg-slate-900 text-slate-100 py-1">Montserrat — Modern / Contemporary Worship</option>
-                      <option value="font-poppins" class="font-poppins bg-slate-900 text-slate-100 py-1">Poppins — Clean Bold & Geometric</option>
-                      <option value="font-inter" class="font-inter bg-slate-900 text-slate-100 py-1">Inter — High Legibility Screen Display</option>
-                      <option value="font-lato" class="font-lato bg-slate-900 text-slate-100 py-1">Lato — Warm & Balanced Sans</option>
-                      <option value="font-oswald" class="font-oswald bg-slate-900 text-slate-100 py-1">Oswald — Compact Tall Bold Title</option>
-
-                      <!-- Serif / Classic & Reverent -->
-                      <option value="font-cinzel" class="font-cinzel bg-slate-900 text-slate-100 py-1">Cinzel — Classic Classical / Traditional Hymns</option>
-                      <option value="font-playfair" class="font-playfair bg-slate-900 text-slate-100 py-1">Playfair Display — Elegant & Reverent</option>
-                      <option value="font-garamond" class="font-garamond bg-slate-900 text-slate-100 py-1">EB Garamond — Traditional Liturgical Serifs</option>
-                      <option value="font-lora" class="font-lora bg-slate-900 text-slate-100 py-1">Lora — Contemporary Literary Serif</option>
-                      <option value="font-robotoslab" class="font-robotoslab bg-slate-900 text-slate-100 py-1">Roboto Slab — Strong & Readable Slab Serif</option>
+                  <label style="display: block; font-size: 0.75rem; font-weight: 600; color: #94a3b8; margin-bottom: 0.25rem; text-transform: uppercase; letter-spacing: 0.05em;">Church Presentation Font Style</label>
+                  <select id="inputSongFont" class="input-dark" style="width: 100%;" onchange="this.className = 'input-dark ' + this.value">
+                      <option value="font-montserrat" class="font-montserrat" style="background-color: #0f172a; color: #f1f5f9; padding: 0.25rem;">Montserrat — Modern / Contemporary Worship</option>
+                      <option value="font-poppins" class="font-poppins" style="background-color: #0f172a; color: #f1f5f9; padding: 0.25rem;">Poppins — Clean Bold & Geometric</option>
+                      <option value="font-inter" class="font-inter" style="background-color: #0f172a; color: #f1f5f9; padding: 0.25rem;">Inter — High Legibility Screen Display</option>
+                      <option value="font-lato" class="font-lato" style="background-color: #0f172a; color: #f1f5f9; padding: 0.25rem;">Lato — Warm & Balanced Sans</option>
+                      <option value="font-oswald" class="font-oswald" style="background-color: #0f172a; color: #f1f5f9; padding: 0.25rem;">Oswald — Compact Tall Bold Title</option>
+                      <option value="font-cinzel" class="font-cinzel" style="background-color: #0f172a; color: #f1f5f9; padding: 0.25rem;">Cinzel — Classic Classical / Traditional Hymns</option>
+                      <option value="font-playfair" class="font-playfair" style="background-color: #0f172a; color: #f1f5f9; padding: 0.25rem;">Playfair Display — Elegant & Reverent</option>
+                      <option value="font-garamond" class="font-garamond" style="background-color: #0f172a; color: #f1f5f9; padding: 0.25rem;">EB Garamond — Traditional Liturgical Serifs</option>
+                      <option value="font-lora" class="font-lora" style="background-color: #0f172a; color: #f1f5f9; padding: 0.25rem;">Lora — Contemporary Literary Serif</option>
+                      <option value="font-robotoslab" class="font-robotoslab" style="background-color: #0f172a; color: #f1f5f9; padding: 0.25rem;">Roboto Slab — Strong & Readable Slab Serif</option>
                   </select>
-              </div>
+                </div>
 
                 <div>
-                    <div class="flex items-center justify-between mb-1">
-                        <label class="block text-xs font-semibold text-slate-400 uppercase tracking-wider">Song Sections & Lyrics</label>
-                        <button onclick="addSectionEditorRow()" class="text-xs text-[#ffcd00] hover:text-[#e5b800] font-semibold"><i class="fa-solid fa-plus mr-1"></i>Add Section</button>
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.25rem;">
+                        <label style="font-size: 0.75rem; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em;">Song Sections & Lyrics</label>
+                        <button onclick="addSectionEditorRow()" style="font-size: 0.75rem; color: #ffcd00; background: none; border: none; cursor: pointer; font-weight: 600;"><i class="fa-solid fa-plus" style="margin-right: 0.25rem;"></i>Add Section</button>
                     </div>
-                    <div id="sectionsEditorContainer" class="space-y-3"></div>
+                    <div id="sectionsEditorContainer" style="display: flex; flex-direction: column; gap: 0.75rem;"></div>
                 </div>
             </div>
 
-            <div class="px-6 py-4 border-t border-slate-800 bg-slate-900/50 flex items-center justify-end space-x-3">
-                <button onclick="closeSongEditorModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2 rounded-lg text-xs font-semibold transition">Cancel</button>
-                <button onclick="saveSongFromModal()" class="bg-[#ffcd00] hover:bg-[#e5b800] text-slate-950 px-5 py-2 rounded-lg text-xs font-bold transition shadow">Save Song</button>
+            <div style="padding: 1rem 1.5rem; border-top: 1px solid #1e293b; background-color: rgba(15,23,42,0.5); display: flex; align-items: center; justify-content: flex-end; gap: 0.75rem;">
+                <button onclick="closeSongEditorModal()" style="background-color: #1e293b; color: #cbd5e1; border: none; padding: 0.5rem 1rem; border-radius: 0.5rem; font-size: 0.75rem; font-weight: 600; cursor: pointer;">Cancel</button>
+                <button onclick="saveSongFromModal()" class="btn-brand" style="padding: 0.5rem 1.25rem; border-radius: 0.5rem; font-size: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);">Save Song</button>
             </div>
         </div>
     </div>
 
     <!-- Export Song Sequence Modal -->
-    <div id="exportModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-slate-900 border border-slate-800 w-full max-w-lg rounded-2xl shadow-2xl p-6 space-y-4">
-            <div class="flex items-center justify-between">
-                <h3 class="text-base font-bold text-slate-100 flex items-center"><i class="fa-solid fa-share-nodes text-[#ffcd00] mr-2"></i>Export Song Data</h3>
-                <button onclick="closeExportModal()" class="text-slate-400 hover:text-slate-200"><i class="fa-solid fa-xmark text-lg"></i></button>
+    <div id="exportModal" class="modal-backdrop hidden-element">
+        <div class="modal-card">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+                <h3 style="font-size: 0.875rem; font-weight: bold; color: #f1f5f9; display: flex; align-items: center;"><i class="fa-solid fa-share-nodes" style="color: #ffcd00; margin-right: 0.5rem;"></i>Export Song Data</h3>
+                <button onclick="closeExportModal()" style="color: #94a3b8; background: none; border: none; cursor: pointer;"><i class="fa-solid fa-xmark" style="font-size: 1.125rem;"></i></button>
             </div>
-            <p class="text-xs text-slate-400">Copy the JSON song sequence string or download a `.json` file to import into another YA Worship device.</p>
+            <p style="font-size: 0.75rem; color: #94a3b8;">Copy the JSON song sequence string or download a `.json` file to import into another YA Worship device.</p>
             
-            <div class="space-y-2">
-                <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider">Song JSON String</label>
-                <textarea id="exportJsonTextarea" rows="6" readonly class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 font-mono text-xs text-[#ffcd00] focus:outline-none select-all resize-none"></textarea>
+            <div>
+                <label style="display: block; font-size: 0.75rem; font-weight: 600; color: #cbd5e1; margin-bottom: 0.25rem; text-transform: uppercase; letter-spacing: 0.05em;">Song JSON String</label>
+                <textarea id="exportJsonTextarea" rows="6" readonly class="input-dark" style="width: 100%; font-family: monospace; color: #ffcd00; resize: none; user-select: all;"></textarea>
             </div>
 
-            <div class="flex flex-wrap items-center justify-between gap-2 pt-2">
-                <button onclick="downloadSongJson()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3.5 py-2 rounded-lg text-xs font-semibold transition flex items-center space-x-1.5">
+            <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.5rem; padding-top: 0.5rem;">
+                <button onclick="downloadSongJson()" style="background-color: #1e293b; color: #e2e8f0; border: none; padding: 0.5rem 0.875rem; border-radius: 0.5rem; font-size: 0.75rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 0.375rem;">
                     <i class="fa-solid fa-download"></i><span>Download .JSON File</span>
                 </button>
-                <div class="flex items-center space-x-2">
-                    <button onclick="closeExportModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2 rounded-lg text-xs font-semibold transition">Close</button>
-                    <button onclick="copyExportJson()" class="bg-[#ffcd00] hover:bg-[#e5b800] text-slate-950 px-4 py-2 rounded-lg text-xs font-bold transition shadow flex items-center space-x-1">
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <button onclick="closeExportModal()" style="background-color: #1e293b; color: #cbd5e1; border: none; padding: 0.5rem 1rem; border-radius: 0.5rem; font-size: 0.75rem; font-weight: 600; cursor: pointer;">Close</button>
+                    <button onclick="copyExportJson()" class="btn-brand" style="padding: 0.5rem 1rem; border-radius: 0.5rem; font-size: 0.75rem; display: flex; align-items: center; gap: 0.375rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);">
                         <i class="fa-solid fa-copy"></i><span>Copy String</span>
                     </button>
                 </div>
@@ -350,27 +345,27 @@
     </div>
 
     <!-- Import Song Sequence Modal -->
-    <div id="importModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-slate-900 border border-slate-800 w-full max-w-lg rounded-2xl shadow-2xl p-6 space-y-4">
-            <div class="flex items-center justify-between">
-                <h3 class="text-base font-bold text-slate-100 flex items-center"><i class="fa-solid fa-file-import text-[#ffcd00] mr-2"></i>Import Song Data</h3>
-                <button onclick="closeImportModal()" class="text-slate-400 hover:text-slate-200"><i class="fa-solid fa-xmark text-lg"></i></button>
+    <div id="importModal" class="modal-backdrop hidden-element">
+        <div class="modal-card">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+                <h3 style="font-size: 0.875rem; font-weight: bold; color: #f1f5f9; display: flex; align-items: center;"><i class="fa-solid fa-file-import" style="color: #ffcd00; margin-right: 0.5rem;"></i>Import Song Data</h3>
+                <button onclick="closeImportModal()" style="color: #94a3b8; background: none; border: none; cursor: pointer;"><i class="fa-solid fa-xmark" style="font-size: 1.125rem;"></i></button>
             </div>
-            <p class="text-xs text-slate-400">Paste a YA Worship JSON string below OR select a downloaded `.json` file to load into your library.</p>
+            <p style="font-size: 0.75rem; color: #94a3b8;">Paste a YA Worship JSON string below OR select a downloaded `.json` file to load into your library.</p>
             
-            <div class="space-y-2">
-                <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider">Select JSON File</label>
-                <input type="file" id="importFileInput" accept=".json" onchange="handleFileImport(event)" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-xs text-slate-300 focus:outline-none">
+            <div>
+                <label style="display: block; font-size: 0.75rem; font-weight: 600; color: #cbd5e1; margin-bottom: 0.25rem; text-transform: uppercase; letter-spacing: 0.05em;">Select JSON File</label>
+                <input type="file" id="importFileInput" accept=".json" onchange="handleFileImport(event)" class="input-dark" style="width: 100%; padding: 0.375rem;">
             </div>
 
-            <div class="space-y-2">
-                <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider">Or Paste JSON String</label>
-                <textarea id="importJsonTextarea" rows="5" placeholder="Paste JSON song payload here..." class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 font-mono text-xs text-slate-200 focus:outline-none focus:border-[#ffcd00] resize-none"></textarea>
+            <div>
+                <label style="display: block; font-size: 0.75rem; font-weight: 600; color: #cbd5e1; margin-bottom: 0.25rem; text-transform: uppercase; letter-spacing: 0.05em;">Or Paste JSON String</label>
+                <textarea id="importJsonTextarea" rows="5" placeholder="Paste JSON song payload here..." class="input-dark" style="width: 100%; resize: none; font-family: monospace;"></textarea>
             </div>
 
-            <div class="flex justify-end space-x-2 pt-2">
-                <button onclick="closeImportModal()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2 rounded-lg text-xs font-semibold transition">Cancel</button>
-                <button onclick="processJsonImport()" class="bg-[#ffcd00] hover:bg-[#e5b800] text-slate-950 px-5 py-2 rounded-lg text-xs font-bold transition shadow">Import Song</button>
+            <div style="display: flex; justify-content: flex-end; gap: 0.5rem; padding-top: 0.5rem;">
+                <button onclick="closeImportModal()" style="background-color: #1e293b; color: #cbd5e1; border: none; padding: 0.5rem 1rem; border-radius: 0.5rem; font-size: 0.75rem; font-weight: 600; cursor: pointer;">Cancel</button>
+                <button onclick="processJsonImport()" class="btn-brand" style="padding: 0.5rem 1.25rem; border-radius: 0.5rem; font-size: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);">Import Song</button>
             </div>
         </div>
     </div>
@@ -419,7 +414,7 @@
 
         window.addEventListener('keydown', (e) => {
             if (e.key === 'F4') {
-                e.preventDefault(); // Prevent browser default F4 behavior if any
+                e.preventDefault();
                 sendClear('f4');
             }
         });
@@ -434,12 +429,12 @@
             peer.on('open', (id) => { console.log('Controller Peer ID:', id); });
         }
 
-        function openConnectModal() { document.getElementById('connectModal').classList.remove('hidden'); }
-        function closeConnectModal() { document.getElementById('connectModal').classList.add('hidden'); }
+        function openConnectModal() { document.getElementById('connectModal').classList.remove('hidden-element'); }
+        function closeConnectModal() { document.getElementById('connectModal').classList.add('hidden-element'); }
 
         function startQrScanner() {
             closeConnectModal();
-            document.getElementById('qrScannerModal').classList.remove('hidden');
+            document.getElementById('qrScannerModal').classList.remove('hidden-element');
             
             html5QrCode = new Html5Qrcode("reader");
             html5QrCode.start(
@@ -461,12 +456,12 @@
             if (html5QrCode) {
                 html5QrCode.stop().then(() => {
                     html5QrCode.clear();
-                    document.getElementById('qrScannerModal').classList.add('hidden');
+                    document.getElementById('qrScannerModal').classList.add('hidden-element');
                 }).catch(() => {
-                    document.getElementById('qrScannerModal').classList.add('hidden');
+                    document.getElementById('qrScannerModal').classList.add('hidden-element');
                 });
             } else {
-                document.getElementById('qrScannerModal').classList.add('hidden');
+                document.getElementById('qrScannerModal').classList.add('hidden-element');
             }
         }
 
@@ -475,7 +470,11 @@
             if (!targetId) { alert('Please enter or scan a Display Peer ID.'); return; }
             conn = peer.connect(targetId);
             conn.on('open', () => {
-                document.getElementById('connectionBadge').className = "flex items-center space-x-2 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 rounded-lg text-xs font-semibold text-emerald-400";
+                const badge = document.getElementById('connectionBadge');
+                badge.style.display = 'flex';
+                badge.style.backgroundColor = 'rgba(16,185,129,0.1)';
+                badge.style.borderColor = 'rgba(16,185,129,0.2)';
+                badge.style.color = '#34d399';
                 document.getElementById('connectionBadgeText').textContent = "Display Connected";
                 closeConnectModal();
                 broadcastState();
@@ -519,15 +518,19 @@
             const tabPlayContent = document.getElementById('sidebarPlaylist');
 
             if (tab === 'library') {
-                btnLib.className = "flex-1 py-3 text-xs font-bold text-[#ffcd00] border-b-2 border-[#ffcd00] transition";
-                tabLibContent.classList.remove('hidden');
-                btnPlay.className = "flex-1 py-3 text-xs font-bold text-slate-400 hover:text-slate-200 border-b-2 border-transparent transition";
-                tabPlayContent.classList.add('hidden');
+                btnLib.style.color = '#ffcd00';
+                btnLib.style.borderBottomColor = '#ffcd00';
+                tabLibContent.classList.remove('hidden-element');
+                btnPlay.style.color = '#94a3b8';
+                btnPlay.style.borderBottomColor = 'transparent';
+                tabPlayContent.classList.add('hidden-element');
             } else {
-                btnPlay.className = "flex-1 py-3 text-xs font-bold text-[#ffcd00] border-b-2 border-[#ffcd00] transition";
-                tabPlayContent.classList.remove('hidden');
-                btnLib.className = "flex-1 py-3 text-xs font-bold text-slate-400 hover:text-slate-200 border-b-2 border-transparent transition";
-                tabLibContent.classList.add('hidden');
+                btnPlay.style.color = '#ffcd00';
+                btnPlay.style.borderBottomColor = '#ffcd00';
+                tabPlayContent.classList.remove('hidden-element');
+                btnLib.style.color = '#94a3b8';
+                btnLib.style.borderBottomColor = 'transparent';
+                tabLibContent.classList.add('hidden-element');
             }
         }
 
@@ -539,15 +542,15 @@
             container.innerHTML = filtered.map(song => {
                 const inPlaylist = playlist.includes(song.id);
                 return `
-                    <div class="group bg-slate-950/60 hover:bg-slate-800/80 border border-slate-800/80 rounded-lg p-2.5 flex items-center justify-between transition cursor-pointer" onclick="selectSong('${song.id}')">
-                        <div class="min-w-0 flex-1 pr-2">
-                            <h4 class="text-xs font-semibold text-slate-200 truncate">${song.title}</h4>
-                            <p class="text-[11px] text-slate-400 truncate">${song.artist}</p>
+                    <div style="background-color: rgba(2,6,23,0.6); border: 1px solid rgba(30,41,59,0.8); border-radius: 0.5rem; padding: 0.625rem; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.backgroundColor='rgba(30,41,59,0.8)'" onmouseout="this.style.backgroundColor='rgba(2,6,23,0.6)'" onclick="selectSong('${song.id}')">
+                        <div style="min-width: 0; flex: 1; padding-right: 0.5rem;">
+                            <h4 style="font-size: 0.75rem; font-weight: 600; color: #e2e8f0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${song.title}</h4>
+                            <p style="font-size: 11px; color: #94a3b8; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${song.artist}</p>
                         </div>
-                        <div class="flex items-center space-x-1">
-                            <button onclick="event.stopPropagation(); exportSpecificSong('${song.id}')" class="p-1.5 rounded hover:bg-slate-700 text-slate-400 hover:text-[#ffcd00] text-xs" title="Export Song"><i class="fa-solid fa-share-nodes"></i></button>
-                            <button onclick="event.stopPropagation(); togglePlaylist('${song.id}')" class="p-1.5 rounded hover:bg-slate-700 text-xs ${inPlaylist ? 'text-emerald-400' : 'text-slate-500'}"><i class="fa-solid ${inPlaylist ? 'fa-check-circle' : 'fa-plus-circle'}"></i></button>
-                            <button onclick="event.stopPropagation(); deleteSong('${song.id}')" class="p-1.5 rounded hover:bg-rose-500/20 text-slate-500 hover:text-rose-400 text-xs"><i class="fa-solid fa-trash"></i></button>
+                        <div style="display: flex; align-items: center; gap: 0.25rem;">
+                            <button onclick="event.stopPropagation(); exportSpecificSong('${song.id}')" style="padding: 0.375rem; border-radius: 0.25rem; background: none; border: none; color: #94a3b8; cursor: pointer; font-size: 0.75rem;" title="Export Song"><i class="fa-solid fa-share-nodes"></i></button>
+                            <button onclick="event.stopPropagation(); togglePlaylist('${song.id}')" style="padding: 0.375rem; border-radius: 0.25rem; background: none; border: none; cursor: pointer; font-size: 0.75rem; color: ${inPlaylist ? '#34d399' : '#64748b'};"><i class="fa-solid ${inPlaylist ? 'fa-check-circle' : 'fa-plus-circle'}"></i></button>
+                            <button onclick="event.stopPropagation(); deleteSong('${song.id}')" style="padding: 0.375rem; border-radius: 0.25rem; background: none; border: none; cursor: pointer; font-size: 0.75rem; color: #64748b;" onmouseover="this.style.color='#fb7185'" onmouseout="this.style.color='#64748b'"><i class="fa-solid fa-trash"></i></button>
                         </div>
                     </div>
                 `;
@@ -564,12 +567,12 @@
                 if (!song) return '';
                 const isActive = activeSongId === song.id;
                 return `
-                    <div class="group bg-slate-950/60 hover:bg-slate-800/80 border ${isActive ? 'border-[#ffcd00] shadow-md' : 'border-slate-800'} rounded-lg p-2.5 flex items-center justify-between transition cursor-pointer" onclick="selectSong('${song.id}')">
-                        <div class="flex items-center space-x-2.5 min-w-0 flex-1">
-                            <span class="text-[11px] font-bold text-slate-500 w-4">${idx + 1}</span>
-                            <div class="min-w-0 flex-1">
-                                <h4 class="text-xs font-semibold ${isActive ? 'text-[#ffcd00]' : 'text-slate-200'} truncate">${song.title}</h4>
-                                <p class="text-[11px] text-slate-400 truncate">${song.artist}</p>
+                    <div style="background-color: rgba(2,6,23,0.6); border: 1px solid ${isActive ? '#ffcd00' : '#1e293b'}; border-radius: 0.5rem; padding: 0.625rem; display: flex; align-items: center; justify-content: space-between; cursor: pointer; ${isActive ? 'box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);' : ''}" onclick="selectSong('${song.id}')">
+                        <div style="display: flex; align-items: center; gap: 0.625rem; min-width: 0; flex: 1;">
+                            <span style="font-size: 11px; font-weight: bold; color: #64748b; width: 1rem;">${idx + 1}</span>
+                            <div style="min-width: 0; flex: 1;">
+                                <h4 style="font-size: 0.75rem; font-weight: 600; color: ${isActive ? '#ffcd00' : '#e2e8f0'}; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${song.title}</h4>
+                                <p style="font-size: 11px; color: #94a3b8; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${song.artist}</p>
                             </div>
                         </div>
                     </div>
@@ -589,44 +592,41 @@
         function clearPlaylist() { playlist = []; saveToLocalStorage(); renderPlaylist(); renderSongList(); }
 
         function selectSong(songId) {
-          activeSongId = songId;
-          activeSlideIndex = 0; // Starts at title card
-          isLogoActive = false;
-          isBlackActive = false;
-          isInstrumentalActive = false;
-          isF4Active = false;
-          const song = songs.find(s => s.id === songId);
-          if (!song) return;
+            activeSongId = songId;
+            activeSlideIndex = 0;
+            isLogoActive = false;
+            isBlackActive = false;
+            isInstrumentalActive = false;
+            isF4Active = false;
+            const song = songs.find(s => s.id === songId);
+            if (!song) return;
 
-          flattenedSlides = [
-              { type: 'SONG TITLE', lyrics: song.title, author: song.artist, isTitleCard: true }
-          ];
+            flattenedSlides = [
+                { type: 'SONG TITLE', lyrics: song.title, author: song.artist, isTitleCard: true }
+            ];
 
-          song.sections.forEach(sec => {
-              const lines = sec.lyrics.split('\n');
-              lines.forEach(line => {
-                  if (line.trim() !== '') {
-                      flattenedSlides.push({ type: sec.type, lyrics: line, isTitleCard: false });
-                  }
-              });
-          });
+            song.sections.forEach(sec => {
+                const lines = sec.lyrics.split('\n');
+                lines.forEach(line => {
+                    if (line.trim() !== '') {
+                        flattenedSlides.push({ type: sec.type, lyrics: line, isTitleCard: false });
+                    }
+                });
+            });
 
-          document.getElementById('activeSongTitle').textContent = song.title;
-          document.getElementById('activeSongArtist').textContent = song.artist + ' • ' + (flattenedSlides.length - 1) + ' line slides';
-          document.getElementById('currentActiveSongLabel').textContent = song.title;
-          document.getElementById('btnEditActive').classList.remove('hidden');
-          document.getElementById('btnExportActive').classList.remove('hidden');
+            document.getElementById('activeSongTitle').textContent = song.title;
+            document.getElementById('activeSongArtist').textContent = song.artist + ' • ' + (flattenedSlides.length - 1) + ' line slides';
+            document.getElementById('currentActiveSongLabel').textContent = song.title;
+            document.getElementById('btnEditActive').classList.remove('hidden-element');
+            document.getElementById('btnExportActive').classList.remove('hidden-element');
 
-          renderQuickJumpBar();
-          renderSlideGrid();
-          renderPlaylist();
-          
-          // Broadcast state so Display shows the Title Card immediately
-          broadcastState();
+            renderQuickJumpBar();
+            renderSlideGrid();
+            renderPlaylist();
+            broadcastState();
 
-          if (window.innerWidth < 1024) switchMobileView('workspace');
-      }
-     
+            if (window.innerWidth < 1024) switchMobileView('workspace');
+        }
 
         function renderQuickJumpBar() {
             const bar = document.getElementById('quickJumpBar');
@@ -643,15 +643,15 @@
             });
 
             if (uniqueSections.length === 0) {
-                bar.classList.add('hidden');
+                bar.classList.add('hidden-element');
                 return;
             }
 
-            bar.classList.remove('hidden');
+            bar.classList.remove('hidden-element');
             container.innerHTML = uniqueSections.map(secName => {
                 const targetIdx = sectionIndices[secName];
                 return `
-                    <button onclick="jumpToSection(${targetIdx})" class="px-2.5 py-1 rounded-full bg-slate-900 border border-slate-700 hover:border-[#ffcd00] hover:text-[#ffcd00] text-[11px] font-semibold text-slate-300 transition whitespace-nowrap shadow-sm">
+                    <button onclick="jumpToSection(${targetIdx})" style="padding: 0.25rem 0.625rem; border-radius: 9999px; background-color: #0f172a; border: 1px solid #334155; font-size: 11px; font-weight: 600; color: #cbd5e1; cursor: pointer; white-space: nowrap;" onmouseover="this.style.borderColor='#ffcd00'; this.style.color='#ffcd00'" onmouseout="this.style.borderColor='#334155'; this.style.color='#cbd5e1'">
                         ${secName}
                     </button>
                 `;
@@ -665,6 +665,7 @@
                 slideCards[slideIdx].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
             }
         }
+
         function setParticleMode(mode) {
             currentParticleMode = mode;
             currentBackground.particleMode = mode;
@@ -676,16 +677,16 @@
             container.innerHTML = flattenedSlides.map((slide, idx) => {
                 const isActive = activeSlideIndex === idx;
                 return `
-                    <div onclick="selectSlide(${idx})" class="slide-card bg-slate-900 border ${isActive ? 'border-[#ffcd00] ring-2 ring-[#ffcd00]/30 shadow-lg' : 'border-slate-800 hover:border-slate-700'} rounded-xl p-3 flex flex-col justify-between cursor-pointer transition relative group select-none">
-                        <div class="flex items-center justify-between mb-2">
-                            <span class="px-2 py-0.5 rounded text-[10px] font-bold ${isActive ? 'bg-[#ffcd00] text-slate-950 font-bold' : 'bg-slate-800 text-[#ffcd00]'}">${slide.type}</span>
-                            <span class="text-[10px] font-mono text-slate-500">${idx + 1}</span>
+                    <div onclick="selectSlide(${idx})" class="slide-card" style="background-color: #0f172a; border: 1px solid ${isActive ? '#ffcd00' : '#1e293b'}; border-radius: 0.75rem; padding: 0.75rem; display: flex; flex-direction: column; justify-content: space-between; cursor: pointer; position: relative; ${isActive ? 'box-shadow: 0 10px 15px -3px rgba(255,205,0,0.15);' : ''}">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+                            <span style="padding: 0.125rem 0.5rem; border-radius: 0.25rem; font-size: 10px; font-weight: bold; background-color: ${isActive ? '#ffcd00' : '#1e293b'}; color: ${isActive ? '#020617' : '#ffcd00'};">${slide.type}</span>
+                            <span style="font-size: 10px; font-family: monospace; color: #64748b;">${idx + 1}</span>
                         </div>
-                        <div class="font-presentation text-sm font-semibold text-slate-200 py-2">
-                            ${slide.isTitleCard ? `<span class="text-[#ffcd00] italic">🎵 Title: ${slide.lyrics}</span>` : slide.lyrics}
+                        <div class="font-presentation" style="font-size: 0.875rem; font-weight: 600; color: #e2e8f0; padding: 0.5rem 0;">
+                            ${slide.isTitleCard ? `<span style="color: #ffcd00; font-style: italic;">🎵 Title: ${slide.lyrics}</span>` : slide.lyrics}
                         </div>
-                        <div class="mt-2 pt-2 border-t border-slate-800/80 flex items-center justify-between text-[10px] text-slate-500">
-                            <span>${isActive ? '<span class="text-emerald-400 font-semibold"><i class="fa-solid fa-circle text-[8px] mr-1"></i> Live</span>' : 'Click to project'}</span>
+                        <div style="margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid rgba(30,41,59,0.8); display: flex; align-items: center; justify-content: space-between; font-size: 10px; color: #64748b;">
+                            <span>${isActive ? '<span style="color: #34d399; font-weight: 600;"><i class="fa-solid fa-circle" style="font-size: 8px; margin-right: 0.25rem;"></i> Live</span>' : 'Click to project'}</span>
                         </div>
                     </div>
                 `;
@@ -703,46 +704,47 @@
 
         function triggerFirstSlide() { if (activeSongId) selectSlide(0); }
 
-        /*
-        function setBackground(type, value, particleMode = 'serene') {
-            currentBackground = { type, value, particleMode };
-            broadcastState();
-        }
-        */
         function setBackgroundGradient(value) {
             currentBackground = {
                 type: 'animated-gradient',
                 value: value,
-                particleMode: currentParticleMode // preserves active particle type
+                particleMode: currentParticleMode
             };
             broadcastState();
         }
 
         function sendClear(action) {
-    if (action === 'logo') { 
-        isLogoActive = !isLogoActive; isBlackActive = false; isInstrumentalActive = false; isF4Active = false; 
-    }
-    else if (action === 'instrumental') { 
-        isInstrumentalActive = !isInstrumentalActive; isLogoActive = false; isBlackActive = false;
-    }
-    else if (action === 'f4') { 
-        isF4Active = !isF4Active; 
-        const btn = document.getElementById('btnF4Toggle'); 
-        if (isF4Active) { 
-            btn.className = "px-2 py-1 rounded bg-[#ffcd00] text-slate-950 font-bold text-[11px] transition shadow"; 
-        } else {
-            btn.className = "px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 text-[11px] font-medium transition";
+            if (action === 'logo') { 
+                isLogoActive = !isLogoActive; isBlackActive = false; isInstrumentalActive = false; isF4Active = false; 
+            }
+            else if (action === 'instrumental') { 
+                isInstrumentalActive = !isInstrumentalActive; isLogoActive = false; isBlackActive = false;
+            }
+            else if (action === 'f4') { 
+                isF4Active = !isF4Active; 
+                const btn = document.getElementById('btnF4Toggle'); 
+                if (isF4Active) { 
+                    btn.style.backgroundColor = '#ffcd00';
+                    btn.style.color = '#020617';
+                    btn.style.fontWeight = 'bold';
+                } else {
+                    btn.style.backgroundColor = '#1e293b';
+                    btn.style.color = '#cbd5e1';
+                    btn.style.fontWeight = 'normal';
+                }
+            }
+            else if (action === 'black') { 
+                isBlackActive = !isBlackActive; isLogoActive = false; isInstrumentalActive = false; isF4Active = false; 
+            }
+            else if (action === 'clear') { 
+                isLogoActive = false; isBlackActive = false; isInstrumentalActive = false; isF4Active = false; 
+                const btn = document.getElementById('btnF4Toggle');
+                btn.style.backgroundColor = '#1e293b';
+                btn.style.color = '#cbd5e1';
+                btn.style.fontWeight = 'normal';
+            }
+            broadcastState();
         }
-    }
-    else if (action === 'black') { 
-        isBlackActive = !isBlackActive; isLogoActive = false; isInstrumentalActive = false; isF4Active = false; 
-    }
-    else if (action === 'clear') { 
-        isLogoActive = false; isBlackActive = false; isInstrumentalActive = false; isF4Active = false; 
-        document.getElementById('btnF4Toggle').className = "px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 text-[11px] font-medium transition"; 
-    }
-    broadcastState();
-}
 
         function sendStageMessage() { broadcastState(); }
 
@@ -755,10 +757,10 @@
             const song = songs.find(s => s.id === songId);
             if (!song) return;
             document.getElementById('exportJsonTextarea').value = JSON.stringify(song, null, 2);
-            document.getElementById('exportModal').classList.remove('hidden');
+            document.getElementById('exportModal').classList.remove('hidden-element');
         }
 
-        function closeExportModal() { document.getElementById('exportModal').classList.add('hidden'); }
+        function closeExportModal() { document.getElementById('exportModal').classList.add('hidden-element'); }
 
         function copyExportJson() {
             const textarea = document.getElementById('exportJsonTextarea');
@@ -783,10 +785,10 @@
         function openImportModal() {
             document.getElementById('importJsonTextarea').value = '';
             document.getElementById('importFileInput').value = '';
-            document.getElementById('importModal').classList.remove('hidden');
+            document.getElementById('importModal').classList.remove('hidden-element');
         }
 
-        function closeImportModal() { document.getElementById('importModal').classList.add('hidden'); }
+        function closeImportModal() { document.getElementById('importModal').classList.add('hidden-element'); }
 
         function handleFileImport(event) {
             const file = event.target.files[0];
@@ -826,7 +828,7 @@
         function openSongEditorModal(songId = null) {
             const modal = document.getElementById('songEditorModal');
             const container = document.getElementById('sectionsEditorContainer');
-            modal.classList.remove('hidden');
+            modal.classList.remove('hidden-element');
 
             if (songId) {
                 const song = songs.find(s => s.id === songId);
@@ -847,7 +849,7 @@
         }
 
         function editCurrentSong() { if (activeSongId) openSongEditorModal(activeSongId); }
-        function closeSongEditorModal() { document.getElementById('songEditorModal').classList.add('hidden'); }
+        function closeSongEditorModal() { document.getElementById('songEditorModal').classList.add('hidden-element'); }
         function addSectionEditorRow() {
             const container = document.getElementById('sectionsEditorContainer');
             const div = document.createElement('div');
@@ -857,12 +859,12 @@
 
         function createSectionRowHTML(type = 'Verse', lyrics = '') {
             return `
-                <div class="section-row bg-slate-950 border border-slate-800 rounded-lg p-3 space-y-2">
-                    <div class="flex items-center justify-between">
-                        <input type="text" value="${type}" class="sec-type bg-slate-900 border border-slate-700 rounded px-2 py-1 text-xs font-bold text-[#ffcd00] w-36 focus:outline-none">
-                        <button onclick="this.closest('.section-row').remove()" class="text-xs text-rose-400 hover:text-rose-300"><i class="fa-solid fa-trash"></i></button>
+                <div class="section-row" style="background-color: #020617; border: 1px solid #1e293b; border-radius: 0.5rem; padding: 0.75rem; display: flex; flex-direction: column; gap: 0.5rem;">
+                    <div style="display: flex; align-items: center; justify-content: space-between;">
+                        <input type="text" value="${type}" class="sec-type" style="background-color: #0f172a; border: 1px solid #334155; border-radius: 0.25rem; padding: 0.25rem 0.5rem; font-size: 0.75rem; font-weight: bold; color: #ffcd00; width: 9rem; outline: none;">
+                        <button onclick="this.closest('.section-row').remove()" style="font-size: 0.75rem; color: #fb7185; background: none; border: none; cursor: pointer;"><i class="fa-solid fa-trash"></i></button>
                     </div>
-                    <textarea rows="3" class="sec-lyrics w-full bg-slate-900 border border-slate-800 rounded p-2 text-xs text-slate-200 focus:outline-none focus:border-[#ffcd00]">${lyrics}</textarea>
+                    <textarea rows="3" class="sec-lyrics" style="width: 100%; background-color: #0f172a; border: 1px solid #1e293b; border-radius: 0.25rem; padding: 0.5rem; font-size: 0.75rem; color: #e2e8f0; outline: none; resize: vertical;" onfocus="this.style.borderColor='#ffcd00'" onblur="this.style.borderColor='#1e293b'">${lyrics}</textarea>
                 </div>
             `;
         }
@@ -915,16 +917,20 @@
             const navWorkspace = document.getElementById('mobileNavWorkspace');
 
             if (view === 'sidebar') {
-                sidebarPane.classList.remove('hidden');
-                workspacePane.classList.add('hidden');
-                navSidebar.className = "flex-1 py-2.5 text-[#ffcd00] border-b-2 border-[#ffcd00] text-center";
-                navWorkspace.className = "flex-1 py-2.5 text-slate-400 border-b-2 border-transparent text-center";
+                sidebarPane.classList.remove('hidden-element');
+                workspacePane.classList.add('hidden-element');
+                navSidebar.style.color = '#ffcd00';
+                navSidebar.style.borderBottomColor = '#ffcd00';
+                navWorkspace.style.color = '#94a3b8';
+                navWorkspace.style.borderBottomColor = 'transparent';
             } else {
-                sidebarPane.classList.add('hidden');
-                workspacePane.classList.remove('hidden');
-                workspacePane.classList.add('flex');
-                navWorkspace.className = "flex-1 py-2.5 text-[#ffcd00] border-b-2 border-[#ffcd00] text-center";
-                navSidebar.className = "flex-1 py-2.5 text-slate-400 border-b-2 border-transparent text-center";
+                sidebarPane.classList.add('hidden-element');
+                workspacePane.classList.remove('hidden-element');
+                workspacePane.style.display = 'flex';
+                navWorkspace.style.color = '#ffcd00';
+                navWorkspace.style.borderBottomColor = '#ffcd00';
+                navSidebar.style.color = '#94a3b8';
+                navSidebar.style.borderBottomColor = 'transparent';
             }
         }
     </script>
