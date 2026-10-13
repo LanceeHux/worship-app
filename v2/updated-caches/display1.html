@@ -231,7 +231,7 @@
     </div>
 
     <!-- Footer Status Bar -->
-    <div class="bg-slate-950 border-t border-slate-900 px-6 py-2.5 flex items-center justify-between text-xs text-slate-500 z-30">
+    <div class="bg-slate-950 border-t border-slate-900 px-6 py-2.5 flex items-center justify-between text-xs text-slate-500 z-30 hidden">
         <div class="flex items-center space-x-2">
             <span id="connectionIndicatorDot" class="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse"></span>
             <span id="connectionIndicatorText">Waiting for connection...</span>
@@ -257,7 +257,12 @@
         };
 
         function initPeer() {
-            peer = new Peer({ debug: 1 });
+            peer = new Peer({
+                host: 'yaworship-connection.onrender.com',
+                port: 443,
+                secure: true,
+                debug: 1
+            });
             peer.on('open', (id) => {
                 document.getElementById('displayCodeBox').textContent = id;
                 document.getElementById('qrcodeCanvas').innerHTML = '';
@@ -356,6 +361,7 @@
                 logoState.classList.remove('hidden');
                 blackState.classList.add('hidden');
                 persistentTitleCard.style.opacity = '0';
+                persistentTitleCard.classList.add('title-card-hidden');
             } else if (state.isBlackActive) {
                 blackState.classList.remove('hidden');
                 logoState.classList.add('hidden');
@@ -390,7 +396,7 @@
                 // Slide out persistent title card to the right
                 persistentTitleCard.classList.add('title-card-hidden');
             } else {
-                    persistentTitleCard.classList.remove('title-card-hidden');
+                persistentTitleCard.classList.remove('title-card-hidden');
             }
             
             // Handle Particle Style Updates
