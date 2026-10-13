@@ -1,36 +1,53 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>YA Worship - Central Hub</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome icons -->
+    <!-- FontAwesome icons for UI symbols -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;750;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     
     <style>
-        .font-montserrat { font-family: 'Montserrat', sans-serif; }
-        body { font-family: 'Inter', sans-serif; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
 
+        html, body {
+            height: 100%;
+            font-family: 'Inter', sans-serif;
+            background-color: #09090b;
+            color: #f8fafc;
+            overflow-x: hidden;
+        }
+
+        .font-montserrat {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        /* Animated Background Gradients */
         @keyframes gradientShift {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
 
+        .animated-bg {
+            background: linear-gradient(-45deg, #09090b, #181402, #292000, #09090b);
+            background-size: 250% 250%;
+            animation: gradientShift 15s ease infinite;
+        }
+
+        /* Ambient Glowing Orbs */
         @keyframes floatOrb {
             0%, 100% { transform: translate(0px, 0px) scale(1); }
             50% { transform: translate(60px, -50px) scale(1.15); }
-        }
-
-        .animated-bg {
-            background-size: 250% 250%;
-            animation: gradientShift 15s ease infinite;
         }
 
         .ambient-orb {
@@ -44,11 +61,192 @@
             z-index: 1;
         }
 
+        .orb-top { top: -5rem; left: -5rem; }
+        .orb-bottom { bottom: -5rem; right: -5rem; animation-delay: -6s; }
+
+        /* Layout Structure */
+        .page-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 100vh;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Offline Warning Banner */
+        #offlineAlertBanner {
+            background-color: rgba(76, 5, 25, 0.9);
+            border-bottom: 1px solid rgba(244, 63, 94, 0.5);
+            padding: 0.75rem 1rem;
+            text-align: center;
+            font-size: 0.75rem;
+            color: #fecdd3;
+            z-index: 40;
+            display: none;
+        }
+
+        #offlineAlertBanner.visible {
+            display: block;
+        }
+
+        .banner-content {
+            max-width: 56rem;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        /* Header */
+        header {
+            width: 100%;
+            max-width: 72rem;
+            margin: 0 auto;
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .emblem {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 9999px;
+            border: 2px solid #ffcd00;
+            background-color: #09090b;
+            box-shadow: 0 0 15px rgba(255, 205, 0, 0.3);
+            flex-shrink: 0;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 900;
+            font-size: 0.75rem;
+            color: #ffcd00;
+            font-style: italic;
+            letter-spacing: -0.05em;
+        }
+
+        .brand-title {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 900;
+            font-size: 0.875rem;
+            letter-spacing: 0.1em;
+            color: #ffcd00;
+        }
+
+        .brand-subtitle {
+            display: block;
+            font-size: 0.625rem;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .online-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.75rem;
+            color: #94a3b8;
+        }
+
+        .pulse-dot {
+            width: 0.5rem;
+            height: 0.5rem;
+            border-radius: 9999px;
+            background-color: #10b981;
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Main Content Grid */
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1.5rem;
+            max-width: 64rem;
+            margin: 0 auto;
+            text-align: center;
+            gap: 2.5rem;
+        }
+
+        .hero-section {
+            max-width: 40rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .hero-title {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 900;
+            font-size: clamp(2rem, 5vw, 3.75rem);
+            color: #ffffff;
+            letter-spacing: -0.025em;
+            line-height: 1.1;
+        }
+
+        .hero-title span {
+            color: #ffcd00;
+        }
+
+        .hero-desc {
+            font-size: clamp(0.75rem, 1.5vw, 0.875rem);
+            color: #94a3b8;
+            font-weight: 300;
+            line-height: 1.6;
+        }
+
+        .hero-desc strong {
+            color: #e2e8f0;
+            font-weight: 600;
+        }
+
+        /* Cards Grid */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            width: 100%;
+            max-width: 48rem;
+        }
+
+        @media (min-width: 768px) {
+            .cards-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
         .glass-card {
             background: rgba(15, 23, 42, 0.75);
             backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 0, 0.12);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 205, 0, 0.12);
+            border-radius: 1rem;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            text-decoration: none;
             transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            cursor: pointer;
         }
 
         .glass-card:hover {
@@ -56,92 +254,258 @@
             border-color: rgba(255, 205, 0, 0.4);
             box-shadow: 0 12px 30px -10px rgba(255, 205, 0, 0.15);
         }
+
+        .card-icon {
+            width: 4rem;
+            height: 4rem;
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1.25rem;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .glass-card:hover .card-icon {
+            transform: scale(1.1);
+        }
+
+        .display-icon {
+            background: rgba(255, 205, 0, 0.1);
+            border: 1px solid rgba(255, 205, 0, 0.3);
+            color: #ffcd00;
+        }
+
+        .controller-icon {
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            color: #a5b4fc;
+        }
+
+        .card-title {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 1.125rem;
+            color: #ffffff;
+            margin-bottom: 0.25rem;
+            transition: color 0.2s ease;
+        }
+
+        .glass-card:hover .card-title.display-title { color: #ffcd00; }
+        .glass-card:hover .card-title.controller-title { color: #a5b4fc; }
+
+        .card-badge {
+            font-size: 0.625rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.75rem;
+        }
+
+        .display-badge { color: #fbbf24; }
+        .controller-badge { color: #818cf8; }
+
+        .card-desc {
+            font-size: 0.75rem;
+            color: #94a3b8;
+            line-height: 1.5;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-action {
+            margin-top: auto;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            transition: transform 0.2s ease;
+        }
+
+        .display-action { color: #ffcd00; }
+        .controller-action { color: #a5b4fc; }
+
+        .glass-card:hover .card-action {
+            transform: translateX(4px);
+        }
+
+        /* Footer */
+        footer {
+            width: 100%;
+            max-width: 72rem;
+            margin: 0 auto;
+            padding: 1rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.6875rem;
+            color: #64748b;
+            border-top: 1px solid rgba(30, 41, 59, 0.8);
+            gap: 0.5rem;
+        }
+
+        @media (min-width: 640px) {
+            footer {
+                flex-direction: row;
+            }
+        }
+
+        .footer-credits {
+            color: #94a3b8;
+            font-weight: 500;
+        }
+
+        .footer-credits i {
+            color: #f59e0b;
+            margin: 0 0.125rem;
+        }
+
+        .footer-credits span {
+            color: #ffcd00;
+            font-weight: 600;
+        }
+
+        /* Disabled state when offline */
+        .glass-card.disabled {
+            opacity: 0.5;
+            pointer-events: none;
+        }
     </style>
 </head>
-<body class="bg-slate-950 text-slate-100 h-full flex flex-col justify-between overflow-x-hidden animated-bg select-none p-0 m-0" style="background: linear-gradient(-45deg, #09090b, #181402, #292000, #09090b);">
+<body class="animated-bg">
 
-    <!-- Background Ambient Orbs -->
-    <div class="ambient-orb -top-20 -left-20"></div>
-    <div class="ambient-orb -bottom-20 -right-20" style="animation-delay: -6s;"></div>
+    <!-- Offline Warning Alert Banner -->
+    <div id="offlineAlertBanner">
+        <div class="banner-content">
+            <i class="fa-solid fa-triangle-exclamation" style="color: #fb7185; font-size: 0.875rem;"></i>
+            <span style="font-weight: 700;">No Internet Connection Detected!</span>
+            <span style="color: #cbd5e1;">The presentation system requires an initial internet connection to load required scripts. Please connect to Wi-Fi.</span>
+        </div>
+    </div>
 
-    <!-- Top Header -->
-    <header class=" relative z-10 w-full max-w-6xl mx-auto px-6 py-6 flex items-center justify-between">
-        <div class="flex items-center space-x-3">
-            <div class="flex items-center justify-center w-10 h-10 rounded-full border-2 border-[#ffcd00] bg-slate-950 shadow-[0_0_15px_rgba(255,205,0,0.3)] shrink-0">
-                <span class="font-montserrat font-black text-xs text-[#ffcd00] tracking-tighter italic">YA</span>
+    <div class="page-container">
+        <!-- Background Ambient Orbs -->
+        <div class="ambient-orb orb-top"></div>
+        <div class="ambient-orb orb-bottom"></div>
+
+        <!-- Top Header -->
+        <header>
+            <div class="logo-wrapper">
+                <div class="emblem">YA</div>
+                <div>
+                    <span class="brand-title">YA WORSHIP</span>
+                    <span class="brand-subtitle">Ministry Suite</span>
+                </div>
             </div>
-            <div>
-                <span class="font-montserrat font-black text-sm tracking-widest text-[#ffcd00]">YA WORSHIP</span>
-                <span class="block text-[10px] text-slate-400 uppercase tracking-widest">Ministry Suite</span>
+            <div class="online-status">
+                <span class="pulse-dot"></span>
+                <span>System Online</span>
             </div>
-        </div>
-        <div class="flex items-center space-x-2 text-xs text-slate-400">
-            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span>System Online</span>
-        </div>
-    </header>
+        </header>
 
-    <!-- Main Content Hub -->
-    <main class="relative z-10 flex-1 flex flex-col items-center justify-center px-6 py-8 max-w-5xl mx-auto text-center space-y-10">
-        
-        <!-- Hero Title Section -->
-        <div class="space-y-3 max-w-2xl">
-            <h1 class="font-montserrat font-black text-4xl sm:text-6xl text-white tracking-tight drop-shadow-md">
-                WORSHIP <span class="text-[#ffcd00]">PRESENTATION</span> SYSTEM
-            </h1>
-            <p class="text-xs sm:text-sm text-slate-400 font-light leading-relaxed">
-                Select your station mode below. Open the <strong class="text-slate-200">Display Station</strong> on your projector or secondary screen, and operate lyrics effortlessly from the <strong class="text-slate-200">Controller Suite</strong>.
-            </p>
-        </div>
-
-        <!-- Two Interactive Selection Cards Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-3xl">
-            
-            <!-- Card 1: Display Output (Device A) -->
-            <a href="display1.html" class="glass-card rounded-2xl p-6 sm:p-8 flex flex-col items-center text-center group cursor-pointer">
-                <div class="w-16 h-16 rounded-2xl bg-[#ffcd00]/10 border border-[#ffcd00]/30 flex items-center justify-center text-[#ffcd00] text-2xl mb-5 group-hover:scale-110 transition duration-300 shadow-inner">
-                    <i class="fa-solid fa-desktop"></i>
-                </div>
-                <h3 class="font-montserrat font-bold text-lg text-white group-hover:text-[#ffcd00] transition">Display Station</h3>
-                <span class="text-[10px] font-bold text-amber-400 uppercase tracking-widest mt-1 mb-3">Device A • Projector Output</span>
-                <p class="text-xs text-slate-400 leading-relaxed">
-                    Outputs live lyrics, dynamic motion gradients, particle atmospheres, and persistent background titles to your stage display.
+        <!-- Main Content Hub -->
+        <main>
+            <!-- Hero Title Section -->
+            <div class="hero-section">
+                <h1 class="hero-title">
+                    WORSHIP <span>PRESENTATION</span> SYSTEM
+                </h1>
+                <p class="hero-desc">
+                    Select your station mode below. Open the <strong>Display Station</strong> on your projector or secondary screen, and operate lyrics effortlessly from the <strong>Controller Suite</strong>.
                 </p>
-                <div class="mt-6 inline-flex items-center space-x-2 text-xs font-bold text-[#ffcd00] group-hover:translate-x-1 transition">
-                    <span>Launch Display</span>
-                    <i class="fa-solid fa-arrow-right"></i>
-                </div>
-            </a>
+            </div>
 
-            <!-- Card 2: Controller Suite (Device B) -->
-            <a href="controller1.html" class="glass-card rounded-2xl p-6 sm:p-8 flex flex-col items-center text-center group cursor-pointer">
-                <div class="w-16 h-16 rounded-2xl bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-indigo-300 text-2xl mb-5 group-hover:scale-110 transition duration-300 shadow-inner">
-                    <i class="fa-solid fa-sliders"></i>
-                </div>
-                <h3 class="font-montserrat font-bold text-lg text-white group-hover:text-indigo-300 transition">Controller Suite</h3>
-                <span class="text-[10px] font-bold text-indigo-400 uppercase tracking-widest mt-1 mb-3">Device B • Operator Interface</span>
-                <p class="text-xs text-slate-400 leading-relaxed">
-                    Manage song libraries, custom church typography, service setlists, motion atmosphere styles, and live stage announcements.
-                </p>
-                <div class="mt-6 inline-flex items-center space-x-2 text-xs font-bold text-indigo-300 group-hover:translate-x-1 transition">
-                    <span>Launch Controller</span>
-                    <i class="fa-solid fa-arrow-right"></i>
-                </div>
-            </a>
+            <!-- Two Interactive Selection Cards Grid -->
+            <div class="cards-grid">
+                
+                <!-- Card 1: Display Output (Device A) -->
+                <a href="display1.html" class="glass-card" id="cardDisplay">
+                    <div class="card-icon display-icon">
+                        <i class="fa-solid fa-desktop"></i>
+                    </div>
+                    <h3 class="card-title display-title">Display Station</h3>
+                    <span class="card-badge display-badge">Device A • Projector Output</span>
+                    <p class="card-desc">
+                        Outputs live lyrics, dynamic motion gradients, particle atmospheres, and persistent background titles to your stage display.
+                    </p>
+                    <div class="card-action display-action">
+                        <span>Launch Display</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </div>
+                </a>
 
-        </div>
+                <!-- Card 2: Controller Suite (Device B) -->
+                <a href="controller1.html" class="glass-card" id="cardController">
+                    <div class="card-icon controller-icon">
+                        <i class="fa-solid fa-sliders"></i>
+                    </div>
+                    <h3 class="card-title controller-title">Controller Suite</h3>
+                    <span class="card-badge controller-badge">Device B • Operator Interface</span>
+                    <p class="card-desc">
+                        Manage song libraries, custom church typography, service setlists, motion atmosphere styles, and live stage announcements.
+                    </p>
+                    <div class="card-action controller-action">
+                        <span>Launch Controller</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </div>
+                </a>
 
-    </main>
+            </div>
+        </main>
 
-    <!-- Footer -->
-    <footer class="relative z-10 w-full max-w-6xl mx-auto px-6 py-4 flex flex-col sm:flex-row items-center justify-between text-[11px] text-slate-500 border-t border-slate-900 gap-2">
-        <div>YA Worship Ministry Solution • P2P WebRTC Synchronized</div>
-        <div class="flex items-center space-x-4">
-            <span class="text-slate-400 font-medium">Built with <i class="fa-solid fa-heart text-amber-500 mx-0.5"></i> &amp; Co-developed with <span class="text-[#ffcd00] font-semibold">Gemini</span></span>
-            <span class="hidden sm:inline">•</span>
-            <span>Press F11 for Fullscreen Display</span>
-        </div>
-    </footer>
+        <!-- Footer -->
+        <footer>
+            <div>YA Worship Ministry Solution • P2P WebRTC Synchronized</div>
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <span class="footer-credits">Built with <i class="fa-solid fa-heart"></i> &amp; Co-developed with <span>Gemini</span></span>
+                <span style="display: none;" class="desktop-bullet">•</span>
+                <span>Press F11 for Fullscreen Display</span>
+            </div>
+        </footer>
+    </div>
 
+    <!-- Network Assessment Script -->
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            checkNetworkStatus();
+            window.addEventListener('online', checkNetworkStatus);
+            window.addEventListener('offline', checkNetworkStatus);
+        });
+
+        async function checkNetworkStatus() {
+            const banner = document.getElementById('offlineAlertBanner');
+            const cardDisplay = document.getElementById('cardDisplay');
+            const cardController = document.getElementById('cardController');
+            let isConnected = navigator.onLine;
+
+            if (isConnected) {
+                try {
+                    await fetch('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css', { 
+                        method: 'HEAD', 
+                        cache: 'no-store' 
+                    });
+                } catch (err) {
+                    isConnected = false;
+                }
+            }
+
+            if (!isConnected) {
+                banner.classList.add('visible');
+                cardDisplay.classList.add('disabled');
+                cardController.classList.add('disabled');
+                cardDisplay.title = 'Unavailable offline (Requires internet for CDNs)';
+                cardController.title = 'Unavailable offline (Requires internet for CDNs)';
+            } else {
+                banner.classList.remove('visible');
+                cardDisplay.classList.remove('disabled');
+                cardController.classList.remove('disabled');
+                cardDisplay.removeAttribute('title');
+                cardController.removeAttribute('title');
+            }
+        }
+    </script>
 </body>
 </html>
