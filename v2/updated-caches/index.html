@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>YA Worship - Central Hub</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;750;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        .font-montserrat { font-family: 'Montserrat', sans-serif; }
+        body { font-family: 'Inter', sans-serif; }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes floatOrb {
+            0%, 100% { transform: translate(0px, 0px) scale(1); }
+            50% { transform: translate(60px, -50px) scale(1.15); }
+        }
+
+        .animated-bg {
+            background-size: 250% 250%;
+            animation: gradientShift 15s ease infinite;
+        }
+
+        .ambient-orb {
+            position: absolute;
+            width: 50vw;
+            height: 50vw;
+            background: radial-gradient(circle, rgba(255, 205, 0, 0.18) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: floatOrb 12s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .glass-card {
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 0, 0.12);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .glass-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(255, 205, 0, 0.4);
+            box-shadow: 0 12px 30px -10px rgba(255, 205, 0, 0.15);
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 h-full flex flex-col justify-between overflow-x-hidden animated-bg select-none p-0 m-0" style="background: linear-gradient(-45deg, #09090b, #181402, #292000, #09090b);">
+
+    <!-- Background Ambient Orbs -->
+    <div class="ambient-orb -top-20 -left-20"></div>
+    <div class="ambient-orb -bottom-20 -right-20" style="animation-delay: -6s;"></div>
+
+    <!-- Top Header -->
+    <header class=" relative z-10 w-full max-w-6xl mx-auto px-6 py-6 flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+            <div class="flex items-center justify-center w-10 h-10 rounded-full border-2 border-[#ffcd00] bg-slate-950 shadow-[0_0_15px_rgba(255,205,0,0.3)] shrink-0">
+                <span class="font-montserrat font-black text-xs text-[#ffcd00] tracking-tighter italic">YA</span>
+            </div>
+            <div>
+                <span class="font-montserrat font-black text-sm tracking-widest text-[#ffcd00]">YA WORSHIP</span>
+                <span class="block text-[10px] text-slate-400 uppercase tracking-widest">Ministry Suite</span>
+            </div>
+        </div>
+        <div class="flex items-center space-x-2 text-xs text-slate-400">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span>System Online</span>
+        </div>
+    </header>
+
+    <!-- Main Content Hub -->
+    <main class="relative z-10 flex-1 flex flex-col items-center justify-center px-6 py-8 max-w-5xl mx-auto text-center space-y-10">
+        
+        <!-- Hero Title Section -->
+        <div class="space-y-3 max-w-2xl">
+            <h1 class="font-montserrat font-black text-4xl sm:text-6xl text-white tracking-tight drop-shadow-md">
+                WORSHIP <span class="text-[#ffcd00]">PRESENTATION</span> SYSTEM
+            </h1>
+            <p class="text-xs sm:text-sm text-slate-400 font-light leading-relaxed">
+                Select your station mode below. Open the <strong class="text-slate-200">Display Station</strong> on your projector or secondary screen, and operate lyrics effortlessly from the <strong class="text-slate-200">Controller Suite</strong>.
+            </p>
+        </div>
+
+        <!-- Two Interactive Selection Cards Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-3xl">
+            
+            <!-- Card 1: Display Output (Device A) -->
+            <a href="display1.html" class="glass-card rounded-2xl p-6 sm:p-8 flex flex-col items-center text-center group cursor-pointer">
+                <div class="w-16 h-16 rounded-2xl bg-[#ffcd00]/10 border border-[#ffcd00]/30 flex items-center justify-center text-[#ffcd00] text-2xl mb-5 group-hover:scale-110 transition duration-300 shadow-inner">
+                    <i class="fa-solid fa-desktop"></i>
+                </div>
+                <h3 class="font-montserrat font-bold text-lg text-white group-hover:text-[#ffcd00] transition">Display Station</h3>
+                <span class="text-[10px] font-bold text-amber-400 uppercase tracking-widest mt-1 mb-3">Device A • Projector Output</span>
+                <p class="text-xs text-slate-400 leading-relaxed">
+                    Outputs live lyrics, dynamic motion gradients, particle atmospheres, and persistent background titles to your stage display.
+                </p>
+                <div class="mt-6 inline-flex items-center space-x-2 text-xs font-bold text-[#ffcd00] group-hover:translate-x-1 transition">
+                    <span>Launch Display</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </div>
+            </a>
+
+            <!-- Card 2: Controller Suite (Device B) -->
+            <a href="controller1.html" class="glass-card rounded-2xl p-6 sm:p-8 flex flex-col items-center text-center group cursor-pointer">
+                <div class="w-16 h-16 rounded-2xl bg-indigo-500/10 border border-indigo-500/30 flex items-center justify-center text-indigo-300 text-2xl mb-5 group-hover:scale-110 transition duration-300 shadow-inner">
+                    <i class="fa-solid fa-sliders"></i>
+                </div>
+                <h3 class="font-montserrat font-bold text-lg text-white group-hover:text-indigo-300 transition">Controller Suite</h3>
+                <span class="text-[10px] font-bold text-indigo-400 uppercase tracking-widest mt-1 mb-3">Device B • Operator Interface</span>
+                <p class="text-xs text-slate-400 leading-relaxed">
+                    Manage song libraries, custom church typography, service setlists, motion atmosphere styles, and live stage announcements.
+                </p>
+                <div class="mt-6 inline-flex items-center space-x-2 text-xs font-bold text-indigo-300 group-hover:translate-x-1 transition">
+                    <span>Launch Controller</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </div>
+            </a>
+
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="relative z-10 w-full max-w-6xl mx-auto px-6 py-4 flex flex-col sm:flex-row items-center justify-between text-[11px] text-slate-500 border-t border-slate-900 gap-2">
+        <div>YA Worship Ministry Solution • P2P WebRTC Synchronized</div>
+        <div class="flex items-center space-x-4">
+            <span class="text-slate-400 font-medium">Built with <i class="fa-solid fa-heart text-amber-500 mx-0.5"></i> &amp; Co-developed with <span class="text-[#ffcd00] font-semibold">Gemini</span></span>
+            <span class="hidden sm:inline">•</span>
+            <span>Press F11 for Fullscreen Display</span>
+        </div>
+    </footer>
+
+</body>
+</html>
