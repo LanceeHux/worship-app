@@ -425,7 +425,12 @@
         });
 
         function initPeer() {
-            peer = new Peer({ debug: 1 });
+            peer = new Peer({
+                host: 'yaworship-connection.onrender.com',
+                port: 443,
+                secure: true,
+                debug: 1
+            });
             peer.on('open', (id) => { console.log('Controller Peer ID:', id); });
         }
 
