@@ -1,11 +1,9 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full">
+<html lang="en" style="height: 100%;">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ProPresenter - Display Output (Device A)</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Expanded Google Fonts Collection -->
@@ -14,216 +12,139 @@
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=EB+Garamond:wght@600;700&family=Inter:wght@500;700&family=Lato:wght@700&family=Lora:ital,wght@0,600;1,600&family=Montserrat:wght@600;700;800&family=Oswald:wght@600;700&family=Playfair+Display:wght@600;700&family=Poppins:wght@600;700&family=Roboto+Slab:wght@700&display=swap" rel="stylesheet">
         
     <style>
-    /* Church Typography Font Definitions */
-    .font-montserrat { font-family: 'Montserrat', sans-serif; }
-    .font-cinzel { font-family: 'Cinzel', serif; }
-    .font-playfair { font-family: 'Playfair Display', serif; }
-    .font-garamond { font-family: 'EB Garamond', serif; }
-    .font-inter { font-family: 'Inter', sans-serif; }
-    .font-poppins { font-family: 'Poppins', sans-serif; }
-    .font-oswald { font-family: 'Oswald', sans-serif; }
-    .font-lato { font-family: 'Lato', sans-serif; }
-    .font-lora { font-family: 'Lora', serif; }
-    .font-robotoslab { font-family: 'Roboto Slab', serif; }
-    
-    @keyframes gradientShift {
-        0% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-        100% { background-position: 0% 50%; }
-    }
+        /* Compact Custom Offline Styles */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background-color: #000000; height: 100%; display: flex; flex-direction: column; overflow: hidden; user-select: none; font-family: 'Montserrat', sans-serif; }
+        
+        /* Font Definitions */
+        .font-montserrat { font-family: 'Montserrat', sans-serif; }
+        .font-cinzel { font-family: 'Cinzel', serif; }
+        .font-playfair { font-family: 'Playfair Display', serif; }
+        .font-garamond { font-family: 'EB Garamond', serif; }
+        .font-inter { font-family: 'Inter', sans-serif; }
+        .font-poppins { font-family: 'Poppins', sans-serif; }
+        .font-oswald { font-family: 'Oswald', sans-serif; }
+        .font-lato { font-family: 'Lato', sans-serif; }
+        .font-lora { font-family: 'Lora', serif; }
+        .font-robotoslab { font-family: 'Roboto Slab', serif; }
+        
+        @keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        @keyframes curtainSweep { 0% { transform: translateX(-50%) scale(1); opacity: 0.4; } 50% { transform: translateX(50%) scale(1.3); opacity: 0.7; } 100% { transform: translateX(-50%) scale(1); opacity: 0.4; } }
+        @keyframes floatOrb1 { 0%, 100% { transform: translate(0px, 0px) scale(1); } 50% { transform: translate(80px, -60px) scale(1.25); } }
+        @keyframes floatOrb2 { 0%, 100% { transform: translate(0px, 0px) scale(1); } 50% { transform: translate(-90px, 70px) scale(0.85); } }
+        @keyframes slideInRight { 0% { transform: translateX(100%); opacity: 0; } 100% { transform: translateX(0); opacity: 1; } }
 
-    @keyframes curtainSweep {
-        0% { transform: translateX(-50%) scale(1); opacity: 0.4; }
-        50% { transform: translateX(50%) scale(1.3); opacity: 0.7; }
-        100% { transform: translateX(-50%) scale(1); opacity: 0.4; }
-    }
+        #particleCanvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 2; }
+        #persistentTitleCard { transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease-in-out; }
+        #displayBackgroundContainer { position: relative; overflow: hidden; flex: 1; display: flex; align-items: center; justify-content: center; padding: 3rem; }
+        #displayBackgroundContainer::after { content: ''; position: absolute; inset: 0; background: inherit; opacity: 0; transition: opacity 1.2s ease-in-out; pointer-events: none; z-index: 0; }
 
-    @keyframes floatOrb1 {
-        0%, 100% { transform: translate(0px, 0px) scale(1); }
-        50% { transform: translate(80px, -60px) scale(1.25); }
-    }
+        .title-card-hidden { transform: translateX(120%) translateY(0) !important; opacity: 0 !important; pointer-events: none; }
+        .animated-bg { background-size: 250% 250%; animation: gradientShift 15s ease infinite; position: relative; overflow: hidden; will-change: background-position; }
+        .animated-bg::before { content: ''; position: absolute; inset: -50%; background: radial-gradient(circle, rgba(255,255,255,0.12) 0%, transparent 65%); animation: curtainSweep 12s ease-in-out infinite alternate; pointer-events: none; will-change: transform, opacity; }
 
-    @keyframes floatOrb2 {
-        0%, 100% { transform: translate(0px, 0px) scale(1); }
-        50% { transform: translate(-90px, 70px) scale(0.85); }
-    }
-    #particleCanvas {
-        position: absolute;
-        inset: 0;
-        width: 100%;
-        height: 100%;
-        pointer-events: none;
-        z-index: 2;
-    }
-    /* Persistent Title Card Sliding Animations */
-    #persistentTitleCard {
-        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease-in-out;
-    }
+        .ambient-orb-1 { position: absolute; top: -15%; left: -15%; width: 60vw; height: 60vw; background: radial-gradient(circle, rgba(255, 205, 0, 0.22) 0%, transparent 70%); border-radius: 50%; animation: floatOrb1 14s ease-in-out infinite; pointer-events: none; will-change: transform; z-index: 1; }
+        .ambient-orb-2 { position: absolute; bottom: -15%; right: -15%; width: 70vw; height: 70vw; background: radial-gradient(circle, rgba(255, 170, 0, 0.18) 0%, transparent 70%); border-radius: 50%; animation: floatOrb2 18s ease-in-out infinite; pointer-events: none; will-change: transform; z-index: 1; }
+        .title-card-enter { animation: slideInRight 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
 
-    #displayBackgroundContainer {
-        position: relative;
-        overflow: hidden;
-    }
-
-    /* Background transition crossfade layer */
-    #displayBackgroundContainer::after {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background: inherit;
-        opacity: 0;
-        transition: opacity 1.2s ease-in-out;
-        pointer-events: none;
-        z-index: 0;
-    }
-
-    .title-card-hidden {
-        transform: translateX(120%) translateY(0) !important;
-        opacity: 0 !important;
-        pointer-events: none;
-    }
-
-    .animated-bg {
-        background-size: 250% 250%;
-        animation: gradientShift 15s ease infinite;
-        position: relative;
-        overflow: hidden;
-        will-change: background-position;
-    }
-
-    .animated-bg::before {
-        content: '';
-        position: absolute;
-        inset: -50%;
-        background: radial-gradient(circle, rgba(255,255,255,0.12) 0%, transparent 65%);
-        animation: curtainSweep 12s ease-in-out infinite alternate;
-        pointer-events: none;
-        will-change: transform, opacity;
-    }
-
-    .ambient-orb-1 {
-        position: absolute;
-        top: -15%;
-        left: -15%;
-        width: 60vw;
-        height: 60vw;
-        background: radial-gradient(circle, rgba(255, 205, 0, 0.22) 0%, transparent 70%);
-        border-radius: 50%;
-        animation: floatOrb1 14s ease-in-out infinite;
-        pointer-events: none;
-        will-change: transform;
-        z-index: 1;
-    }
-
-    .ambient-orb-2 {
-        position: absolute;
-        bottom: -15%;
-        right: -15%;
-        width: 70vw;
-        height: 70vw;
-        background: radial-gradient(circle, rgba(255, 170, 0, 0.18) 0%, transparent 70%);
-        border-radius: 50%;
-        animation: floatOrb2 18s ease-in-out infinite;
-        pointer-events: none;
-        will-change: transform;
-        z-index: 1;
-    }
-
-    @keyframes slideInRight {
-        0% { transform: translateX(100%); opacity: 0; }
-        100% { transform: translateX(0); opacity: 1; }
-    }
-
-    .title-card-enter {
-        animation: slideInRight 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    }
-</style>
+        /* Modal & UI Utility Classes */
+        .modal-overlay { position: fixed; inset: 0; background-color: rgba(2, 6, 23, 0.95); backdrop-filter: blur(12px); z-index: 50; display: flex; align-items: center; justify-content: center; padding: 1.5rem; }
+        .modal-box { background-color: #0f172a; border: 1px solid #1e293b; width: 100%; max-width: 24rem; border-radius: 1rem; padding: 1.5rem; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); color: #f1f5f9; text-align: center; }
+        .stage-msg-bar { position: absolute; top: 0; left: 0; right: 0; background-color: #ffcd00; color: #020617; padding: 0.75rem 2rem; font-weight: bold; font-size: 1rem; z-index: 30; transform: translateY(-100%); transition: transform 0.3s ease-in-out; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3); }
+        .qr-wrapper { background-color: #ffffff; padding: 1rem; border-radius: 0.75rem; display: inline-block; margin: 0.5rem auto; border: 4px solid #ffcd00; }
+        .code-box { background-color: #020617; border: 1px solid #334155; border-radius: 0.5rem; padding: 0.5rem; font-family: monospace; font-size: 11px; color: #34d399; word-break: break-all; user-select: all; text-align: left; }
+        .status-badge { display: flex; align-items: center; justify-content: center; space-x: 0.5rem; font-size: 0.75rem; color: #fbbf24; background-color: rgba(245, 158, 11, 0.1); padding: 0.625rem; border-radius: 0.5rem; border: 1px solid rgba(245, 158, 11, 0.2); }
+        .logo-state-box { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; background-color: #020617; z-index: 20; transition: opacity 0.5s ease; padding: 2rem; }
+        .black-state-box { position: absolute; inset: 0; background-color: #000000; z-index: 20; transition: opacity 0.5s ease; }
+        .persistent-badge { position: absolute; top: 2rem; right: 2rem; z-index: 20; text-align: right; padding: 1.25rem 1.25rem; border-right: 2px solid #ffffff; transition: all 0.5s ease; opacity: 0; transform: translateY(-10px); }
+        .lyrics-container-box { position: relative; z-index: 10; text-align: center; max-width: 72rem; margin: 0 auto; padding: 0 1rem; }
+        .footer-bar { background-color: #020617; border-top: 1px solid #090d16; padding: 0.625rem 1.5rem; display: flex; align-items: center; justify-content: space-between; font-size: 0.75rem; color: #64748b; z-index: 30; }
+        .hidden-element { display: none !important; }
+    </style>
 </head>
-<body class="bg-black h-full flex flex-col overflow-hidden select-none m-0 p-0">
+<body>
 
     <!-- Connection Setup Modal with QR Code -->
-    <div id="connectionModal" class="fixed inset-0 bg-slate-950/95 backdrop-blur-md z-50 flex items-center justify-center p-6">
-        <div class="bg-slate-900 border border-slate-800 w-full max-w-sm rounded-2xl p-6 shadow-2xl text-slate-100 space-y-4 text-center">
-            <div class="flex items-center justify-center space-x-2">
-                <div class="relative flex items-center justify-center w-8 h-8 rounded-full border-2 border-[#ffcd00] bg-slate-950 shadow-md shrink-0">
-                    <span class="font-montserrat font-black text-[10px] text-[#ffcd00] tracking-tighter italic">YA</span>
+    <div id="connectionModal" class="modal-overlay">
+        <div class="modal-box">
+            <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                <div style="position: relative; display: flex; align-items: center; justify-content: center; width: 2rem; height: 2rem; border-radius: 9999px; border: 2px solid #ffcd00; background-color: #020617; flex-shrink: 0;">
+                    <span class="font-montserrat" style="font-weight: 900; font-size: 10px; color: #ffcd00; font-style: italic;">YA</span>
                 </div>
-                <h2 class="font-bold text-base text-slate-100">Display Station Pairing</h2>
+                <h2 style="font-weight: bold; font-size: 1rem; color: #f1f5f9;">Display Station Pairing</h2>
             </div>
 
-            <div class="bg-white p-4 rounded-xl inline-block shadow-inner mx-auto my-2 border-4 border-[#ffcd00]">
+            <div class="qr-wrapper">
                 <div id="qrcodeCanvas"></div>
             </div>
 
-            <p class="text-xs text-slate-300">Scan this QR Code using the controller device to pair instantly.</p>
+            <p style="font-size: 0.75rem; color: #cbd5e1;">Scan this QR Code using the controller device to pair instantly.</p>
 
-            <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 space-y-1 text-left">
-                <div class="flex items-center justify-between">
-                    <span class="text-[11px] font-semibold text-slate-400">Display ID Code:</span>
-                    <button onclick="copyDisplayCode()" class="text-[11px] text-[#ffcd00] hover:underline font-semibold"><i class="fa-solid fa-copy mr-1"></i>Copy</button>
+            <div style="background-color: #020617; padding: 0.75rem; border-radius: 0.75rem; border: 1px solid #1e293b; text-align: left;">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.25rem;">
+                    <span style="font-size: 11px; font-weight: 600; color: #94a3b8;">Display ID Code:</span>
+                    <button onclick="copyDisplayCode()" style="font-size: 11px; color: #ffcd00; background: none; border: none; cursor: pointer; font-weight: 600;"><i class="fa-solid fa-copy" style="margin-right: 0.25rem;"></i>Copy</button>
                 </div>
-                <div id="displayCodeBox" class="bg-slate-900 border border-slate-700 rounded-lg p-2 font-mono text-[11px] text-emerald-400 break-all select-all">
-                    Generating...
-                </div>
+                <div id="displayCodeBox" class="code-box">Generating...</div>
             </div>
 
-            <div id="connectionStatus" class="flex items-center justify-center space-x-2 text-xs text-amber-400 bg-amber-500/10 p-2.5 rounded-lg border border-amber-500/20">
-                <i class="fa-solid fa-circle-notch animate-spin"></i>
+            <div id="connectionStatus" class="status-badge">
+                <i class="fa-solid fa-circle-notch" style="animation: spin 1s linear infinite;"></i>
                 <span>Waiting for Controller to connect...</span>
             </div>
 
-            <div class="pt-1">
-                <button onclick="skipConnectionModalForLocalTest()" class="text-xs text-slate-500 hover:text-slate-300 underline">Standalone / Test Display</button>
+            <div style="padding-top: 0.25rem;">
+                <button onclick="skipConnectionModalForLocalTest()" style="font-size: 0.75rem; color: #64748b; background: none; border: none; cursor: pointer; text-decoration: underline;">Standalone / Test Display</button>
             </div>
         </div>
     </div>
 
     <!-- Stage Message Overlay Bar (Top) -->
-    <div id="displayStageMsgBar" class="absolute top-0 inset-x-0 bg-[#ffcd00] text-slate-950 px-8 py-3 font-bold text-base tracking-wide z-30 transform -translate-y-full transition-transform duration-300 flex items-center justify-between shadow-2xl">
-        <div class="flex items-center space-x-3">
-            <i class="fa-solid fa-bullhorn text-lg"></i>
+    <div id="displayStageMsgBar" class="stage-msg-bar">
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <i class="fa-solid fa-bullhorn" style="font-size: 1.125rem;"></i>
             <span id="displayStageMsgText">Stage Notice</span>
         </div>
-        <button onclick="hideStageMessage()" class="text-xs uppercase bg-black/20 hover:bg-black/30 px-3 py-1 rounded">Dismiss</button>
+        <button onclick="hideStageMessage()" style="font-size: 0.75rem; text-transform: uppercase; background-color: rgba(0,0,0,0.2); border: none; color: inherit; padding: 0.25rem 0.75rem; border-radius: 0.25rem; cursor: pointer;">Dismiss</button>
     </div>
 
     <!-- Main Presentation Screen Area -->
-    <div id="displayBackgroundContainer" class="flex-1 relative flex items-center justify-center p-12 overflow-hidden animated-bg" style="background: linear-gradient(-45deg, #181402, #3d3200, #574800, #181402);">
+    <div id="displayBackgroundContainer" class="animated-bg" style="background: linear-gradient(-45deg, #181402, #3d3200, #574800, #181402);">
     
-    <!-- Background Layer 2 (Crossfade Target) -->
-    <div id="bgTransitionLayer" class="absolute inset-0 opacity-0 transition-opacity duration-1000 pointer-events-none" style="background: linear-gradient(-45deg, #181402, #3d3200, #574800, #181402);"></div>
+        <!-- Background Layer 2 (Crossfade Target) -->
+        <div id="bgTransitionLayer" class="animated-bg" style="position: absolute; inset: 0; opacity: 0; transition: opacity 1000ms ease-in-out; pointer-events: none; background: linear-gradient(-45deg, #181402, #3d3200, #574800, #181402);"></div>
 
-    <!-- Particle Engine Canvas -->
-    <canvas id="particleCanvas"></canvas>
+        <!-- Particle Engine Canvas -->
+        <canvas id="particleCanvas"></canvas>
 
-    <div class="ambient-orb-1"></div>
-    <div class="ambient-orb-2"></div>
+        <div class="ambient-orb-1"></div>
+        <div class="ambient-orb-2"></div>
 
         <!-- YA Worship Logo View State -->
-        <div id="displayLogoState" class="absolute inset-0 flex flex-col items-center justify-center bg-slate-950 z-20 transition-opacity duration-500 hidden p-8">
-            <div class="relative flex items-center justify-center w-48 h-48 md:w-64 md:h-64 rounded-full border-4 border-[#ffcd00] p-4 shadow-[0_0_50px_rgba(255,205,0,0.3)] bg-gradient-to-br from-amber-950 via-slate-900 to-slate-950 mb-6">
-                <div class="flex flex-col items-center justify-center text-center">
-                    <span class="font-montserrat font-black text-6xl md:text-8xl text-[#ffcd00] tracking-tighter leading-none italic drop-shadow-lg">YA</span>
-                    <span class="text-[10px] md:text-xs font-bold text-amber-300 tracking-[0.25em] uppercase mt-2">Ministry</span>
+        <div id="displayLogoState" class="logo-state-box hidden-element">
+            <div style="position: relative; display: flex; align-items: center; justify-content: center; width: 12rem; height: 12rem; border-radius: 9999px; border: 4px solid #ffcd00; padding: 1rem; box-shadow: 0 0 50px rgba(255,205,0,0.3); background: linear-gradient(to bottom right, #451a03, #0f172a, #020617); margin-bottom: 1.5rem;">
+                <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
+                    <span class="font-montserrat" style="font-weight: 900; font-size: 5rem; color: #ffcd00; letter-spacing: -0.05em; line-height: 1; font-style: italic; filter: drop-shadow(0 10px 8px rgba(0,0,0,0.4));">YA</span>
+                    <span style="font-size: 0.75rem; font-weight: bold; color: #fde047; letter-spacing: 0.25em; text-transform: uppercase; margin-top: 0.5rem;">Ministry</span>
                 </div>
             </div>
-            <h2 class="font-montserrat text-3xl md:text-5xl font-black tracking-widest text-[#ffcd00] drop-shadow-lg">YA WORSHIP</h2>
-            <p class="text-xs md:text-sm text-slate-400 mt-2 uppercase tracking-[0.3em] font-medium">Welcome & Prepare Your Hearts</p>
+            <h2 class="font-montserrat" style="font-size: 2.25rem; font-weight: 900; letter-spacing: 0.1em; color: #ffcd00; filter: drop-shadow(0 10px 8px rgba(0,0,0,0.4));">YA WORSHIP</h2>
+            <p style="font-size: 0.75rem; color: #94a3b8; margin-top: 0.5rem; text-transform: uppercase; letter-spacing: 0.3em; font-weight: 500;">Welcome & Prepare Your Hearts</p>
         </div>
 
         <!-- Black State -->
-        <div id="displayBlackState" class="absolute inset-0 bg-black z-20 transition-opacity duration-500 hidden"></div>
+        <div id="displayBlackState" class="black-state-box hidden-element"></div>
 
-        <!-- Persistent Song Title Badge (Stays in top-right corner as a header) -->
-        <div id="persistentTitleCard" class="absolute top-8 right-8 z-20 text-right px-5 py-3 border-r border-white transition-all duration-500 opacity-0 transform translate-y-[-10px]">
-            <div id="persistentSongTitle" class="text-white font-bold text-sm md:text-base tracking-wide"></div>
-            <div id="persistentSongArtist" class="text-slate-400 font-light text-[11px] tracking-wider"></div>
+        <!-- Persistent Song Title Badge -->
+        <div id="persistentTitleCard" class="persistent-badge">
+            <div id="persistentSongTitle" style="color: #ffffff; font-weight: bold; font-size: 1rem; letter-spacing: 0.025em;"></div>
+            <div id="persistentSongArtist" style="color: #94a3b8; font-weight: 300; font-size: 11px; letter-spacing: 0.05em;"></div>
         </div>
 
         <!-- Main Lyrics Box -->
-        <div id="displayLyricsContainer" class="relative z-10 text-center max-w-6xl mx-auto px-4 space-y-3">
-            <h3 id="displaySectionLabel" class="text-[#ffcd00] font-bold uppercase tracking-widest text-sm md:text-base mb-2 opacity-90"></h3>
-            <div id="displayLyricsLinesContainer" class="font-montserrat font-bold text-3xl md:text-5xl xl:text-6xl text-white tracking-wide drop-shadow-[0_4px_16px_rgba(0,0,0,0.9)] space-y-2">
+        <div id="displayLyricsContainer" class="lyrics-container-box" style="display: flex; flex-direction: column; gap: 0.75rem;">
+            <h3 id="displaySectionLabel" style="color: #ffcd00; font-weight: bold; text-transform: uppercase; letter-spacing: 0.1em; font-size: 1rem; margin-bottom: 0.5rem; opacity: 0.9;"></h3>
+            <div id="displayLyricsLinesContainer" class="font-montserrat" style="font-weight: bold; font-size: 3.5rem; color: #ffffff; letter-spacing: 0.025em; filter: drop-shadow(0 4px 16px rgba(0,0,0,0.9)); display: flex; flex-direction: column; gap: 0.5rem;">
                 <div>Waiting for Controller connection...</div>
                 <div>Scan QR Code with Device B to begin.</div>
             </div>
@@ -231,13 +152,13 @@
     </div>
 
     <!-- Footer Status Bar -->
-    <div class="bg-slate-950 border-t border-slate-900 px-6 py-2.5 flex items-center justify-between text-xs text-slate-500 z-30 hidden">
-        <div class="flex items-center space-x-2">
-            <span id="connectionIndicatorDot" class="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse"></span>
+    <div id="footerStatusBar" class="footer-bar hidden-element">
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <span id="connectionIndicatorDot" style="width: 0.625rem; height: 0.625rem; border-radius: 9999px; background-color: #f59e0b;" class="animate-pulse"></span>
             <span id="connectionIndicatorText">Waiting for connection...</span>
         </div>
-        <div class="flex items-center space-x-4">
-            <button onclick="document.getElementById('connectionModal').classList.remove('hidden')" class="text-[#ffcd00] hover:underline">Show QR / Code</button>
+        <div style="display: flex; align-items: center; gap: 1rem;">
+            <button onclick="document.getElementById('connectionModal').classList.remove('hidden-element')" style="color: #ffcd00; background: none; border: none; cursor: pointer; text-decoration: underline;">Show QR / Code</button>
             <span>Press F11 for Fullscreen</span>
         </div>
     </div>
@@ -284,12 +205,13 @@
         }
 
         function setupConnectionHandlers() {
-            document.getElementById('connectionStatus').innerHTML = `<i class="fa-solid fa-check-circle text-emerald-400 mr-2"></i><span class="text-emerald-300">Connected to Controller!</span>`;
-            document.getElementById('connectionIndicatorDot').className = "w-2.5 h-2.5 rounded-full bg-emerald-500";
+            document.getElementById('connectionStatus').innerHTML = `<i class="fa-solid fa-check-circle" style="color: #34d399; margin-right: 0.5rem;"></i><span style="color: #6ee7b7;">Connected to Controller!</span>`;
+            document.getElementById('connectionIndicatorDot').style.backgroundColor = "#10b981";
+            document.getElementById('connectionIndicatorDot').classList.remove('animate-pulse');
             document.getElementById('connectionIndicatorText').textContent = "Connected to Controller";
             
             setTimeout(() => {
-                document.getElementById('connectionModal').classList.add('hidden');
+                document.getElementById('connectionModal').classList.add('hidden-element');
             }, 1000);
 
             conn.on('data', (data) => {
@@ -297,10 +219,11 @@
             });
 
             conn.on('close', () => {
-                document.getElementById('connectionStatus').innerHTML = `<i class="fa-solid fa-triangle-exclamation text-amber-400 mr-2"></i><span class="text-amber-300">Disconnected. Waiting...</span>`;
-                document.getElementById('connectionIndicatorDot').className = "w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse";
+                document.getElementById('connectionStatus').innerHTML = `<i class="fa-solid fa-triangle-exclamation" style="color: #fbbf24; margin-right: 0.5rem;"></i><span style="color: #fde047;">Disconnected. Waiting...</span>`;
+                document.getElementById('connectionIndicatorDot').style.backgroundColor = "#f59e0b";
+                document.getElementById('connectionIndicatorDot').classList.add('animate-pulse');
                 document.getElementById('connectionIndicatorText').textContent = "Disconnected";
-                document.getElementById('connectionModal').classList.remove('hidden');
+                document.getElementById('connectionModal').classList.remove('hidden-element');
             });
         }
 
@@ -311,7 +234,7 @@
         }
 
         function skipConnectionModalForLocalTest() {
-            document.getElementById('connectionModal').classList.add('hidden');
+            document.getElementById('connectionModal').classList.add('hidden-element');
         }
 
         function renderDisplay(state) {
@@ -331,21 +254,15 @@
                 const newBgValue = state.currentBackground.value;
                 const transitionLayer = document.getElementById('bgTransitionLayer');
 
-                // If the background value changed, perform a smooth crossfade
                 if (bgContainer.dataset.currentBg !== newBgValue) {
                     bgContainer.dataset.currentBg = newBgValue;
-
-                    // Set the new gradient onto the transition layer while it's hidden
                     transitionLayer.style.background = newBgValue;
-                    
-                    // Fade it in smoothly
                     transitionLayer.style.opacity = '1';
 
                     setTimeout(() => {
-                        // Apply it to the main container behind the scenes, then reset the transition layer
                         bgContainer.style.background = newBgValue;
                         transitionLayer.style.opacity = '0';
-                    }, 1000); // Matches the 1s duration
+                    }, 1000);
 
                     if (state.currentBackground.type === 'animated-gradient') {
                         bgContainer.classList.add('animated-bg');
@@ -358,17 +275,17 @@
             }
 
             if (state.isLogoActive) {
-                logoState.classList.remove('hidden');
-                blackState.classList.add('hidden');
+                logoState.classList.remove('hidden-element');
+                blackState.classList.add('hidden-element');
                 persistentTitleCard.style.opacity = '0';
                 persistentTitleCard.classList.add('title-card-hidden');
             } else if (state.isBlackActive) {
-                blackState.classList.remove('hidden');
-                logoState.classList.add('hidden');
+                blackState.classList.remove('hidden-element');
+                logoState.classList.add('hidden-element');
                 persistentTitleCard.style.opacity = '0';
             } else {
-                logoState.classList.add('hidden');
-                blackState.classList.add('hidden');
+                logoState.classList.add('hidden-element');
+                blackState.classList.add('hidden-element');
             }
 
             if (state.activeSong) {
@@ -381,25 +298,21 @@
             }
 
             if (state.isInstrumentalActive) {
-                    lyricsContainer.style.transition = 'opacity 0.4s ease-out, transform 0.4s ease-out';
-                    lyricsContainer.style.opacity = '0';
-                    lyricsContainer.style.transform = 'scale(0.95)';
+                lyricsContainer.style.transition = 'opacity 0.4s ease-out, transform 0.4s ease-out';
+                lyricsContainer.style.opacity = '0';
+                lyricsContainer.style.transform = 'scale(0.95)';
             } else if (!state.isInstrumentalActive) {
-                    lyricsContainer.style.transition = 'opacity 0.4s ease-in, transform 0.4s ease-in';
-                    lyricsContainer.style.opacity = '1';
-                    lyricsContainer.style.transform = 'scale(1)';
+                lyricsContainer.style.transition = 'opacity 0.4s ease-in, transform 0.4s ease-in';
+                lyricsContainer.style.opacity = '1';
+                lyricsContainer.style.transform = 'scale(1)';
             }
 
-            // Handle F4 / Instrumental / Fade Lyrics State
             if (state.isF4Active) {
-
-                // Slide out persistent title card to the right
                 persistentTitleCard.classList.add('title-card-hidden');
             } else {
                 persistentTitleCard.classList.remove('title-card-hidden');
             }
             
-            // Handle Particle Style Updates
             if (state.currentBackground && state.currentBackground.particleMode) {
                 if (particleMode !== state.currentBackground.particleMode) {
                     initParticles(state.currentBackground.particleMode);
@@ -408,9 +321,9 @@
 
             if (state.stageMessage && state.stageMessage.trim() !== '') {
                 stageMsgText.textContent = state.stageMessage;
-                stageMsgBar.classList.remove('-translate-y-full');
+                stageMsgBar.style.transform = 'translateY(0)';
             } else {
-                stageMsgBar.classList.add('-translate-y-full');
+                stageMsgBar.style.transform = 'translateY(-100%)';
             }
 
             let selectedFontClass = state.activeSong?.fontFamily || 'font-montserrat';
@@ -424,12 +337,17 @@
                     if (state.flattenedSlides && state.flattenedSlides[state.activeSlideIndex]) {
                         const currentSlide = state.flattenedSlides[state.activeSlideIndex];
                         
-                        // If it's the title card slide, show a clean welcome prompt in the center while keeping the corner badge active
                         if (currentSlide.isTitleCard) {
-                            lyricsLinesContainer.className = `font-bold text-3xl md:text-5xl text-amber-200 tracking-wide drop-shadow-[0_4px_16px_rgba(0,0,0,0.9)] space-y-2 ${selectedFontClass}`;
-                            lyricsLinesContainer.innerHTML = `<div></div><div class="text-lg text-slate-300 font-light"></div>`;
+                            lyricsLinesContainer.className = `${selectedFontClass}`;
+                            lyricsLinesContainer.style.fontWeight = 'bold';
+                            lyricsLinesContainer.style.fontSize = '3rem';
+                            lyricsLinesContainer.style.color = '#fef08a';
+                            lyricsLinesContainer.innerHTML = `<div></div><div style="font-size: 1.125rem; color: #cbd5e1; font-weight: 300;"></div>`;
                         } else {
-                            lyricsLinesContainer.className = `font-bold text-3xl md:text-5xl xl:text-6xl text-white tracking-wide drop-shadow-[0_4px_16px_rgba(0,0,0,0.9)] space-y-2 ${selectedFontClass}`;
+                            lyricsLinesContainer.className = `${selectedFontClass}`;
+                            lyricsLinesContainer.style.fontWeight = 'bold';
+                            lyricsLinesContainer.style.fontSize = '3.5rem';
+                            lyricsLinesContainer.style.color = '#ffffff';
                             lyricsLinesContainer.innerHTML = `<div>${currentSlide.lyrics}</div>`;
                         }
 
@@ -445,14 +363,14 @@
         }
 
         function hideStageMessage() {
-            document.getElementById('displayStageMsgBar').classList.add('-translate-y-full');
+            document.getElementById('displayStageMsgBar').style.transform = 'translateY(-100%)';
         }
 
         // --- Enhanced Particle Background Engine ---
         const canvas = document.getElementById('particleCanvas');
         const ctx = canvas.getContext('2d');
         let particles = [];
-        let particleMode = 'smooth'; // 'smooth', 'fast', 'flickery'
+        let particleMode = 'smooth';
 
         function resizeCanvas() {
             canvas.width = window.innerWidth;
@@ -476,7 +394,7 @@
                     speedY: mode === 'fast' ? -(Math.random() * 3 + 1.5) : (mode === 'smooth' ? -(Math.random() * 0.5 + 0.2) : -(Math.random() * 1 + 0.5)),
                     speedX: (Math.random() - 0.5) * (mode === 'fast' ? 1.2 : 0.4),
                     opacity: Math.random() * 0.7 + 0.3,
-                    flickerSpeed: Math.random() * 0.05 + 0.01 // For flickering starry effect
+                    flickerSpeed: Math.random() * 0.05 + 0.01
                 });
             }
         }
@@ -487,14 +405,12 @@
                 p.y += p.speedY;
                 p.x += p.speedX;
 
-                // Handle Flickering effect
                 if (particleMode === 'flickery') {
                     p.opacity += (Math.random() - 0.5) * 0.1;
                     if (p.opacity > 0.9) p.opacity = 0.9;
                     if (p.opacity < 0.1) p.opacity = 0.1;
                 }
 
-                // Wrap around screen edges
                 if (p.y < -10) p.y = canvas.height + 10;
                 if (p.x < 0) p.x = canvas.width;
                 if (p.x > canvas.width) p.x = 0;
@@ -511,7 +427,6 @@
                     ctx.shadowBlur = 15;
                     ctx.shadowColor = '#ffffff';
                 } else {
-                    // Smooth
                     ctx.fillStyle = `rgba(255, 205, 0, ${p.opacity * 0.6})`;
                     ctx.shadowBlur = 6;
                     ctx.shadowColor = '#ffcd00';
