@@ -447,6 +447,7 @@
 
         window.onload = function() {
             loadFromLocalStorage();
+            loadAnnouncements();
             renderSongList();
             renderPlaylist();
             if (playlist.length > 0) selectSong(playlist[0]);
