@@ -60,6 +60,9 @@
         .lyrics-container-box { position: relative; z-index: 10; text-align: center; max-width: 72rem; margin: 0 auto; padding: 0 1rem; }
         .footer-bar { background-color: #020617; border-top: 1px solid #090d16; padding: 0.625rem 1.5rem; display: flex; align-items: center; justify-content: space-between; font-size: 0.75rem; color: #64748b; z-index: 30; }
         .hidden-element { display: none !important; }
+        
+        #displayLogoState, #displayBlackState, #displayAnnouncementState { transition: opacity 0.5s ease-in-out !important; }
+        .hidden-fade { opacity: 0 !important; pointer-events: none !important; }
     </style>
 </head>
 <body>
@@ -130,6 +133,15 @@
             </div>
             <h2 class="font-montserrat" style="font-size: 2.25rem; font-weight: 900; letter-spacing: 0.1em; color: #ffcd00; filter: drop-shadow(0 10px 8px rgba(0,0,0,0.4));">YA WORSHIP</h2>
             <p style="font-size: 0.75rem; color: #94a3b8; margin-top: 0.5rem; text-transform: uppercase; letter-spacing: 0.3em; font-weight: 500;">Welcome & Prepare Your Hearts</p>
+        </div>
+
+        <!-- Announcement Display View State -->
+        <div id="displayAnnouncementState" class="hidden-element" style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; background-color: rgba(2,6,23,0.95); z-index: 25; padding: 2rem;">
+            <div style="max-width: 50rem; max-height: 80vh; display: flex; flex-direction: column; align-items: center; gap: 1rem; text-align: center;">
+                <img id="displayAnnouncementImg" src="" style="max-height: 60vh; max-width: 100%; object-fit: contain; border-radius: 0.75rem; border: 4px solid #ffcd00; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);" class="hidden-element" />
+                <h2 id="displayAnnouncementTitle" style="font-size: 2rem; font-weight: bold; color: #ffcd00;"></h2>
+                <p id="displayAnnouncementDesc" style="font-size: 1.125rem; color: #e2e8f0; max-width: 40rem; line-height: 1.5;"></p>
+            </div>
         </div>
 
         <!-- Black State -->
@@ -249,6 +261,40 @@
             const persistentSongArtist = document.getElementById('persistentSongArtist');
             const stageMsgBar = document.getElementById('displayStageMsgBar');
             const stageMsgText = document.getElementById('displayStageMsgText');
+            // Inside renderDisplay(state):
+            const announcementState = document.getElementById('displayAnnouncementState');
+            const annImg = document.getElementById('displayAnnouncementImg');
+            const annTitle = document.getElementById('displayAnnouncementTitle');
+            const annDesc = document.getElementById('displayAnnouncementDesc');
+
+            if (state.isAnnouncementActive && state.announcementData) {
+                announcementState.classList.remove('hidden-element');
+                setTimeout(() => announcementState.style.opacity = '1', 10);
+                annTitle.textContent = state.announcementData.title || '';
+                annDesc.textContent = state.announcementData.description || '';
+                
+                if (state.announcementData.image) {
+                    annImg.src = state.announcementData.image;
+                    annImg.classList.remove('hidden-element');
+                } else {
+                    annImg.classList.add('hidden-element');
+                }
+            } else {
+                announcementState.style.opacity = '0';
+                setTimeout(() => {
+                    if (!state.isAnnouncementActive) announcementState.classList.add('hidden-element');
+                }, 500);
+            }
+
+            if (state.isBlackActive) {
+                blackState.classList.remove('hidden-element');
+                setTimeout(() => blackState.style.opacity = '1', 10);
+            } else {
+                blackState.style.opacity = '0';
+                setTimeout(() => {
+                    if (!state.isBlackActive) blackState.classList.add('hidden-element');
+                }, 500);
+            }
 
             if (state.currentBackground) {
                 const newBgValue = state.currentBackground.value;
@@ -276,16 +322,12 @@
 
             if (state.isLogoActive) {
                 logoState.classList.remove('hidden-element');
-                blackState.classList.add('hidden-element');
-                persistentTitleCard.style.opacity = '0';
-                persistentTitleCard.classList.add('title-card-hidden');
-            } else if (state.isBlackActive) {
-                blackState.classList.remove('hidden-element');
-                logoState.classList.add('hidden-element');
-                persistentTitleCard.style.opacity = '0';
+                setTimeout(() => logoState.style.opacity = '1', 10);
             } else {
-                logoState.classList.add('hidden-element');
-                blackState.classList.add('hidden-element');
+                logoState.style.opacity = '0';
+                setTimeout(() => {
+                    if (!state.isLogoActive) logoState.classList.add('hidden-element');
+                }, 500);
             }
 
             if (state.activeSong) {
@@ -307,10 +349,19 @@
                 lyricsContainer.style.transform = 'scale(1)';
             }
 
-            if (state.isF4Active) {
+            if (state.isF4Active || state.isLogoActive || state.isBlackActive || state.isAnnouncementActive) {
+                // If F4 is toggled ON, OR Logo, Black, or Announcement are active, hide the title card
                 persistentTitleCard.classList.add('title-card-hidden');
-            } else {
+                persistentTitleCard.style.opacity = '0';
+            } else if (state.activeSong) {
+                // Otherwise, only show it if a song is actively playing and F4 is OFF
+                persistentSongTitle.textContent = state.activeSong.title;
+                persistentSongArtist.textContent = state.activeSong.artist;
                 persistentTitleCard.classList.remove('title-card-hidden');
+                persistentTitleCard.style.opacity = '1';
+                persistentTitleCard.style.transform = 'translateY(0)';
+            } else {
+                persistentTitleCard.style.opacity = '0';
             }
             
             if (state.currentBackground && state.currentBackground.particleMode) {
