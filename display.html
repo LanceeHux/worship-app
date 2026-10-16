@@ -1,212 +1,493 @@
 <!DOCTYPE html>
-<html>
+<html lang="en" style="height: 100%;">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProPresenter - Display Output (Device A)</title>
+    <!-- FontAwesome icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Expanded Google Fonts Collection -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=EB+Garamond:wght@600;700&family=Inter:wght@500;700&family=Lato:wght@700&family=Lora:ital,wght@0,600;1,600&family=Montserrat:wght@600;700;800&family=Oswald:wght@600;700&family=Playfair+Display:wght@600;700&family=Poppins:wght@600;700&family=Roboto+Slab:wght@700&display=swap" rel="stylesheet">
+        
+    <style>
+        /* Compact Custom Offline Styles */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background-color: #000000; height: 100%; display: flex; flex-direction: column; overflow: hidden; user-select: none; font-family: 'Montserrat', sans-serif; }
+        
+        /* Font Definitions */
+        .font-montserrat { font-family: 'Montserrat', sans-serif; }
+        .font-cinzel { font-family: 'Cinzel', serif; }
+        .font-playfair { font-family: 'Playfair Display', serif; }
+        .font-garamond { font-family: 'EB Garamond', serif; }
+        .font-inter { font-family: 'Inter', sans-serif; }
+        .font-poppins { font-family: 'Poppins', sans-serif; }
+        .font-oswald { font-family: 'Oswald', sans-serif; }
+        .font-lato { font-family: 'Lato', sans-serif; }
+        .font-lora { font-family: 'Lora', serif; }
+        .font-robotoslab { font-family: 'Roboto Slab', serif; }
+        
+        @keyframes gradientShift { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        @keyframes curtainSweep { 0% { transform: translateX(-50%) scale(1); opacity: 0.4; } 50% { transform: translateX(50%) scale(1.3); opacity: 0.7; } 100% { transform: translateX(-50%) scale(1); opacity: 0.4; } }
+        @keyframes floatOrb1 { 0%, 100% { transform: translate(0px, 0px) scale(1); } 50% { transform: translate(80px, -60px) scale(1.25); } }
+        @keyframes floatOrb2 { 0%, 100% { transform: translate(0px, 0px) scale(1); } 50% { transform: translate(-90px, 70px) scale(0.85); } }
+        @keyframes slideInRight { 0% { transform: translateX(100%); opacity: 0; } 100% { transform: translateX(0); opacity: 1; } }
 
-<style>
-body{
-  margin:0;
-  height:100vh;
-  overflow:hidden;
-  background:black;
-}
+        #particleCanvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 2; }
+        #persistentTitleCard { transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease-in-out; }
+        #displayBackgroundContainer { position: relative; overflow: hidden; flex: 1; display: flex; align-items: center; justify-content: center; padding: 3rem; }
+        #displayBackgroundContainer::after { content: ''; position: absolute; inset: 0; background: inherit; opacity: 0; transition: opacity 1.2s ease-in-out; pointer-events: none; z-index: 0; }
 
-/* background video */
-#bg{
-  position:fixed;
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  transition: opacity 0.8s ease;
-}
-  .background {
-    position: relative;
-    width: 100vw;
-    height: 100vh;
-    overflow: hidden;
-}
+        .title-card-hidden { transform: translateX(120%) translateY(0) !important; opacity: 0 !important; pointer-events: none; }
+        .animated-bg { background-size: 250% 250%; animation: gradientShift 15s ease infinite; position: relative; overflow: hidden; will-change: background-position; }
+        .animated-bg::before { content: ''; position: absolute; inset: -50%; background: radial-gradient(circle, rgba(255,255,255,0.12) 0%, transparent 65%); animation: curtainSweep 12s ease-in-out infinite alternate; pointer-events: none; will-change: transform, opacity; }
 
-#bg {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    z-index: 1;
-}
+        .ambient-orb-1 { position: absolute; top: -15%; left: -15%; width: 60vw; height: 60vw; background: radial-gradient(circle, rgba(255, 205, 0, 0.22) 0%, transparent 70%); border-radius: 50%; animation: floatOrb1 14s ease-in-out infinite; pointer-events: none; will-change: transform; z-index: 1; }
+        .ambient-orb-2 { position: absolute; bottom: -15%; right: -15%; width: 70vw; height: 70vw; background: radial-gradient(circle, rgba(255, 170, 0, 0.18) 0%, transparent 70%); border-radius: 50%; animation: floatOrb2 18s ease-in-out infinite; pointer-events: none; will-change: transform; z-index: 1; }
+        .title-card-enter { animation: slideInRight 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
 
-#logoOverlay {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-
-    width: 320px;       /* adjust */
-    opacity: .12;
-
-    pointer-events: none;
-    user-select: none;
-
-    z-index: 2;
-
-    animation: logoFadeIn 8s ease;
-}
-
-#lyrics {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-
-    width: 90vw;
-    max-width: 1200px;
-    padding: 20px;
-
-    color: white;
-    font-size: 4rem;
-    text-align: center;
-    text-shadow: 0 0 15px black;
-
-    white-space: pre-line;
-
-    z-index: 3;
-
-    opacity: 1;
-    transition: opacity .2s ease;
-}
-
-/* lyrics */
-#lyrics{
-  position:absolute;
-  top:50%;
-  left:50%;
-  transform:translate(-50%,-50%);
-  width:90vw;          /* add this */
-  max-width:1200px;    /* optional limit */
-  padding:20px;
-
-  color:white;
-  font-size:4rem;
-  text-align:center;
-  text-shadow:0 0 15px black;
-
-  white-space:pre-line;
-  opacity:1;
-  transition: opacity 0.2s ease;
-}
-
-/* fullscreen button */
-#fsbtn{
-  position:fixed;
-  top:10px;
-  right:10px;
-  z-index:9999;
-  padding:10px 15px;
-  font-size:14px;
-}
-
-@keyframes logoFadeIn {
-    from {
-        opacity: 0;
-        transform: translate(-50%, -50%) scale(0.95);
-    }
-
-    to {
-        opacity: 1; /* or 1 for fully visible */
-        transform: translate(-50%, -50%) scale(1);
-    }
-}
-</style>
+        /* Modal & UI Utility Classes */
+        .modal-overlay { position: fixed; inset: 0; background-color: rgba(2, 6, 23, 0.95); backdrop-filter: blur(12px); z-index: 50; display: flex; align-items: center; justify-content: center; padding: 1.5rem; }
+        .modal-box { background-color: #0f172a; border: 1px solid #1e293b; width: 100%; max-width: 24rem; border-radius: 1rem; padding: 1.5rem; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); color: #f1f5f9; text-align: center; }
+        .stage-msg-bar { position: absolute; top: 0; left: 0; right: 0; background-color: #ffcd00; color: #020617; padding: 0.75rem 2rem; font-weight: bold; font-size: 1rem; z-index: 30; transform: translateY(-100%); transition: transform 0.3s ease-in-out; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3); }
+        .qr-wrapper { background-color: #ffffff; padding: 1rem; border-radius: 0.75rem; display: inline-block; margin: 0.5rem auto; border: 4px solid #ffcd00; }
+        .code-box { background-color: #020617; border: 1px solid #334155; border-radius: 0.5rem; padding: 0.5rem; font-family: monospace; font-size: 11px; color: #34d399; word-break: break-all; user-select: all; text-align: left; }
+        .status-badge { display: flex; align-items: center; justify-content: center; space-x: 0.5rem; font-size: 0.75rem; color: #fbbf24; background-color: rgba(245, 158, 11, 0.1); padding: 0.625rem; border-radius: 0.5rem; border: 1px solid rgba(245, 158, 11, 0.2); }
+        .logo-state-box { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; background-color: #020617; z-index: 20; transition: opacity 0.5s ease; padding: 2rem; }
+        .black-state-box { position: absolute; inset: 0; background-color: #000000; z-index: 20; transition: opacity 0.5s ease; }
+        .persistent-badge { position: absolute; top: 2rem; right: 2rem; z-index: 20; text-align: right; padding: 1.25rem 1.25rem; border-right: 2px solid #ffffff; transition: all 0.5s ease; opacity: 0; transform: translateY(-10px); }
+        .lyrics-container-box { position: relative; z-index: 10; text-align: center; max-width: 72rem; margin: 0 auto; padding: 0 1rem; }
+        .footer-bar { background-color: #020617; border-top: 1px solid #090d16; padding: 0.625rem 1.5rem; display: flex; align-items: center; justify-content: space-between; font-size: 0.75rem; color: #64748b; z-index: 30; }
+        .hidden-element { display: none !important; }
+        
+        #displayLogoState, #displayBlackState, #displayAnnouncementState { transition: opacity 0.5s ease-in-out !important; }
+        .hidden-fade { opacity: 0 !important; pointer-events: none !important; }
+    </style>
 </head>
-
 <body>
-<!-- BACKGROUND -->
-<video id="bg" autoplay muted loop></video>
 
-<!-- Logo overlay hereee-->
-<img id="logoOverlay" src="logo.png" alt="Logo">
-  
-<!-- LYRICS -->
-<div id="lyrics">Loading...</div>
+    <!-- Connection Setup Modal with QR Code -->
+    <div id="connectionModal" class="modal-overlay">
+        <div class="modal-box">
+            <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                <div style="position: relative; display: flex; align-items: center; justify-content: center; width: 2rem; height: 2rem; border-radius: 9999px; border: 2px solid #ffcd00; background-color: #020617; flex-shrink: 0;">
+                    <span class="font-montserrat" style="font-weight: 900; font-size: 10px; color: #ffcd00; font-style: italic;">YA</span>
+                </div>
+                <h2 style="font-weight: bold; font-size: 1rem; color: #f1f5f9;">Display Station Pairing</h2>
+            </div>
 
-<!-- FULLSCREEN BUTTON -->
-<button id="fsbtn" onclick="goFullscreen()">Fullscreen</button>
+            <div class="qr-wrapper">
+                <div id="qrcodeCanvas"></div>
+            </div>
 
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+            <p style="font-size: 0.75rem; color: #cbd5e1;">Scan this QR Code using the controller device to pair instantly.</p>
 
-<script>
+            <div style="background-color: #020617; padding: 0.75rem; border-radius: 0.75rem; border: 1px solid #1e293b; text-align: left;">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.25rem;">
+                    <span style="font-size: 11px; font-weight: 600; color: #94a3b8;">Display ID Code:</span>
+                    <button onclick="copyDisplayCode()" style="font-size: 11px; color: #ffcd00; background: none; border: none; cursor: pointer; font-weight: 600;"><i class="fa-solid fa-copy" style="margin-right: 0.25rem;"></i>Copy</button>
+                </div>
+                <div id="displayCodeBox" class="code-box">Generating...</div>
+            </div>
 
-/* FULLSCREEN */
-function goFullscreen(){
-  document.getElementById("fsbtn").style.display = "none";
-  const elem = document.documentElement;
-  if (elem.requestFullscreen) elem.requestFullscreen();
-  else if (elem.webkitRequestFullscreen) elem.webkitRequestFullscreen();
-  else if (elem.msRequestFullscreen) elem.msRequestFullscreen();
-  
-}
+            <div id="connectionStatus" class="status-badge">
+                <i class="fa-solid fa-circle-notch" style="animation: spin 1s linear infinite;"></i>
+                <span>Waiting for Controller to connect...</span>
+            </div>
 
-/* FIREBASE CONFIG */
-const firebaseConfig = {
-  apiKey: "AIzaSyBTGuutbEEzmNg9Xd_dPly6DmG3hmW0hPE",
-  databaseURL: "https://worship-app-4ab68-default-rtdb.firebaseio.com",
-  projectId: "worship-app-4ab68"
-};
+            <div style="padding-top: 0.25rem;">
+                <button onclick="skipConnectionModalForLocalTest()" style="font-size: 0.75rem; color: #64748b; background: none; border: none; cursor: pointer; text-decoration: underline;">Standalone / Test Display</button>
+            </div>
+        </div>
+    </div>
 
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
+    <!-- Stage Message Overlay Bar (Top) -->
+    <div id="displayStageMsgBar" class="stage-msg-bar">
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <i class="fa-solid fa-bullhorn" style="font-size: 1.125rem;"></i>
+            <span id="displayStageMsgText">Stage Notice</span>
+        </div>
+        <button onclick="hideStageMessage()" style="font-size: 0.75rem; text-transform: uppercase; background-color: rgba(0,0,0,0.2); border: none; color: inherit; padding: 0.25rem 0.75rem; border-radius: 0.25rem; cursor: pointer;">Dismiss</button>
+    </div>
 
-/* LYRICS LISTENER (NEW SYSTEM) */
-const lyricsEl = document.getElementById("lyrics");
+    <!-- Main Presentation Screen Area -->
+    <div id="displayBackgroundContainer" class="animated-bg" style="background: linear-gradient(-45deg, #181402, #3d3200, #574800, #181402);">
+    
+        <!-- Background Layer 2 (Crossfade Target) -->
+        <div id="bgTransitionLayer" class="animated-bg" style="position: absolute; inset: 0; opacity: 0; transition: opacity 1000ms ease-in-out; pointer-events: none; background: linear-gradient(-45deg, #181402, #3d3200, #574800, #181402);"></div>
 
-db.ref("lyrics").on("value", (snap) => {
-  const text = snap.val() || "";
+        <!-- Particle Engine Canvas -->
+        <canvas id="particleCanvas"></canvas>
 
-  // fade out fast
-  lyricsEl.style.opacity = 0;
+        <div class="ambient-orb-1"></div>
+        <div class="ambient-orb-2"></div>
 
-  setTimeout(() => {
-    lyricsEl.innerHTML = text;
+        <!-- YA Worship Logo View State -->
+        <div id="displayLogoState" class="logo-state-box hidden-element">
+            <div style="position: relative; display: flex; align-items: center; justify-content: center; width: 12rem; height: 12rem; border-radius: 9999px; border: 4px solid #ffcd00; padding: 1rem; box-shadow: 0 0 50px rgba(255,205,0,0.3); background: linear-gradient(to bottom right, #451a03, #0f172a, #020617); margin-bottom: 1.5rem;">
+                <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
+                    <span class="font-montserrat" style="font-weight: 900; font-size: 5rem; color: #ffcd00; letter-spacing: -0.05em; line-height: 1; font-style: italic; filter: drop-shadow(0 10px 8px rgba(0,0,0,0.4));">YA</span>
+                    <span style="font-size: 0.75rem; font-weight: bold; color: #fde047; letter-spacing: 0.25em; text-transform: uppercase; margin-top: 0.5rem;">Ministry</span>
+                </div>
+            </div>
+            <h2 class="font-montserrat" style="font-size: 2.25rem; font-weight: 900; letter-spacing: 0.1em; color: #ffcd00; filter: drop-shadow(0 10px 8px rgba(0,0,0,0.4));">YA WORSHIP</h2>
+            <p style="font-size: 0.75rem; color: #94a3b8; margin-top: 0.5rem; text-transform: uppercase; letter-spacing: 0.3em; font-weight: 500;">Welcome & Prepare Your Hearts</p>
+        </div>
 
-    // fade in fast
-    lyricsEl.style.opacity = 1;
-  }, 150);
-});
+        <!-- Announcement Display View State -->
+        <div id="displayAnnouncementState" class="hidden-element" style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; background-color: rgba(2,6,23,0.95); z-index: 25; padding: 2rem;">
+            <div style="max-width: 50rem; max-height: 80vh; display: flex; flex-direction: column; align-items: center; gap: 1rem; text-align: center;">
+                <img id="displayAnnouncementImg" src="" style="max-height: 60vh; max-width: 100%; object-fit: contain; border-radius: 0.75rem; border: 4px solid #ffcd00; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);" class="hidden-element" />
+                <h2 id="displayAnnouncementTitle" style="font-size: 2rem; font-weight: bold; color: #ffcd00;"></h2>
+                <p id="displayAnnouncementDesc" style="font-size: 1.125rem; color: #e2e8f0; max-width: 40rem; line-height: 1.5;"></p>
+            </div>
+        </div>
 
-/* BACKGROUND SWITCHER */
-db.ref("bg").on("value", (snap) => {
-  const video = document.getElementById("bg");
-  const src = snap.val();
+        <!-- Black State -->
+        <div id="displayBlackState" class="black-state-box hidden-element"></div>
 
-  if (!src) return;
+        <!-- Persistent Song Title Badge -->
+        <div id="persistentTitleCard" class="persistent-badge">
+            <div id="persistentSongTitle" style="color: #ffffff; font-weight: bold; font-size: 1rem; letter-spacing: 0.025em;"></div>
+            <div id="persistentSongArtist" style="color: #94a3b8; font-weight: 300; font-size: 11px; letter-spacing: 0.05em;"></div>
+        </div>
 
-  video.style.opacity = 0;
+        <!-- Main Lyrics Box -->
+        <div id="displayLyricsContainer" class="lyrics-container-box" style="display: flex; flex-direction: column; gap: 0.75rem;">
+            <h3 id="displaySectionLabel" style="color: #ffcd00; font-weight: bold; text-transform: uppercase; letter-spacing: 0.1em; font-size: 1rem; margin-bottom: 0.5rem; opacity: 0.9;"></h3>
+            <div id="displayLyricsLinesContainer" class="font-montserrat" style="font-weight: bold; font-size: 3.5rem; color: #ffffff; letter-spacing: 0.025em; filter: drop-shadow(0 4px 16px rgba(0,0,0,0.9)); display: flex; flex-direction: column; gap: 0.5rem;">
+                <div>Waiting for Controller connection...</div>
+                <div>Scan QR Code with Device B to begin.</div>
+            </div>
+        </div>
+    </div>
 
-  setTimeout(() => {
-    video.src = src;
-    video.load();
+    <!-- Footer Status Bar -->
+    <div id="footerStatusBar" class="footer-bar hidden-element">
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <span id="connectionIndicatorDot" style="width: 0.625rem; height: 0.625rem; border-radius: 9999px; background-color: #f59e0b;" class="animate-pulse"></span>
+            <span id="connectionIndicatorText">Waiting for connection...</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 1rem;">
+            <button onclick="document.getElementById('connectionModal').classList.remove('hidden-element')" style="color: #ffcd00; background: none; border: none; cursor: pointer; text-decoration: underline;">Show QR / Code</button>
+            <span>Press F11 for Fullscreen</span>
+        </div>
+    </div>
 
-    video.oncanplay = () => {
-      video.play();
-      video.style.opacity = 1;
-    };
-  }, 300);
-});
-db.ref("logo").on("value", (snap) => {
-    const logo = document.getElementById("logoOverlay");
-    const file = snap.val();
+    <!-- PeerJS CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.1/peerjs.min.js"></script>
+    <!-- QRCode.js CDN for Generating QR Code -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    
+    <script>
+        let peer = null;
+        let conn = null;
+        let lastSlideKey = '';
 
-    if (file) {
-        logo.src = file;
-        logo.style.opacity = 0.15;
-    } else {
-        logo.style.opacity = 0;
-    }
-});
+        window.onload = function() {
+            initPeer();
+        };
 
-</script>
+        function initPeer() {
+            peer = new Peer({
+                host: 'yaworship-connection.onrender.com',
+                port: 443,
+                secure: true,
+                debug: 1
+            });
+            peer.on('open', (id) => {
+                document.getElementById('displayCodeBox').textContent = id;
+                document.getElementById('qrcodeCanvas').innerHTML = '';
+                new QRCode(document.getElementById('qrcodeCanvas'), {
+                    text: id,
+                    width: 160,
+                    height: 160,
+                    colorDark: "#020617",
+                    colorLight: "#ffffff",
+                    correctLevel: QRCode.CorrectLevel.H
+                });
+            });
 
+            peer.on('connection', (incomingConn) => {
+                conn = incomingConn;
+                setupConnectionHandlers();
+            });
+            peer.on('error', (err) => { console.error('Peer error:', err); });
+        }
+
+        function setupConnectionHandlers() {
+            document.getElementById('connectionStatus').innerHTML = `<i class="fa-solid fa-check-circle" style="color: #34d399; margin-right: 0.5rem;"></i><span style="color: #6ee7b7;">Connected to Controller!</span>`;
+            document.getElementById('connectionIndicatorDot').style.backgroundColor = "#10b981";
+            document.getElementById('connectionIndicatorDot').classList.remove('animate-pulse');
+            document.getElementById('connectionIndicatorText').textContent = "Connected to Controller";
+            
+            setTimeout(() => {
+                document.getElementById('connectionModal').classList.add('hidden-element');
+            }, 1000);
+
+            conn.on('data', (data) => {
+                if (data.type === 'STATE_UPDATE') renderDisplay(data.state);
+            });
+
+            conn.on('close', () => {
+                document.getElementById('connectionStatus').innerHTML = `<i class="fa-solid fa-triangle-exclamation" style="color: #fbbf24; margin-right: 0.5rem;"></i><span style="color: #fde047;">Disconnected. Waiting...</span>`;
+                document.getElementById('connectionIndicatorDot').style.backgroundColor = "#f59e0b";
+                document.getElementById('connectionIndicatorDot').classList.add('animate-pulse');
+                document.getElementById('connectionIndicatorText').textContent = "Disconnected";
+                document.getElementById('connectionModal').classList.remove('hidden-element');
+            });
+        }
+
+        function copyDisplayCode() {
+            const code = document.getElementById('displayCodeBox').textContent;
+            navigator.clipboard.writeText(code);
+            alert('Display ID copied!');
+        }
+
+        function skipConnectionModalForLocalTest() {
+            document.getElementById('connectionModal').classList.add('hidden-element');
+        }
+
+        function renderDisplay(state) {
+            const bgContainer = document.getElementById('displayBackgroundContainer');
+            const logoState = document.getElementById('displayLogoState');
+            const blackState = document.getElementById('displayBlackState');
+            const sectionLabel = document.getElementById('displaySectionLabel');
+            const lyricsLinesContainer = document.getElementById('displayLyricsLinesContainer');
+            const lyricsContainer = document.getElementById('displayLyricsContainer');
+            const persistentTitleCard = document.getElementById('persistentTitleCard');
+            const persistentSongTitle = document.getElementById('persistentSongTitle');
+            const persistentSongArtist = document.getElementById('persistentSongArtist');
+            const stageMsgBar = document.getElementById('displayStageMsgBar');
+            const stageMsgText = document.getElementById('displayStageMsgText');
+            // Inside renderDisplay(state):
+            const announcementState = document.getElementById('displayAnnouncementState');
+            const annImg = document.getElementById('displayAnnouncementImg');
+            const annTitle = document.getElementById('displayAnnouncementTitle');
+            const annDesc = document.getElementById('displayAnnouncementDesc');
+
+            if (state.isAnnouncementActive && state.announcementData) {
+                announcementState.classList.remove('hidden-element');
+                setTimeout(() => announcementState.style.opacity = '1', 10);
+                annTitle.textContent = state.announcementData.title || '';
+                annDesc.textContent = state.announcementData.description || '';
+                
+                if (state.announcementData.image) {
+                    annImg.src = state.announcementData.image;
+                    annImg.classList.remove('hidden-element');
+                } else {
+                    annImg.classList.add('hidden-element');
+                }
+            } else {
+                announcementState.style.opacity = '0';
+                setTimeout(() => {
+                    if (!state.isAnnouncementActive) announcementState.classList.add('hidden-element');
+                }, 500);
+            }
+
+            if (state.isBlackActive) {
+                blackState.classList.remove('hidden-element');
+                setTimeout(() => blackState.style.opacity = '1', 10);
+            } else {
+                blackState.style.opacity = '0';
+                setTimeout(() => {
+                    if (!state.isBlackActive) blackState.classList.add('hidden-element');
+                }, 500);
+            }
+
+            if (state.currentBackground) {
+                const newBgValue = state.currentBackground.value;
+                const transitionLayer = document.getElementById('bgTransitionLayer');
+
+                if (bgContainer.dataset.currentBg !== newBgValue) {
+                    bgContainer.dataset.currentBg = newBgValue;
+                    transitionLayer.style.background = newBgValue;
+                    transitionLayer.style.opacity = '1';
+
+                    setTimeout(() => {
+                        bgContainer.style.background = newBgValue;
+                        transitionLayer.style.opacity = '0';
+                    }, 1000);
+
+                    if (state.currentBackground.type === 'animated-gradient') {
+                        bgContainer.classList.add('animated-bg');
+                        transitionLayer.classList.add('animated-bg');
+                    } else {
+                        bgContainer.classList.remove('animated-bg');
+                        transitionLayer.classList.remove('animated-bg');
+                    }
+                }
+            }
+
+            if (state.isLogoActive) {
+                logoState.classList.remove('hidden-element');
+                setTimeout(() => logoState.style.opacity = '1', 10);
+            } else {
+                logoState.style.opacity = '0';
+                setTimeout(() => {
+                    if (!state.isLogoActive) logoState.classList.add('hidden-element');
+                }, 500);
+            }
+
+            if (state.activeSong) {
+                persistentSongTitle.textContent = state.activeSong.title;
+                persistentSongArtist.textContent = state.activeSong.artist;
+                persistentTitleCard.style.opacity = '1';
+                persistentTitleCard.style.transform = 'translateY(0)';
+            } else {
+                persistentTitleCard.style.opacity = '0';
+            }
+
+            if (state.isInstrumentalActive) {
+                lyricsContainer.style.transition = 'opacity 0.4s ease-out, transform 0.4s ease-out';
+                lyricsContainer.style.opacity = '0';
+                lyricsContainer.style.transform = 'scale(0.95)';
+            } else if (!state.isInstrumentalActive) {
+                lyricsContainer.style.transition = 'opacity 0.4s ease-in, transform 0.4s ease-in';
+                lyricsContainer.style.opacity = '1';
+                lyricsContainer.style.transform = 'scale(1)';
+            }
+
+            if (state.isF4Active || state.isLogoActive || state.isBlackActive || state.isAnnouncementActive) {
+                // If F4 is toggled ON, OR Logo, Black, or Announcement are active, hide the title card
+                persistentTitleCard.classList.add('title-card-hidden');
+                persistentTitleCard.style.opacity = '0';
+            } else if (state.activeSong) {
+                // Otherwise, only show it if a song is actively playing and F4 is OFF
+                persistentSongTitle.textContent = state.activeSong.title;
+                persistentSongArtist.textContent = state.activeSong.artist;
+                persistentTitleCard.classList.remove('title-card-hidden');
+                persistentTitleCard.style.opacity = '1';
+                persistentTitleCard.style.transform = 'translateY(0)';
+            } else {
+                persistentTitleCard.style.opacity = '0';
+            }
+            
+            if (state.currentBackground && state.currentBackground.particleMode) {
+                if (particleMode !== state.currentBackground.particleMode) {
+                    initParticles(state.currentBackground.particleMode);
+                }
+            }
+
+            if (state.stageMessage && state.stageMessage.trim() !== '') {
+                stageMsgText.textContent = state.stageMessage;
+                stageMsgBar.style.transform = 'translateY(0)';
+            } else {
+                stageMsgBar.style.transform = 'translateY(-100%)';
+            }
+
+            let selectedFontClass = state.activeSong?.fontFamily || 'font-montserrat';
+            const currentSlideKey = `${state.activeSong?.title || ''}-${state.activeSlideIndex}`;
+            
+            if (currentSlideKey !== lastSlideKey) {
+                lyricsContainer.style.transition = 'opacity 0.25s ease-out';
+                lyricsContainer.style.opacity = '0';
+
+                setTimeout(() => {
+                    if (state.flattenedSlides && state.flattenedSlides[state.activeSlideIndex]) {
+                        const currentSlide = state.flattenedSlides[state.activeSlideIndex];
+                        
+                        if (currentSlide.isTitleCard) {
+                            lyricsLinesContainer.className = `${selectedFontClass}`;
+                            lyricsLinesContainer.style.fontWeight = 'bold';
+                            lyricsLinesContainer.style.fontSize = '3rem';
+                            lyricsLinesContainer.style.color = '#fef08a';
+                            lyricsLinesContainer.innerHTML = `<div></div><div style="font-size: 1.125rem; color: #cbd5e1; font-weight: 300;"></div>`;
+                        } else {
+                            lyricsLinesContainer.className = `${selectedFontClass}`;
+                            lyricsLinesContainer.style.fontWeight = 'bold';
+                            lyricsLinesContainer.style.fontSize = '3.5rem';
+                            lyricsLinesContainer.style.color = '#ffffff';
+                            lyricsLinesContainer.innerHTML = `<div>${currentSlide.lyrics}</div>`;
+                        }
+
+                        setTimeout(() => {
+                            lyricsContainer.style.transition = 'opacity 0.35s ease-in';
+                            lyricsContainer.style.opacity = '1';
+                        }, 50);
+                    }
+                }, 250);
+
+                lastSlideKey = currentSlideKey;
+            }
+        }
+
+        function hideStageMessage() {
+            document.getElementById('displayStageMsgBar').style.transform = 'translateY(-100%)';
+        }
+
+        // --- Enhanced Particle Background Engine ---
+        const canvas = document.getElementById('particleCanvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        let particleMode = 'smooth';
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        function initParticles(mode) {
+            particleMode = mode;
+            particles = [];
+            let count = 45;
+            if (mode === 'fast') count = 75;
+            if (mode === 'flickery') count = 60;
+
+            for (let i = 0; i < count; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: mode === 'fast' ? Math.random() * 3.5 + 1.5 : Math.random() * 3 + 1,
+                    speedY: mode === 'fast' ? -(Math.random() * 3 + 1.5) : (mode === 'smooth' ? -(Math.random() * 0.5 + 0.2) : -(Math.random() * 1 + 0.5)),
+                    speedX: (Math.random() - 0.5) * (mode === 'fast' ? 1.2 : 0.4),
+                    opacity: Math.random() * 0.7 + 0.3,
+                    flickerSpeed: Math.random() * 0.05 + 0.01
+                });
+            }
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.y += p.speedY;
+                p.x += p.speedX;
+
+                if (particleMode === 'flickery') {
+                    p.opacity += (Math.random() - 0.5) * 0.1;
+                    if (p.opacity > 0.9) p.opacity = 0.9;
+                    if (p.opacity < 0.1) p.opacity = 0.1;
+                }
+
+                if (p.y < -10) p.y = canvas.height + 10;
+                if (p.x < 0) p.x = canvas.width;
+                if (p.x > canvas.width) p.x = 0;
+
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                
+                if (particleMode === 'fast') {
+                    ctx.fillStyle = `rgba(255, 220, 50, ${p.opacity})`;
+                    ctx.shadowBlur = 12;
+                    ctx.shadowColor = '#ffcd00';
+                } else if (particleMode === 'flickery') {
+                    ctx.fillStyle = `rgba(255, 255, 255, ${p.opacity})`;
+                    ctx.shadowBlur = 15;
+                    ctx.shadowColor = '#ffffff';
+                } else {
+                    ctx.fillStyle = `rgba(255, 205, 0, ${p.opacity * 0.6})`;
+                    ctx.shadowBlur = 6;
+                    ctx.shadowColor = '#ffcd00';
+                }
+                ctx.fill();
+            });
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+        initParticles('smooth');
+    </script>
 </body>
 </html>
