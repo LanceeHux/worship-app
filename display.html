@@ -95,7 +95,7 @@
                 <i class="fa-solid fa-circle-notch" style="animation: spin 1s linear infinite;"></i>
                 <span>Waiting for Controller to connect...</span>
             </div>
-
+            <button onclick="fullscreen()">FULLSCREEN</button>
             <div style="padding-top: 0.25rem;">
                 <button onclick="skipConnectionModalForLocalTest()" style="font-size: 0.75rem; color: #64748b; background: none; border: none; cursor: pointer; text-decoration: underline;">Standalone / Test Display</button>
             </div>
@@ -485,6 +485,13 @@
                 ctx.fill();
             });
             requestAnimationFrame(animateParticles);
+        }
+        function fullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+            } else {
+                document.exitFullscreen();
+            }
         }
         animateParticles();
         initParticles('smooth');
