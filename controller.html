@@ -1,559 +1,1216 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" style="height: 100%;">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Worship Controller & Manager</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProPresenter - Controller Suite (Device B)</title>
+    <!-- FontAwesome icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Expanded Google Fonts Collection -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=EB+Garamond:wght@600;700&family=Inter:wght@500;700&family=Lato:wght@700&family=Lora:ital,wght@0,600;1,600&family=Montserrat:wght@600;700;800&family=Oswald:wght@600;700&family=Playfair+Display:wght@600;700&family=Poppins:wght@600;700&family=Roboto+Slab:wght@700&display=swap" rel="stylesheet">
 
-<style>
-:root {
-  --accent: #ffcd00;
-  --accent-rgb: 255, 205, 0;
-  --bg: #09090b;
-  --panel: #121214;
-  --panel2: #1a1a1e;
-  --border: #2a2a30;
-  --text: #f4f4f5;
-  --text-muted: #a1a1aa;
-  --danger: #ef4444;
-  --success: #22c55e;
-}
+    <style>
+      /* Compact Offline Custom Stylesheet */
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      body { background-color: #020617; color: #f1f5f9; height: 100%; display: flex; flex-direction: column; overflow: hidden; font-family: 'Inter', sans-serif; user-select: none; }
 
-* { box-sizing: border-box; }
+      /* Church Typography Font Definitions */
+      .font-montserrat { font-family: 'Montserrat', sans-serif; }
+      .font-cinzel { font-family: 'Cinzel', serif; }
+      .font-playfair { font-family: 'Playfair Display', serif; }
+      .font-garamond { font-family: 'EB Garamond', serif; }
+      .font-inter { font-family: 'Inter', sans-serif; }
+      .font-poppins { font-family: 'Poppins', sans-serif; }
+      .font-oswald { font-family: 'Oswald', sans-serif; }
+      .font-lato { font-family: 'Lato', sans-serif; }
+      .font-lora { font-family: 'Lora', serif; }
+      .font-robotoslab { font-family: 'Roboto Slab', serif; }
+      .font-presentation { font-family: 'Montserrat', sans-serif; }
 
-body {
-  margin: 0;
-  background: var(--bg);
-  color: var(--text);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-  overflow-x: hidden;
-}
+      .slide-card:hover { transform: translateY(-2px); transition: all 0.2s ease; }
+      ::-webkit-scrollbar { width: 6px; height: 6px; }
+      ::-webkit-scrollbar-track { background: #1e293b; }
+      ::-webkit-scrollbar-thumb { background: #475569; border-radius: 3px; }
+      .no-scrollbar::-webkit-scrollbar { display: none; }
+      .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-/* TOPBAR */
-.topbar {
-  padding: 16px;
-  background: var(--panel);
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
+      /* UI Component Classes */
+      .header-bar { background-color: #0f172a; border-bottom: 1px solid #1e293b; padding: 0.5rem 1rem; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; flex-shrink: 0; z-index: 30; gap: 0.5rem; }
+      .mobile-tabs { display: flex; background-color: #0f172a; border-bottom: 1px solid #1e293b; font-size: 0.75rem; font-weight: bold; flex-shrink: 0; }
+      .main-workspace { flex: 1; position: relative; overflow: hidden; display: flex; flex-direction: column; background-color: #020617; }
+      @media (min-width: 1024px) { .main-workspace { flex-direction: row; } }
 
-.brand { font-weight: 700; font-size: 15px; display: flex; margin-left: 2px}
-.brand span { color: var(--accent); }
-.top-actions { display: flex; gap: 12px; align-items: center; }
+      .sidebar-pane { width: 100%; background-color: rgba(15, 23, 42, 0.9); border-right: 1px solid #1e293b; display: flex; flex-direction: column; flex-shrink: 0; height: 100%; position: absolute; inset: 0; z-index: 20; transition: transform 0.3s ease; }
+      @media (min-width: 1024px) { .sidebar-pane { width: 20rem; position: relative; z-index: auto; } }
 
-/* DESKTOP LAYOUT DEFINITION */
-.container { 
-  display: flex; 
-  height: calc(100vh - 54px); 
-}
+      .workspace-pane { flex: 1; display: flex; flex-direction: column; height: 100%; overflow: hidden; background-color: #020617; position: absolute; inset: 0; z-index: 10; display: none; }
+      @media (min-width: 1024px) { .workspace-pane { position: relative; z-index: auto; display: flex; } }
 
-/* LEFT PANEL (SONGS & BG) */
-.panel {
-  width: 320px;
-  background: var(--panel);
-  border-right: 1px solid var(--border);
-  padding: 20px;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
-
-.section-title {
-  color: var(--text-muted);
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
-  margin-bottom: 10px;
-}
-
-.song-list { display: flex; flex-direction: column; gap: 8px; }
-
-.cue {
-  width: 100%;
-  padding: 14px;
-  background: var(--panel2);
-  border: 1px solid var(--border);
-  color: var(--text);
-  border-radius: 8px;
-  cursor: pointer;
-  text-align: left;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 14px;
-}
-
-.cue:hover { border-color: var(--accent); }
-.cue .delete-song-btn { 
-  background: transparent; border: none; color: var(--text-muted); cursor: pointer; font-size: 16px; padding: 4px 8px;
-}
-.cue .delete-song-btn:hover { color: var(--danger); }
-
-/* BACKGROUND GRAPHICS */
-.bg-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-.bg-thumb {
-  background: var(--panel2); border: 1px solid var(--border); border-radius: 6px;
-  cursor: pointer; overflow: hidden; height: 55px; padding: 0; width: 100%;
-}
-.bg-thumb:hover, .bg-thumb.active { border-color: var(--accent); }
-.bg-thumb video { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
-
-/* CENTER WORKSPACE */
-.workspace { flex: 1; padding: 24px; overflow-y: auto; }
-#songTitle { color: var(--accent); font-size: 20px; font-weight: 700; margin-bottom: 20px; }
-
-.part-section { margin-bottom: 24px; }
-.part-title { color: var(--accent); font-weight: 600; margin-bottom: 10px; font-size: 13px; letter-spacing: 0.5px; }
-.lyrics-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-
-.lyric-box {
-  min-height: 80px; background: var(--panel2); border: 1px solid var(--border); border-radius: 8px;
-  display: flex; align-items: center; justify-content: center; text-align: center;
-  padding: 14px; cursor: pointer; font-size: 15px; font-weight: 500; transition: all 0.15s;
-}
-.lyric-box:hover { border-color: var(--accent); }
-.lyric-box.active { border-color: var(--accent); background: rgba(var(--accent-rgb), 0.1); }
-
-/* RIGHT PANEL (MONITOR) */
-.main { width: 340px; background: var(--panel); border-left: 1px solid var(--border); padding: 24px; display: flex; flex-direction: column; gap: 12px; }
-.main.hidden { display: none !important; }
-.preview-wrapper { position: relative; width: 100%; height: 200px; background: black; border-radius: 8px; border: 1px solid var(--border); overflow: hidden; }
-.preview-video { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; opacity: 0.5; }
-.preview-text { position: absolute; z-index: 2; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; font-size: 18px; font-weight: bold; padding: 12px; text-shadow: 0 2px 4px black; }
-
-/* MODAL / OVERLAY FOR CREATING SONGS */
-.modal {
-  display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-  background: rgba(0,0,0,0.8); z-index: 10000; align-items: center; justify-content: center;
-}
-.modal-content {
-  background: var(--panel); border: 1px solid var(--border); border-radius: 12px;
-  width: 95%; max-width: 600px; max-height: 90vh; padding: 20px; overflow-y: auto;
-}
-.modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-.modal-title { font-size: 18px; font-weight: bold; color: var(--accent); }
-
-/* FORMS */
-input, select, textarea {
-  width: 100%; background: var(--panel2); border: 1px solid var(--border);
-  color: var(--text); padding: 12px; border-radius: 6px; margin-bottom: 12px; font-family: inherit; font-size: 14px;
-}
-input:focus, select:focus, textarea:focus { border-color: var(--accent); outline: none; }
-.btn {
-  padding: 12px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; border: 1px solid transparent; font-size: 14px;
-}
-.btn-primary { background: var(--accent); color: black; }
-.btn-secondary { background: transparent; border-color: var(--border); color: var(--text); }
-.btn-danger { background: var(--danger); color: white; }
-
-.creator-part-row {
-  border: 1px solid var(--border); padding: 12px; border-radius: 6px; margin-bottom: 12px; background: rgba(255,255,255,0.01);
-}
-
-/* TOGGLE DESIGN */
-.switch-label { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-muted); cursor: pointer; }
-.switch { position: relative; width: 34px; height: 18px; background: var(--panel2); border: 1px solid var(--border); border-radius: 9px; }
-.switch::after { content: ''; position: absolute; width: 12px; height: 12px; background: var(--text-muted); border-radius: 50%; top: 2px; left: 2px; transition: 0.2s; }
-input:checked + .switch { background: rgba(var(--accent-rgb), 0.3); border-color: var(--accent); }
-input:checked + .switch::after { left: 18px; background: var(--accent); }
-
-/* ==========================================================
-   MOBILE & TABLET RESPONSIVE FIXES
-   ========================================================== */
-@media (max-width: 900px) {
-  body {
-    overflow-y: auto; /* Allow full page scroll down on phones */
-  }
-
-  .container {
-    flex-direction: column;
-    height: auto; /* Unbind strict viewport limits */
-  }
-
-  /* Stack panels on top of each other */
-  .panel, .workspace, .main {
-    width: 100% !important;
-    height: auto !important;
-    border-right: none;
-    border-left: none;
-    border-bottom: 1px solid var(--border);
-    padding: 16px;
-  }
-
-  /* Order layouts chronologically for mobile workflows */
-  .panel { order: 2; }       /* Song List & Backgrounds go second */
-  .workspace { order: 1; }   /* Active Performance workspace stays right at the top! */
-  .main { order: 3; }        /* Live Monitor goes to the bottom */
-
-  /* Make lyrics easier to tap on portrait touchscreens */
-  .lyrics-grid {
-    grid-template-columns: repeat(2, 1fr); /* Single column layout on small screens */
-    gap: 8px;
-  }
-
-  .lyric-box {
-    min-height: 70px;
-    font-size: 16px; /* Slightly larger text target */
-    padding: 16px;
-  }
-}
-.logo {
-  display: flex;
-  align-items: center;
-  height: 32px;         /* Match this to your desired text height */
-}
-
-/* 3. Control the actual image size */
-.logo img {
-  height: 100%;         /* Fills the 32px height of the .logo div */
-  width: auto;          /* Automatically calculates correct width aspect ratio */
-  display: block;
-}
-  .part-section.collapsed .lyrics-grid {
-  display: none;
-}
-.part-title {
-  cursor: pointer;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.toggle-icon {
-  font-size: 10px;
-  transition: transform 0.2s;
-}
-.collapsed .toggle-icon {
-  transform: rotate(-90deg);
-}
-  .preview-text {
-  transition: opacity 0.5s ease-in-out;
-  opacity: 1;
-}
-
-.preview-text.fade-out {
-  opacity: 0;
-}
-</style>
+      .btn-brand { background-color: #ffcd00; color: #020617; font-weight: bold; border: none; cursor: pointer; transition: background 0.2s; }
+      .btn-brand:hover { background-color: #e5b800; }
+      .input-dark { background-color: #020617; border: 1px solid #1e293b; border-radius: 0.5rem; padding: 0.5rem 0.75rem; font-size: 0.75rem; color: #f1f5f9; outline: none; }
+      .input-dark:focus { border-color: #ffcd00; }
+      .modal-backdrop { position: fixed; inset: 0; background-color: rgba(2, 6, 23, 0.8); backdrop-filter: blur(4px); z-index: 50; display: flex; align-items: center; justify-content: center; padding: 1rem; }
+      .modal-card { background-color: #0f172a; border: 1px solid #1e293b; width: 100%; max-width: 28rem; border-radius: 1rem; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; }
+      .hidden-element { display: none !important; }
+    </style>
 </head>
 <body>
 
-<div class="topbar">
-  <div class="brand"><div class="logo"><img src="https://uploads.onecompiler.io/44ryuxscs/1781186652765/yalogo.png"/></div><span>WORSHIP</span> CONTROL</div>
-  <div class="top-actions">
-    <button class="btn btn-primary" style="padding: 6px 12px; font-size: 13px;" onclick="openSongCreator()">+ New Song</button>
-    <label class="switch-label">
-      <span>Monitor</span>
-      <input type="checkbox" id="previewToggle" checked style="display:none;" onchange="togglePreview()">
-      <div class="switch"></div>
-    </label>
-  </div>
-</div>
+    <!-- Top Navigation & Connection Bar -->
+    <header class="header-bar">
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <div style="position: relative; display: flex; align-items: center; justify-content: center; width: 2.5rem; height: 2.5rem; border-radius: 9999px; border: 2px solid #ffcd00; background-color: #020617; flex-shrink: 0;">
+                <span class="font-montserrat" style="font-weight: 900; font-size: 0.75rem; color: #ffcd00; font-style: italic;">YA</span>
+            </div>
+            <div>
+                <h1 style="font-weight: bold; font-size: 0.75rem; letter-spacing: 0.025em; color: #f1f5f9;">YA WORSHIP <span style="color: #ffcd00; font-weight: 300;">CONTROLLER</span></h1>
+                <p style="font-size: 10px; color: #94a3b8;">Live Lyrics Operator & Fellowship Suite</p>
+            </div>
+        </div>
 
-<div class="container">
-  <div class="panel">
-    <div>
-      <div class="section-title">Song Database</div>
-      <div class="song-list" id="songList">
-        <p style="color: var(--text-muted); font-size: 12px;">Loading songs...</p>
-      </div>
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <div id="connectionBadge" class="hidden-element" style="display: none; align-items: center; gap: 0.5rem; background-color: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.2); padding: 0.375rem 0.75rem; border-radius: 0.5rem; font-size: 0.75rem; font-weight: 600; color: #fbbf24;">
+                <span style="width: 0.5rem; height: 0.5rem; border-radius: 9999px; background-color: #f59e0b;" class="animate-pulse"></span>
+                <span id="connectionBadgeText">Disconnected</span>
+            </div>
+            <button onclick="openConnectModal()" class="btn-brand" style="padding: 0.375rem 0.75rem; border-radius: 0.5rem; font-size: 0.75rem; display: flex; align-items: center; gap: 0.375rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);">
+                <i class="fa-solid fa-link"></i><span>Connect</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Mobile Navigation Toggle Tabs -->
+    <div class="mobile-tabs lg:hidden">
+        <button onclick="switchMobileView('sidebar')" id="mobileNavSidebar" style="flex: 1; padding: 0.625rem; color: #ffcd00; border-bottom: 2px solid #ffcd00; text-align: center; background: none; border-top: none; border-left: none; border-right: none; cursor: pointer;"><i class="fa-solid fa-book-open" style="margin-right: 0.25rem;"></i> Library & Queue</button>
+        <button onclick="switchMobileView('workspace')" id="mobileNavWorkspace" style="flex: 1; padding: 0.625rem; color: #94a3b8; border-bottom: 2px solid transparent; text-align: center; background: none; border-top: none; border-left: none; border-right: none; cursor: pointer;"><i class="fa-solid fa-photo-film" style="margin-right: 0.25rem;"></i> Slides & Live</button>
     </div>
 
-    <div>
-      <div class="section-title">Media Overlays</div>
-      <div class="bg-grid">
-        <button class="bg-thumb" id="bg-bg2.mp4" onclick="setBG('bg2.mp4')">
-          <video muted autoplay loop><source src="bg2.mp4" type="video/mp4"></video>
-        </button>
-        <button class="bg-thumb" id="bg-lv_0_20260611103641.mp4" onclick="setBG('lv_0_20260611103641.mp4')">
-          <video muted autoplay loop><source src="lv_0_20260611103641.mp4" type="video/mp4"></video>
-        </button>
-        <button class="bg-thumb" id="bg-14122662_1920_1080_24fps.mp4" onclick="setBG('14122662_1920_1080_24fps.mp4')">
-          <video muted autoplay loop><source src="14122662_1920_1080_24fps.mp4" type="video/mp4"></video>
-        </button>
-        <button class="bg-thumb" id="lv_0_20260613233647.mp4" onclick="setBG('lv_0_20260613233647.mp4')">
-          <video muted autoplay loop><source src="lv_0_20260613233647.mp4" type="video/mp4"></video>
-        </button>
-        <button class="bg-thumb" id="estate1.mp4" onclick="setBG('estate1.mp4')">
-          <video muted autoplay loop><source src="estate1.mp4" type="video/mp4"></video>
-        </button>
-        <button class="bg-thumb" id="estate2.mp4" onclick="setBG('estate2.mp4')">
-          <video muted autoplay loop><source src="estate2.mp4" type="video/mp4"></video>
-        </button>
-        <button class="bg-thumb" id="estate3.mp4" onclick="setBG('estate3.mp4')">
-          <video muted autoplay loop><source src="estate3.mp4" type="video/mp4"></video>
-        </button>
-        <button class="bg-thumb" onclick="setLogo('Edit 1 - May 23.png')">
-            <img src="logo.png" alt="Logo">
-        </button>
-        <button class="bg-thumb" onclick="setLogo('none.png')">
-            <img src="logo.png" alt="Logo">
-        </button>
-      </div>
-      <button class="btn btn-secondary" style="width:100%; margin-top:8px; padding:6px;" onclick="setBG('')">Clear Background</button>
+    <!-- Main Controller Workspace -->
+    <main class="main-workspace">
+
+        <!-- Left Sidebar: Song Library, Playlist & Announcements -->
+        <aside id="mobileSidebarPane" class="sidebar-pane">
+            <div style="display: flex; border-bottom: 1px solid #1e293b; background-color: rgba(15, 23, 42, 0.5);">
+                <button onclick="switchSidebarTab('library')" id="tabLibrary" style="flex: 1; padding: 0.6rem; font-size: 11px; font-weight: bold; color: #ffcd00; border-bottom: 2px solid #ffcd00; background: none; border-top: none; border-left: none; border-right: none; cursor: pointer; transition: all 0.2s;">
+                    <i class="fa-solid fa-book-open" style="margin-right: 0.25rem;"></i> Library
+                </button>
+                <button onclick="switchSidebarTab('playlist')" id="tabPlaylist" style="flex: 1; padding: 0.6rem; font-size: 11px; font-weight: bold; color: #94a3b8; border-bottom: 2px solid transparent; background: none; border-top: none; border-left: none; border-right: none; cursor: pointer; transition: all 0.2s;">
+                    <i class="fa-solid fa-list-check" style="margin-right: 0.25rem;"></i> Queue (<span id="playlistCount">0</span>)
+                </button>
+                <button onclick="switchSidebarTab('announcements')" id="tabAnnouncements" style="flex: 1; padding: 0.6rem; font-size: 11px; font-weight: bold; color: #94a3b8; border-bottom: 2px solid transparent; background: none; border-top: none; border-left: none; border-right: none; cursor: pointer; transition: all 0.2s;">
+                    <i class="fa-solid fa-bullhorn" style="margin-right: 0.25rem;"></i> Notices
+                </button>
+            </div>
+
+            <!-- Tab 1: Library Content -->
+            <div id="sidebarLibrary" style="flex: 1; display: flex; flex-direction: column; overflow: hidden; padding: 0.75rem; gap: 0.75rem;">
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <div style="position: relative; flex: 1;">
+                        <i class="fa-solid fa-search" style="position: absolute; left: 0.75rem; top: 0.625rem; color: #94a3b8; font-size: 0.75rem;"></i>
+                        <input type="text" id="songSearch" placeholder="Search songs..." oninput="filterSongs()" class="input-dark" style="width: 100%; padding-left: 2rem; padding-right: 0.75rem;">
+                    </div>
+                    <button onclick="openSongEditorModal()" class="btn-brand" style="padding: 0.5rem 0.625rem; border-radius: 0.5rem; font-size: 0.75rem; display: flex; align-items: center; gap: 0.25rem;" title="Add New Song">
+                        <i class="fa-solid fa-plus"></i><span>New</span>
+                    </button>
+                    <button onclick="openImportModal()" style="background-color: #1e293b; color: #ffcd00; border: none; padding: 0.5rem 0.625rem; border-radius: 0.5rem; font-size: 0.75rem; cursor: pointer;" title="Import Song Data">
+                        <i class="fa-solid fa-file-import"></i>
+                    </button>
+                </div>
+
+                <div id="songListContainer" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 0.375rem; padding-right: 0.25rem;"></div>
+            </div>
+
+            <!-- Tab 2: Playlist Content -->
+            <div id="sidebarPlaylist" class="hidden-element" style="flex: 1; display: flex; flex-direction: column; overflow: hidden; padding: 0.75rem; gap: 0.75rem;">
+                <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.25rem;">
+                    <span style="font-size: 0.75rem; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em;">Service Order (<span id="playlistCount">0</span>)</span>
+                    <div style="display: flex; align-items: center; gap: 0.375rem;">
+                        <button onclick="exportAllPlaylist()" style="font-size: 10px; color: #ffcd00; background: none; border: none; cursor: pointer; font-weight: bold;" title="Export Full Setlist & Songs"><i class="fa-solid fa-file-arrow-up mr-1"></i>Export Set</button>
+                        <button onclick="openImportPlaylistModal()" style="font-size: 10px; color: #34d399; background: none; border: none; cursor: pointer; font-weight: bold;" title="Import Setlist Package"><i class="fa-solid fa-file-arrow-down mr-1"></i>Import Set</button>
+                        <button onclick="clearPlaylist()" style="font-size: 10px; color: #fb7185; background: none; border: none; cursor: pointer;">Clear</button>
+                    </div>
+                </div>
+                <div id="playlistContainer" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 0.5rem; padding-right: 0.25rem;"></div>
+            </div>
+
+            <!-- Tab 3: Announcements Content -->
+            <div id="sidebarAnnouncements" class="hidden-element" style="flex: 1; display: flex; flex-direction: column; overflow: hidden; padding: 0.75rem; gap: 0.75rem;">
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                    <span style="font-size: 0.75rem; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em;">Poster & Text Notices</span>
+                    <button onclick="openAnnouncementModal()" style="font-size: 11px; color: #ffcd00; background: none; border: none; cursor: pointer; font-weight: bold;"><i class="fa-solid fa-plus mr-1"></i>New Notice</button>
+                </div>
+                <div id="announcementsListContainer" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 0.5rem; padding-right: 0.25rem;"></div>
+            </div>
+        </aside>
+
+
+        <!-- Center: Slide Grid & Live Presentation View -->
+        <div id="mobileWorkspacePane" class="workspace-pane">
+
+            <!-- Live Output Status Mini Bar -->
+            <div style="background-color: #0f172a; border-bottom: 1px solid #1e293b; padding: 0.5rem 1rem; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;">
+                <div style="display: flex; align-items: center; gap: 0.75rem; overflow: hidden;">
+                    <span style="display: inline-flex; align-items: center; padding: 0.125rem 0.625rem; border-radius: 0.25rem; font-size: 10px; font-weight: bold; background-color: rgba(255,205,0,0.1); color: #ffcd00; border: 1px solid rgba(255,205,0,0.2); flex-shrink: 0;">
+                        <span style="width: 0.375rem; height: 0.375rem; border-radius: 9999px; background-color: #ffcd00; margin-right: 0.375rem;" class="animate-pulse"></span> LIVE
+                    </span>
+                    <span id="currentActiveSongLabel" style="font-size: 0.75rem; font-weight: 500; color: #cbd5e1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">No song selected</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 0.375rem; flex-shrink: 0;">
+                    <button onclick="sendClear('logo')" style="padding: 0.25rem 0.5rem; border-radius: 0.25rem; background-color: #1e293b; color: #cbd5e1; border: none; font-size: 11px; cursor: pointer;">Logo</button>
+                    <button onclick="sendClear('instrumental')" style="padding: 0.25rem 0.5rem; border-radius: 0.25rem; background-color: #1e293b; color: #cbd5e1; border: none; font-size: 11px; cursor: pointer;" title="Fade lyrics for instrumental moments">Inst</button>
+                    <button onclick="sendClear('f4')" id="btnF4Toggle" style="padding: 0.25rem 0.5rem; border-radius: 0.25rem; background-color: #1e293b; color: #cbd5e1; border: none; font-size: 11px; cursor: pointer;" title="Press F4 to toggle lyrics fade">F4</button>
+                    <button onclick="sendClear('black')" style="padding: 0.25rem 0.5rem; border-radius: 0.25rem; background-color: #1e293b; color: #cbd5e1; border: none; font-size: 11px; cursor: pointer;">Clear</button>
+                    <button onclick="sendClear('clear')" style="padding: 0.25rem 0.5rem; border-radius: 0.25rem; background-color: rgba(225,29,72,0.2); color: #fda4af; border: 1px solid rgba(244,63,94,0.3); font-size: 11px; cursor: pointer;">Reset</button>
+                </div>
+            </div>
+
+            <!-- Main Slide Workspace -->
+            <div style="flex: 1; display: flex; flex-direction: column; overflow: hidden; padding: 0.75rem 1rem;">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem; flex-shrink: 0;">
+                    <div style="min-width: 0; padding-right: 0.5rem;">
+                        <h2 id="activeSongTitle" style="font-size: 0.875rem; font-weight: bold; color: #f1f5f9; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Select a song</h2>
+                        <p id="activeSongArtist" style="font-size: 11px; color: #94a3b8; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">Choose any song to view slides.</p>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem; flex-shrink: 0;">
+                        <button onclick="triggerFirstSlide()" style="background-color: #1e293b; color: #e2e8f0; border: none; padding: 0.375rem 0.625rem; border-radius: 0.5rem; font-size: 0.75rem; font-weight: 600; cursor: pointer;">
+                            <i class="fa-solid fa-backward-step" style="margin-right: 0.25rem;"></i> Start
+                        </button>
+                        <button onclick="openExportModal()" id="btnExportActive" class="hidden-element" style="background-color: #1e293b; color: #ffcd00; border: none; padding: 0.375rem 0.625rem; border-radius: 0.5rem; font-size: 0.75rem; font-weight: 600; cursor: pointer;" title="Export Song Sequence">
+                            <i class="fa-solid fa-share-nodes" style="margin-right: 0.25rem;"></i> Export
+                        </button>
+                        <button onclick="editCurrentSong()" id="btnEditActive" class="hidden-element" style="background-color: #1e293b; color: #ffcd00; border: none; padding: 0.375rem 0.625rem; border-radius: 0.5rem; font-size: 0.75rem; font-weight: 600; cursor: pointer;">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Quick Section Jump Bar -->
+                <div id="quickJumpBar" class="hidden-element no-scrollbar" style="display: flex; align-items: center; gap: 0.375rem; overflow-x: auto; padding: 0.5rem 0; margin-bottom: 0.5rem; border-top: 1px solid rgba(30,41,59,0.8); border-bottom: 1px solid rgba(30,41,59,0.8); flex-shrink: 0;">
+                    <span style="font-size: 10px; font-weight: bold; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; flex-shrink: 0; margin-right: 0.25rem;"><i class="fa-solid fa-bolt" style="color: #ffcd00; margin-right: 0.25rem;"></i>Jump:</span>
+                    <div id="quickJumpButtons" style="display: flex; align-items: center; gap: 0.375rem; flex-shrink: 0;"></div>
+                </div>
+
+                <!-- Slide Grid -->
+                <div id="slideGridContainer" style="flex: 1; overflow-y: auto; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem; padding-right: 0.5rem; padding-bottom: 5rem;">
+                    <div style="grid-column: span 2 / span 2; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 3rem; border: 2px dashed #1e293b; border-radius: 0.75rem;">
+                        <i class="fa-solid fa-music" style="color: #475569; font-size: 2.25rem; margin-bottom: 0.75rem;"></i>
+                        <h3 style="font-size: 0.75rem; font-weight: 600; color: #94a3b8;">No Song Loaded</h3>
+                        <p style="font-size: 0.75rem; color: #64748b; margin-top: 0.25rem; max-width: 20rem;">Pick a song from the library tab to view slides.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Control Bar -->
+            <div style="background-color: #0f172a; border-top: 1px solid #1e293b; padding: 0.625rem; flex-shrink: 0; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem;">
+
+                <!-- Component 1: Particle Types Control -->
+                <div style="display: flex; align-items: center; gap: 0.5rem; overflow-x: auto; padding: 0.25rem 0;">
+                    <span style="font-size: 11px; font-weight: bold; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; flex-shrink: 0;"><i class="fa-solid fa-snowflake" style="margin-right: 0.25rem; color: #ffcd00;"></i> Particles:</span>
+                    <div style="display: flex; align-items: center; gap: 0.375rem; flex-shrink: 0;">
+                        <button onclick="setParticleMode('smooth')" style="padding: 0.25rem 0.5rem; border-radius: 0.25rem; background-color: #1e293b; border: 1px solid #334155; font-size: 0.75rem; color: #e2e8f0; cursor: pointer;">🍃 Smooth / Slow</button>
+                        <button onclick="setParticleMode('fast')" style="padding: 0.25rem 0.5rem; border-radius: 0.25rem; background-color: #1e293b; border: 1px solid #334155; font-size: 0.75rem; color: #e2e8f0; cursor: pointer;">⚡ Fast</button>
+                        <button onclick="setParticleMode('flickery')" style="padding: 0.25rem 0.5rem; border-radius: 0.25rem; background-color: #1e293b; border: 1px solid #334155; font-size: 0.75rem; color: #e2e8f0; cursor: pointer;">✨ Flickery</button>
+                    </div>
+                </div>
+
+                <!-- Component 2: Gradient Colors Control -->
+                <div style="display: flex; align-items: center; gap: 0.5rem; overflow-x: auto; padding: 0.25rem 0;">
+                    <span style="font-size: 11px; font-weight: bold; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; flex-shrink: 0;"><i class="fa-solid fa-palette" style="margin-right: 0.25rem; color: #ffcd00;"></i> Colors:</span>
+                    <div style="display: flex; align-items: center; gap: 0.375rem; flex-shrink: 0;">
+                        <!-- Warm & Golden Palette -->
+                        <button onclick="setBackgroundGradient('linear-gradient(-45deg, #181402, #3d3200, #574800, #181402)')" style="padding: 0.25rem 0.5rem; border-radius: 0.25rem; background-color: rgba(255,205,0,0.1); border: 1px solid rgba(255,205,0,0.4); font-size: 0.75rem; color: #ffcd00; cursor: pointer;">Golden</button>
+                        <button onclick="setBackgroundGradient('linear-gradient(-45deg, #3d1200, #78280f, #b45309, #1c0a00)')" style="padding: 0.25rem 0.5rem; border-radius: 0.25rem; background-color: rgba(217,119,6,0.2); border: 1px solid rgba(245,158,11,0.5); font-size: 0.75rem; color: #fde047; cursor: pointer;">Praise Fire</button>
+                        <button onclick="setBackgroundGradient('linear-gradient(-45deg, #2a1000, #522000, #803903, #1f0b00)')" style="padding: 0.25rem 0.5rem; border-radius: 0.25rem; background-color: rgba(180,83,9,0.2); border: 1px solid rgba(217,119,6,0.5); font-size: 0.75rem; color: #fbbf24; cursor: pointer;">Amber Glow</button>
+
+                        <!-- Deep Reverence & Reflection -->
+                        <button onclick="setBackgroundGradient('linear-gradient(-45deg, #0f172a, #312e81, #4c1d95, #0f172a)')" style="padding: 0.25rem 0.5rem; border-radius: 0.25rem; background-color: #1e1b4b; border: 1px solid rgba(99,102,241,0.5); font-size: 0.75rem; color: #c7d2fe; cursor: pointer;">Aurora</button>
+                        <button onclick="setBackgroundGradient('linear-gradient(-45deg, #581c87, #831843, #4c1d95, #0f172a)')" style="padding: 0.25rem 0.5rem; border-radius: 0.25rem; background-color: #3b0764; border: 1px solid rgba(168,85,247,0.5); font-size: 0.75rem; color: #e9d5ff; cursor: pointer;">Velvet</button>
+                        <button onclick="setBackgroundGradient('linear-gradient(-45deg, #2e1065, #3b0764, #701a75, #0f172a)')" style="padding: 0.25rem 0.5rem; border-radius: 0.25rem; background-color: #581c87; border: 1px solid rgba(192,132,252,0.5); font-size: 0.75rem; color: #f5d0fe; cursor: pointer;">Royal Grace</button>
+
+                        <!-- Calm & Soaking Worship -->
+                        <button onclick="setBackgroundGradient('linear-gradient(-45deg, #022c22, #065f46, #0d9488, #0f172a)')" style="padding: 0.25rem 0.5rem; border-radius: 0.25rem; background-color: #022c22; border: 1px solid rgba(20,184,166,0.5); font-size: 0.75rem; color: #99f6e4; cursor: pointer;">Emerald</button>
+                        <button onclick="setBackgroundGradient('linear-gradient(-45deg, #032b45, #075985, #0284c7, #021726)')" style="padding: 0.25rem 0.5rem; border-radius: 0.25rem; background-color: #0c4a6e; border: 1px solid rgba(56,189,248,0.5); font-size: 0.75rem; color: #bae6fd; cursor: pointer;">Ocean Deep</button>
+                        <button onclick="setBackgroundGradient('linear-gradient(-45deg, #082f49, #0f172a, #1e293b, #020617)')" style="padding: 0.25rem 0.5rem; border-radius: 0.25rem; background-color: #0f172a; border: 1px solid rgba(148,163,184,0.5); font-size: 0.75rem; color: #e2e8f0; cursor: pointer;">Midnight</button>
+
+                        <!-- Passion & Communion -->
+                        <button onclick="setBackgroundGradient('linear-gradient(-45deg, #450a0a, #7f1d1d, #9f1239, #1c0505)')" style="padding: 0.25rem 0.5rem; border-radius: 0.25rem; background-color: #881337; border: 1px solid rgba(244,63,94,0.5); font-size: 0.75rem; color: #fecdd3; cursor: pointer;">Crimson</button>
+                        <button onclick="setBackgroundGradient('linear-gradient(-45deg, #701a75, #831843, #9f1239, #2e1065)')" style="padding: 0.25rem 0.5rem; border-radius: 0.25rem; background-color: #831843; border: 1px solid rgba(244,114,182,0.5); font-size: 0.75rem; color: #fbcfe8; cursor: pointer;">Rose Bloom</button>
+                    </div>
+                </div>
+
+                <div style="display: flex; align-items: center; gap: 0.5rem; flex: 1; max-width: 20rem;">
+                    <input type="text" id="stageMessageInput" placeholder="Stage notice..." onkeydown="if(event.key==='Enter') sendStageMessage()" class="input-dark" style="flex: 1; padding: 0.375rem 0.625rem;">
+                    <button onclick="sendStageMessage()" class="btn-brand" style="padding: 0.375rem 0.75rem; border-radius: 0.5rem; font-size: 0.75rem; flex-shrink: 0;">Send</button>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Connection Modal -->
+    <div id="connectModal" class="modal-backdrop hidden-element">
+        <div class="modal-card">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+                <h3 style="font-size: 0.875rem; font-weight: bold; color: #f1f5f9; display: flex; align-items: center;"><i class="fa-solid fa-link" style="color: #ffcd00; margin-right: 0.5rem;"></i>Connect to Display (Device A)</h3>
+                <button onclick="closeConnectModal()" style="color: #94a3b8; background: none; border: none; cursor: pointer;"><i class="fa-solid fa-xmark" style="font-size: 1.125rem;"></i></button>
+            </div>
+
+            <button onclick="startQrScanner()" style="width: 100%; background-color: #1e293b; color: #ffcd00; border: 1px solid rgba(255,205,0,0.3); padding: 0.625rem; border-radius: 0.5rem; font-size: 0.75rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                <i class="fa-solid fa-qrcode" style="font-size: 0.875rem;"></i>
+                <span>Scan QR Code with Camera</span>
+            </button>
+
+            <div style="display: flex; align-items: center; padding: 0.25rem 0;">
+                <div style="flex-grow: 1; border-top: 1px solid #1e293b;"></div>
+                <span style="flex-shrink: 0; margin: 0 0.75rem; font-size: 10px; color: #64748b; text-transform: uppercase; font-weight: 600;">Or Enter Display ID</span>
+                <div style="flex-grow: 1; border-top: 1px solid #1e293b;"></div>
+            </div>
+
+            <div>
+                <input type="text" id="targetPeerIdInput" placeholder="Paste Display ID here..." class="input-dark" style="width: 100%; font-family: monospace; color: #34d399;">
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; gap: 0.5rem; padding-top: 0.5rem;">
+                <button onclick="closeConnectModal()" style="background-color: #1e293b; color: #cbd5e1; border: none; padding: 0.5rem 1rem; border-radius: 0.5rem; font-size: 0.75rem; font-weight: 600; cursor: pointer;">Cancel</button>
+                <button onclick="connectToDisplay()" class="btn-brand" style="padding: 0.5rem 1.25rem; border-radius: 0.5rem; font-size: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);">Connect Now</button>
+            </div>
+        </div>
     </div>
-  </div>
 
-  <div class="workspace">
-    <div id="songTitle">Select a song from the library</div>
-    <div id="partsContainer"></div>
-  </div>
-
-  <div class="main" id="previewPanel">
-    <div class="section-title">Live Engine Monitor</div>
-    <div id="bgInfo" style="font-size: 12px; color: var(--text-muted)">Background: Off</div>
-    <div class="preview-wrapper">
-      <video id="previewVideo" class="preview-video" muted autoplay loop style="display:none;"></video>
-      <div class="preview-text" id="preview">Ready</div>
+    <!-- QR Scanner Camera Modal -->
+    <div id="qrScannerModal" class="modal-backdrop hidden-element">
+        <div class="modal-card" style="text-align: center; max-width: 22rem;">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+                <h3 style="font-size: 0.75rem; font-weight: bold; color: #f1f5f9; display: flex; align-items: center;"><i class="fa-solid fa-qrcode" style="color: #ffcd00; margin-right: 0.5rem;"></i>Scan Display QR Code</h3>
+                <button onclick="closeQrScannerModal()" style="color: #94a3b8; background: none; border: none; cursor: pointer;"><i class="fa-solid fa-xmark" style="font-size: 1.125rem;"></i></button>
+            </div>
+            <div id="reader" style="overflow: hidden; border-radius: 0.75rem; border: 2px solid #ffcd00; background-color: #000000;"></div>
+            <p style="font-size: 0.75rem; color: #94a3b8;">Point your camera at the QR code on Device A display.</p>
+        </div>
     </div>
-    <button class="btn btn-danger" style="padding:6px;" onclick="clearLyrics()">Clear Screen</button>
-  </div>
-</div>
 
-<div class="modal" id="creatorModal">
-  <div class="modal-content">
-    <div class="modal-header">
-      <div class="modal-title">Create New Song Entry</div>
-      <button class="btn btn-secondary" style="padding:4px 8px;" onclick="closeSongCreator()">✕</button>
+    <!-- Song Editor Modal -->
+    <div id="songEditorModal" class="modal-backdrop hidden-element">
+        <div class="modal-card" style="max-width: 40rem; max-height: 90vh; overflow: hidden; padding: 0;">
+            <div style="padding: 1rem 1.5rem; border-bottom: 1px solid #1e293b; display: flex; align-items: center; justify-content: space-between;">
+                <h3 id="modalSongTitle" style="font-size: 0.875rem; font-weight: bold; color: #f1f5f9;">Add / Edit Song</h3>
+                <button onclick="closeSongEditorModal()" style="color: #94a3b8; background: none; border: none; cursor: pointer;"><i class="fa-solid fa-xmark" style="font-size: 1.125rem;"></i></button>
+            </div>
+
+            <div style="padding: 1.5rem; overflow-y: auto; display: flex; flex-direction: column; gap: 1rem; flex: 1;">
+                <input type="hidden" id="editSongId">
+                <div style="display: grid; grid-template-columns: repeat(1, minmax(0, 1fr)); gap: 1rem;">
+                    <div>
+                        <label style="display: block; font-size: 0.75rem; font-weight: 600; color: #94a3b8; margin-bottom: 0.25rem; text-transform: uppercase; letter-spacing: 0.05em;">Song Title</label>
+                        <input type="text" id="inputSongTitle" placeholder="e.g. Way Maker" class="input-dark" style="width: 100%;">
+                    </div>
+                    <div>
+                        <label style="display: block; font-size: 0.75rem; font-weight: 600; color: #94a3b8; margin-bottom: 0.25rem; text-transform: uppercase; letter-spacing: 0.05em;">Artist / Author</label>
+                        <input type="text" id="inputSongArtist" placeholder="e.g. Leeland" class="input-dark" style="width: 100%;">
+                    </div>
+                </div>
+
+                <div>
+                  <label style="display: block; font-size: 0.75rem; font-weight: 600; color: #94a3b8; margin-bottom: 0.25rem; text-transform: uppercase; letter-spacing: 0.05em;">Church Presentation Font Style</label>
+                  <select id="inputSongFont" class="input-dark" style="width: 100%;" onchange="this.className = 'input-dark ' + this.value">
+                      <option value="font-montserrat" class="font-montserrat" style="background-color: #0f172a; color: #f1f5f9; padding: 0.25rem;">Montserrat — Modern / Contemporary Worship</option>
+                      <option value="font-poppins" class="font-poppins" style="background-color: #0f172a; color: #f1f5f9; padding: 0.25rem;">Poppins — Clean Bold & Geometric</option>
+                      <option value="font-inter" class="font-inter" style="background-color: #0f172a; color: #f1f5f9; padding: 0.25rem;">Inter — High Legibility Screen Display</option>
+                      <option value="font-lato" class="font-lato" style="background-color: #0f172a; color: #f1f5f9; padding: 0.25rem;">Lato — Warm & Balanced Sans</option>
+                      <option value="font-oswald" class="font-oswald" style="background-color: #0f172a; color: #f1f5f9; padding: 0.25rem;">Oswald — Compact Tall Bold Title</option>
+                      <option value="font-cinzel" class="font-cinzel" style="background-color: #0f172a; color: #f1f5f9; padding: 0.25rem;">Cinzel — Classic Classical / Traditional Hymns</option>
+                      <option value="font-playfair" class="font-playfair" style="background-color: #0f172a; color: #f1f5f9; padding: 0.25rem;">Playfair Display — Elegant & Reverent</option>
+                      <option value="font-garamond" class="font-garamond" style="background-color: #0f172a; color: #f1f5f9; padding: 0.25rem;">EB Garamond — Traditional Liturgical Serifs</option>
+                      <option value="font-lora" class="font-lora" style="background-color: #0f172a; color: #f1f5f9; padding: 0.25rem;">Lora — Contemporary Literary Serif</option>
+                      <option value="font-robotoslab" class="font-robotoslab" style="background-color: #0f172a; color: #f1f5f9; padding: 0.25rem;">Roboto Slab — Strong & Readable Slab Serif</option>
+                  </select>
+                </div>
+
+                <div>
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.25rem;">
+                        <label style="font-size: 0.75rem; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em;">Song Sections & Lyrics</label>
+                        <button onclick="addSectionEditorRow()" style="font-size: 0.75rem; color: #ffcd00; background: none; border: none; cursor: pointer; font-weight: 600;"><i class="fa-solid fa-plus" style="margin-right: 0.25rem;"></i>Add Section</button>
+                    </div>
+                    <div id="sectionsEditorContainer" style="display: flex; flex-direction: column; gap: 0.75rem;"></div>
+                </div>
+            </div>
+
+            <div style="padding: 1rem 1.5rem; border-top: 1px solid #1e293b; background-color: rgba(15,23,42,0.5); display: flex; align-items: center; justify-content: flex-end; gap: 0.75rem;">
+                <button onclick="closeSongEditorModal()" style="background-color: #1e293b; color: #cbd5e1; border: none; padding: 0.5rem 1rem; border-radius: 0.5rem; font-size: 0.75rem; font-weight: 600; cursor: pointer;">Cancel</button>
+                <button onclick="saveSongFromModal()" class="btn-brand" style="padding: 0.5rem 1.25rem; border-radius: 0.5rem; font-size: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);">Save Song</button>
+            </div>
+        </div>
     </div>
-    
-    <label class="section-title">Song Title</label>
-    <input type="text" id="newSongTitle" placeholder="e.g., Way Maker">
 
-    <div class="section-title" style="margin-top:20px; display:flex; justify-content:space-between; align-items:center;">
-      <span>Arrangement Elements</span>
-      <button class="btn btn-secondary" style="padding:4px 8px; font-size:11px;" onclick="addPartRow()">+ Add Part</button>
+    <!-- Export Song Sequence Modal -->
+    <div id="exportModal" class="modal-backdrop hidden-element">
+        <div class="modal-card">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+                <h3 style="font-size: 0.875rem; font-weight: bold; color: #f1f5f9; display: flex; align-items: center;"><i class="fa-solid fa-share-nodes" style="color: #ffcd00; margin-right: 0.5rem;"></i>Export Song Data</h3>
+                <button onclick="closeExportModal()" style="color: #94a3b8; background: none; border: none; cursor: pointer;"><i class="fa-solid fa-xmark" style="font-size: 1.125rem;"></i></button>
+            </div>
+            <p style="font-size: 0.75rem; color: #94a3b8;">Copy the JSON song sequence string or download a `.json` file to import into another YA Worship device.</p>
+
+            <div>
+                <label style="display: block; font-size: 0.75rem; font-weight: 600; color: #cbd5e1; margin-bottom: 0.25rem; text-transform: uppercase; letter-spacing: 0.05em;">Song JSON String</label>
+                <textarea id="exportJsonTextarea" rows="6" readonly class="input-dark" style="width: 100%; font-family: monospace; color: #ffcd00; resize: none; user-select: all;"></textarea>
+            </div>
+
+            <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.5rem; padding-top: 0.5rem;">
+                <button onclick="downloadSongJson()" style="background-color: #1e293b; color: #e2e8f0; border: none; padding: 0.5rem 0.875rem; border-radius: 0.5rem; font-size: 0.75rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 0.375rem;">
+                    <i class="fa-solid fa-download"></i><span>Download .JSON File</span>
+                </button>
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <button onclick="closeExportModal()" style="background-color: #1e293b; color: #cbd5e1; border: none; padding: 0.5rem 1rem; border-radius: 0.5rem; font-size: 0.75rem; font-weight: 600; cursor: pointer;">Close</button>
+                    <button onclick="copyExportJson()" class="btn-brand" style="padding: 0.5rem 1rem; border-radius: 0.5rem; font-size: 0.75rem; display: flex; align-items: center; gap: 0.375rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);">
+                        <i class="fa-solid fa-copy"></i><span>Copy String</span>
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
-    
-    <div id="modalPartsContainer"></div>
 
-    <div style="display:flex; gap:12px; justify-content:flex-end; margin-top:20px;">
-      <button class="btn btn-secondary" onclick="closeSongCreator()">Cancel</button>
-      <button class="btn btn-primary" onclick="saveSongToFirebase()">Save to Library</button>
+    <!-- Import Song Sequence Modal -->
+    <div id="importModal" class="modal-backdrop hidden-element">
+        <div class="modal-card">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+                <h3 style="font-size: 0.875rem; font-weight: bold; color: #f1f5f9; display: flex; align-items: center;"><i class="fa-solid fa-file-import" style="color: #ffcd00; margin-right: 0.5rem;"></i>Import Song Data</h3>
+                <button onclick="closeImportModal()" style="color: #94a3b8; background: none; border: none; cursor: pointer;"><i class="fa-solid fa-xmark" style="font-size: 1.125rem;"></i></button>
+            </div>
+            <p style="font-size: 0.75rem; color: #94a3b8;">Paste a YA Worship JSON string below OR select a downloaded `.json` file to load into your library.</p>
+
+            <div>
+                <label style="display: block; font-size: 0.75rem; font-weight: 600; color: #cbd5e1; margin-bottom: 0.25rem; text-transform: uppercase; letter-spacing: 0.05em;">Select JSON File</label>
+                <input type="file" id="importFileInput" accept=".json" onchange="handleFileImport(event)" class="input-dark" style="width: 100%; padding: 0.375rem;">
+            </div>
+
+            <div>
+                <label style="display: block; font-size: 0.75rem; font-weight: 600; color: #cbd5e1; margin-bottom: 0.25rem; text-transform: uppercase; letter-spacing: 0.05em;">Or Paste JSON String</label>
+                <textarea id="importJsonTextarea" rows="5" placeholder="Paste JSON song payload here..." class="input-dark" style="width: 100%; resize: none; font-family: monospace;"></textarea>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; gap: 0.5rem; padding-top: 0.5rem;">
+                <button onclick="closeImportModal()" style="background-color: #1e293b; color: #cbd5e1; border: none; padding: 0.5rem 1rem; border-radius: 0.5rem; font-size: 0.75rem; font-weight: 600; cursor: pointer;">Cancel</button>
+                <button onclick="processJsonImport()" class="btn-brand" style="padding: 0.5rem 1.25rem; border-radius: 0.5rem; font-size: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);">Import Song</button>
+            </div>
+        </div>
     </div>
-  </div>
-</div>
 
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+    <!-- Import Full Playlist / Set Modal -->
+    <div id="importPlaylistModal" class="modal-backdrop hidden-element">
+        <div class="modal-card">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+                <h3 style="font-size: 0.875rem; font-weight: bold; color: #f1f5f9; display: flex; align-items: center;"><i class="fa-solid fa-file-arrow-down" style="color: #34d399; margin-right: 0.5rem;"></i>Import Worship Set Package</h3>
+                <button onclick="closeImportPlaylistModal()" style="color: #94a3b8; background: none; border: none; cursor: pointer;"><i class="fa-solid fa-xmark" style="font-size: 1.125rem;"></i></button>
+            </div>
+            <p style="font-size: 0.75rem; color: #94a3b8;">Upload or paste a exported worship set JSON file to load all songs and service order automatically.</p>
 
-<script>
-const firebaseConfig = {
-  apiKey: "AIzaSyBTGuutbEEzmNg9Xd_dPly6DmG3hmW0hPE",
-  databaseURL: "https://worship-app-4ab68-default-rtdb.firebaseio.com",
-  projectId: "worship-app-4ab68"
-};
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
+            <div>
+                <label style="display: block; font-size: 0.75rem; font-weight: 600; color: #cbd5e1; margin-bottom: 0.25rem; text-transform: uppercase;">Select Set JSON File</label>
+                <input type="file" id="importPlaylistFileInput" accept=".json" onchange="handlePlaylistFileImport(event)" class="input-dark" style="width: 100%; padding: 0.375rem;">
+            </div>
 
-let globalSongsStore = {};
+            <div>
+                <label style="display: block; font-size: 0.75rem; font-weight: 600; color: #cbd5e1; margin-bottom: 0.25rem; text-transform: uppercase;">Or Paste Set JSON String</label>
+                <textarea id="importPlaylistJsonTextarea" rows="5" placeholder="Paste set package payload here..." class="input-dark" style="width: 100%; resize: none; font-family: monospace;"></textarea>
+            </div>
 
-/* TOGGLE MONITOR LAYER */
-function togglePreview() {
-  document.getElementById("previewPanel").classList.toggle("hidden", !document.getElementById("previewToggle").checked);
-}
-
-/* LIVE DB SONGS LOADER */
-db.ref("songbook").on("value", (snap) => {
-  const listEl = document.getElementById("songList");
-  listEl.innerHTML = "";
-  globalSongsStore = snap.val() || {};
-  
-  const keys = Object.keys(globalSongsStore);
-  if(keys.length === 0) {
-    listEl.innerHTML = `<p style="color:var(--text-muted); font-size:12px;">No songs in cloud database.</p>`;
-    return;
-  }
-
-  keys.forEach(key => {
-    const item = globalSongsStore[key];
-    const button = document.createElement("div");
-    button.className = "cue";
-    button.setAttribute("onclick", `renderActiveSong('${key}')`);
-    button.innerHTML = `
-      <span>${item.title}</span>
-      <button class="delete-song-btn" onclick="event.stopPropagation(); deleteSong('${key}')">🗑</button>
-    `;
-    listEl.appendChild(button);
-  });
-});
-
-/* DISPLAY ACTIVE TRACK CONTROL GRIDS */
-function renderActiveSong(firebaseKey) {
-  const song = globalSongsStore[firebaseKey];
-  document.getElementById("songTitle").innerText = song.title;
-  
-  const container = document.getElementById("partsContainer");
-  container.innerHTML = "";
-
-  if(!song.parts) return;
-
-  song.parts.forEach(part => {
-    const section = document.createElement("div");
-    section.className = "part-section";
-
-    const title = document.createElement("div");
-    title.className = "part-title";
-    // Add the title and a toggle arrow
-    title.innerHTML = `<span>${part.name}</span> <span class="toggle-icon">▼</span>`;
-    
-    // Toggle logic
-    title.onclick = () => {
-      section.classList.toggle("collapsed");
-    };
-    
-    section.appendChild(title);
-
-    const grid = document.createElement("div");
-    grid.className = "lyrics-grid";
-
-    part.lyrics.forEach(line => {
-  const box = document.createElement("div");
-  box.className = "lyric-box" + (line === "" ? " blank-box" : "");
-  box.innerText = line === "" ? "(Instrumental)" : line;
-  
-  box.onclick = (e) => {
-    e.stopPropagation();
-    // Pass an empty string if it's an instrumental to "clear" the screen
-    db.ref("lyrics").set(line === "" ? "" : line);
-  };
-  grid.appendChild(box);
-});
-
-    section.appendChild(grid);
-    container.appendChild(section);
-  });
-}
-
-/* CREATOR FORM LOGIC */
-function openSongCreator() {
-  document.getElementById("modalPartsContainer").innerHTML = "";
-  document.getElementById("newSongTitle").value = "";
-  addPartRow(); // Default with one structure panel open
-  document.getElementById("creatorModal").style.display = "flex";
-}
-
-function closeSongCreator() {
-  document.getElementById("creatorModal").style.display = "none";
-}
-
-function addPartRow() {
-  const container = document.getElementById("modalPartsContainer");
-  const div = document.createElement("div");
-  div.className = "creator-part-row";
-  div.innerHTML = `
-    <div style="display:flex; gap:8px; margin-bottom:8px;">
-      <select class="part-type-select" style="width:40%; margin-bottom:0;">
-        <option value="Verse 1">Verse 1</option>
-        <option value="Verse 2">Verse 2</option>
-        <option value="Verse 3">Verse 3</option>
-        <option value="Chorus">Chorus</option>
-        <option value="Chorus 2">Chorus 2</option>
-        <option value="Bridge">Bridge</option>
-        <option value="Pre-Chorus">Pre-Chorus</option>
-        <option value="Vamp / Outro">Vamp / Outro</option>
-      </select>
-      <button class="btn btn-danger" style="padding:0 12px;" onclick="this.parentElement.parentElement.remove()">Remove</button>
+            <div style="display: flex; justify-content: flex-end; gap: 0.5rem; padding-top: 0.5rem;">
+                <button onclick="closeImportPlaylistModal()" style="background-color: #1e293b; color: #cbd5e1; border: none; padding: 0.5rem 1rem; border-radius: 0.5rem; font-size: 0.75rem; font-weight: 600; cursor: pointer;">Cancel</button>
+                <button onclick="processPlaylistJsonImport()" style="background-color: #34d399; color: #020617; border: none; padding: 0.5rem 1.25rem; border-radius: 0.5rem; font-size: 0.75rem; font-weight: bold; cursor: pointer;">Load Set Package</button>
+            </div>
+        </div>
     </div>
-    <textarea class="part-lyrics-input" rows="3" placeholder="Enter lyrics here. Press Enter to separate presentation blocks/lines."></textarea>
-  `;
-  container.appendChild(div);
-}
 
-function saveSongToFirebase() {
-  const title = document.getElementById("newSongTitle").value.trim();
-  if(!title) return alert("Please specify a song title");
+    <!-- Announcement Editor Modal -->
+    <div id="announcementModal" class="modal-backdrop hidden-element">
+        <div class="modal-card">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+                <h3 style="font-size: 0.875rem; font-weight: bold; color: #f1f5f9; display: flex; align-items: center;"><i class="fa-solid fa-bullhorn" style="color: #ffcd00; margin-right: 0.5rem;"></i>Create Announcement Slide</h3>
+                <button onclick="closeAnnouncementModal()" style="color: #94a3b8; background: none; border: none; cursor: pointer;"><i class="fa-solid fa-xmark" style="font-size: 1.125rem;"></i></button>
+            </div>
 
-  const partRows = document.querySelectorAll(".creator-part-row");
-  const partsArray = [];
+            <div>
+                <label style="display: block; font-size: 0.75rem; font-weight: 600; color: #cbd5e1; margin-bottom: 0.25rem; text-transform: uppercase;">Notice Title / Header</label>
+                <input type="text" id="announcementTitleInput" placeholder="e.g. Youth Camp 2026" class="input-dark" style="width: 100%;">
+            </div>
 
-  partRows.forEach(row => {
-    const type = row.querySelector(".part-type-select").value;
-    const linesText = row.querySelector(".part-lyrics-input").value;
-    
-    // Split lyrics by line breaks, sanitizing whitespace gaps
-    const lyrics = linesText.split("\n").map(l => l.trim());
-    
-    if(lyrics.length > 0) {
-      partsArray.push({ name: type, lyrics: lyrics });
-    }
-  });
+            <div>
+                <label style="display: block; font-size: 0.75rem; font-weight: 600; color: #cbd5e1; margin-bottom: 0.25rem; text-transform: uppercase;">Description / Text Details</label>
+                <textarea id="announcementDescInput" rows="3" placeholder="Optional details or text content..." class="input-dark" style="width: 100%; resize: none;"></textarea>
+            </div>
 
-  if(partsArray.length === 0) return alert("Add at least one segment containing lyrics.");
+            <div>
+                <label style="display: block; font-size: 0.75rem; font-weight: 600; color: #cbd5e1; margin-bottom: 0.25rem; text-transform: uppercase;">Upload Poster Image (Optional)</label>
+                <input type="file" id="announcementImageInput" accept="image/*" class="input-dark" style="width: 100%; padding: 0.375rem;">
+            </div>
 
-  db.ref("songbook").push({
-    title: title,
-    parts: partsArray
-  }).then(() => {
-    closeSongCreator();
-  });
-}
+            <div style="display: flex; justify-content: flex-end; gap: 0.5rem; padding-top: 0.5rem;">
+                <button onclick="closeAnnouncementModal()" style="background-color: #1e293b; color: #cbd5e1; border: none; padding: 0.5rem 1rem; border-radius: 0.5rem; font-size: 0.75rem; font-weight: 600; cursor: pointer;">Cancel</button>
+                <button onclick="saveAnnouncement()" class="btn-brand" style="padding: 0.5rem 1.25rem; border-radius: 0.5rem; font-size: 0.75rem;">Publish Notice</button>
+            </div>
+        </div>
+    </div>
 
-function deleteSong(key) {
-  if(confirm("Permanently erase this track profile from the database?")) {
-    db.ref(`songbook/${key}`).remove();
-    document.getElementById("songTitle").innerText = "Select a song from the library";
-    document.getElementById("partsContainer").innerHTML = "";
-  }
-}
+    <!-- PeerJS CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.1/peerjs.min.js"></script>
+    <!-- HTML5 QR Code Reader CDN -->
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 
-/* OUTBOUND ENGINE MUTATORS */
-function setBG(name) { db.ref("bg").set(name); }
-function clearLyrics() { db.ref("lyrics").set(""); }
+    <script>
+        let songs = [
+            {
+                id: 'song-1',
+                title: 'Way Maker',
+                artist: 'Leeland',
+                fontFamily: 'font-montserrat',
+                sections: [
+                    { type: 'Verse 1', lyrics: 'You are here, moving in our midst\nI worship You, I worship You' },
+                    { type: 'Chorus', lyrics: 'Way Maker, Miracle Worker, Promise Keeper\nLight in the darkness, my God\nThat is who You are' }
+                ]
+            }
+        ];
 
-/* LIVE MONITOR MIRROR SYNC */
-db.ref("lyrics").on("value", (snap) => {
-  const currentText = snap.val() || "";
-  document.getElementById("preview").innerText = currentText || "--- Blackout ---";
-  document.querySelectorAll(".lyric-box").forEach(el => {
-    el.classList.toggle("active", el.innerText === currentText);
-  });
-});
+        let playlist = ['song-1'];
+        let announcements = [];
+        let activeSongId = null;
+        let activeSlideIndex = 0;
+        let currentBackground = { type: 'animated-gradient', value: 'linear-gradient(-45deg, #181402, #3d3200, #574800, #181402)' };
+        let isLogoActive = false;
+        let isBlackActive = false;
+        let isInstrumentalActive = false;
+        let isF4Active = false;
+        let isAnnouncementActive = false;
+        let activeAnnouncementData = null;
+        let currentParticleMode = 'smooth';
+        let flattenedSlides = [];
 
-db.ref("bg").on("value", (snap) => {
-  const bgName = snap.val();
-  const videoElement = document.getElementById("previewVideo");
-  const bgInfoText = document.getElementById("bgInfo");
-  document.querySelectorAll(".bg-thumb").forEach(el => el.classList.remove("active"));
-  
-  if (bgName) {
-    bgInfoText.innerText = "Background Layer: " + bgName;
-    videoElement.src = bgName;
-    videoElement.style.display = "block";
-    const thumbMatch = document.getElementById("bg-" + bgName);
-    if(thumbMatch) thumbMatch.classList.add("active");
-  } else {
-    bgInfoText.innerText = "Background Layer: Off";
-    videoElement.style.display = "none";
-    videoElement.src = "";
-  }
-});
-  db.ref("lyrics").on("value", (snap) => {
-  const currentText = snap.val() || "";
-  const previewEl = document.getElementById("preview");
+        let peer = null;
+        let conn = null;
+        let html5QrCode = null;
 
-  // Trigger fade
-  previewEl.classList.add("fade-out");
+        window.onload = function() {
+            loadFromLocalStorage();
+            loadAnnouncements();
+            renderSongList();
+            renderPlaylist();
+            renderAnnouncementsList();
+            if (playlist.length > 0) selectSong(playlist[0]);
+            initPeer();
+        };
 
-  setTimeout(() => {
-    previewEl.innerText = currentText || "--- Blackout ---";
-    previewEl.classList.remove("fade-out");
-  }, 250); // Matches half the CSS transition duration for a smooth cut
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'F4') {
+                e.preventDefault();
+                sendClear('f4');
+            }
+        });
 
-  // Update active state...
-  document.querySelectorAll(".lyric-box").forEach(el => {
-    el.classList.toggle("active", el.innerText === (currentText === "" ? "(Instrumental)" : currentText));
-  });
-});
-  function setLogo(file) {
-    db.ref("logo").set(file);
-}
-</script>
+        function initPeer() {
+            peer = new Peer({
+                host: 'yaworship-connection.onrender.com',
+                port: 443,
+                secure: true,
+                debug: 1
+            });
+            peer.on('open', (id) => { console.log('Controller Peer ID:', id); });
+        }
+
+        function openConnectModal() { document.getElementById('connectModal').classList.remove('hidden-element'); }
+        function closeConnectModal() { document.getElementById('connectModal').classList.add('hidden-element'); }
+
+        function startQrScanner() {
+            closeConnectModal();
+            document.getElementById('qrScannerModal').classList.remove('hidden-element');
+
+            html5QrCode = new Html5Qrcode("reader");
+            html5QrCode.start(
+                { facingMode: "environment" },
+                { fps: 10, qrbox: { width: 220, height: 220 } },
+                (decodedText) => {
+                    document.getElementById('targetPeerIdInput').value = decodedText;
+                    closeQrScannerModal();
+                    connectToDisplay();
+                },
+                (errorMessage) => { /* scanning */ }
+            ).catch(err => {
+                alert("Camera access denied or unavailable.");
+                closeQrScannerModal();
+            });
+        }
+
+        function closeQrScannerModal() {
+            if (html5QrCode) {
+                html5QrCode.stop().then(() => {
+                    html5QrCode.clear();
+                    document.getElementById('qrScannerModal').classList.add('hidden-element');
+                }).catch(() => {
+                    document.getElementById('qrScannerModal').classList.add('hidden-element');
+                });
+            } else {
+                document.getElementById('qrScannerModal').classList.add('hidden-element');
+            }
+        }
+
+        function connectToDisplay() {
+            const targetId = document.getElementById('targetPeerIdInput').value.trim();
+            if (!targetId) { alert('Please enter or scan a Display Peer ID.'); return; }
+            conn = peer.connect(targetId);
+            conn.on('open', () => {
+                const badge = document.getElementById('connectionBadge');
+                badge.style.display = 'flex';
+                badge.style.backgroundColor = 'rgba(16,185,129,0.1)';
+                badge.style.borderColor = 'rgba(16,185,129,0.2)';
+                badge.style.color = '#34d399';
+                document.getElementById('connectionBadgeText').textContent = "Display Connected";
+                closeConnectModal();
+                broadcastState();
+            });
+        }
+
+        function broadcastState() {
+            if (conn && conn.open) {
+                const state = {
+                    activeSongId,
+                    activeSlideIndex,
+                    currentBackground,
+                    activeSong: songs.find(s => s.id === activeSongId),
+                    flattenedSlides,
+                    stageMessage: document.getElementById('stageMessageInput').value,
+                    isLogoActive,
+                    isBlackActive,
+                    isInstrumentalActive,
+                    isF4Active,
+                    isAnnouncementActive,
+                    announcementData: activeAnnouncementData
+                };
+                conn.send({ type: 'STATE_UPDATE', state });
+            }
+        }
+
+        function saveToLocalStorage() {
+            localStorage.setItem('prop_songs', JSON.stringify(songs));
+            localStorage.setItem('prop_playlist', JSON.stringify(playlist));
+        }
+
+        function loadFromLocalStorage() {
+            const savedSongs = localStorage.getItem('prop_songs');
+            const savedPlaylist = localStorage.getItem('prop_playlist');
+            if (savedSongs) songs = JSON.parse(savedSongs);
+            if (savedPlaylist) playlist = JSON.parse(savedPlaylist);
+        }
+
+        function loadAnnouncements() {
+            const saved = localStorage.getItem('prop_announcements');
+            if (saved) announcements = JSON.parse(saved);
+        }
+
+        function saveAnnouncementsStorage() {
+            localStorage.setItem('prop_announcements', JSON.stringify(announcements));
+        }
+
+        function switchSidebarTab(tab) {
+            const btnLib = document.getElementById('tabLibrary');
+            const tabLibContent = document.getElementById('sidebarLibrary');
+            const btnPlay = document.getElementById('tabPlaylist');
+            const tabPlayContent = document.getElementById('sidebarPlaylist');
+            const btnAnnounce = document.getElementById('tabAnnouncements');
+            const tabAnnounceContent = document.getElementById('sidebarAnnouncements');
+
+            [btnLib, btnPlay, btnAnnounce].forEach(b => { b.style.color = '#94a3b8'; b.style.borderBottomColor = 'transparent'; });
+            [tabLibContent, tabPlayContent, tabAnnounceContent].forEach(c => c.classList.add('hidden-element'));
+
+            if (tab === 'library') {
+                btnLib.style.color = '#ffcd00'; btnLib.style.borderBottomColor = '#ffcd00';
+                tabLibContent.classList.remove('hidden-element');
+            } else if (tab === 'playlist') {
+                btnPlay.style.color = '#ffcd00'; btnPlay.style.borderBottomColor = '#ffcd00';
+                tabPlayContent.classList.remove('hidden-element');
+            } else if (tab === 'announcements') {
+                btnAnnounce.style.color = '#ffcd00'; btnAnnounce.style.borderBottomColor = '#ffcd00';
+                tabAnnounceContent.classList.remove('hidden-element');
+                renderAnnouncementsList();
+            }
+        }
+
+        function renderSongList() {
+            const container = document.getElementById('songListContainer');
+            const searchQuery = document.getElementById('songSearch').value.toLowerCase();
+            const filtered = songs.filter(s => s.title.toLowerCase().includes(searchQuery) || s.artist.toLowerCase().includes(searchQuery));
+
+            container.innerHTML = filtered.map(song => {
+                const inPlaylist = playlist.includes(song.id);
+                return `
+                    <div style="background-color: rgba(2,6,23,0.6); border: 1px solid rgba(30,41,59,0.8); border-radius: 0.5rem; padding: 0.625rem; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.backgroundColor='rgba(30,41,59,0.8)'" onmouseout="this.style.backgroundColor='rgba(2,6,23,0.6)'" onclick="selectSong('${song.id}')">
+                        <div style="min-width: 0; flex: 1; padding-right: 0.5rem;">
+                            <h4 style="font-size: 0.75rem; font-weight: 600; color: #e2e8f0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${song.title}</h4>
+                            <p style="font-size: 11px; color: #94a3b8; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${song.artist}</p>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 0.25rem;">
+                            <button onclick="event.stopPropagation(); exportSpecificSong('${song.id}')" style="padding: 0.375rem; border-radius: 0.25rem; background: none; border: none; color: #94a3b8; cursor: pointer; font-size: 0.75rem;" title="Export Song"><i class="fa-solid fa-share-nodes"></i></button>
+                            <button onclick="event.stopPropagation(); togglePlaylist('${song.id}')" style="padding: 0.375rem; border-radius: 0.25rem; background: none; border: none; cursor: pointer; font-size: 0.75rem; color: ${inPlaylist ? '#34d399' : '#64748b'};"><i class="fa-solid ${inPlaylist ? 'fa-check-circle' : 'fa-plus-circle'}"></i></button>
+                            <button onclick="event.stopPropagation(); deleteSong('${song.id}')" style="padding: 0.375rem; border-radius: 0.25rem; background: none; border: none; cursor: pointer; font-size: 0.75rem; color: #64748b;" onmouseover="this.style.color='#fb7185'" onmouseout="this.style.color='#64748b'"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function filterSongs() { renderSongList(); }
+
+        function renderPlaylist() {
+            const container = document.getElementById('playlistContainer');
+            document.getElementById('playlistCount').textContent = playlist.length;
+            container.innerHTML = playlist.map((songId, idx) => {
+                const song = songs.find(s => s.id === songId);
+                if (!song) return '';
+                const isActive = activeSongId === song.id && !isAnnouncementActive;
+                return `
+                    <div style="background-color: rgba(2,6,23,0.6); border: 1px solid ${isActive ? '#ffcd00' : '#1e293b'}; border-radius: 0.5rem; padding: 0.625rem; display: flex; align-items: center; justify-content: space-between; cursor: pointer; ${isActive ? 'box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);' : ''}" onclick="selectSong('${song.id}')">
+                        <div style="display: flex; align-items: center; gap: 0.625rem; min-width: 0; flex: 1;">
+                            <span style="font-size: 11px; font-weight: bold; color: #64748b; width: 1rem;">${idx + 1}</span>
+                            <div style="min-width: 0; flex: 1;">
+                                <h4 style="font-size: 0.75rem; font-weight: 600; color: ${isActive ? '#ffcd00' : '#e2e8f0'}; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${song.title}</h4>
+                                <p style="font-size: 11px; color: #94a3b8; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${song.artist}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function togglePlaylist(songId) {
+            const index = playlist.indexOf(songId);
+            if (index > -1) playlist.splice(index, 1);
+            else playlist.push(songId);
+            saveToLocalStorage();
+            renderSongList();
+            renderPlaylist();
+        }
+
+        function clearPlaylist() { playlist = []; saveToLocalStorage(); renderPlaylist(); renderSongList(); }
+
+        function selectSong(songId) {
+            activeSongId = songId;
+            activeSlideIndex = 0;
+            isLogoActive = false;
+            isBlackActive = false;
+            isInstrumentalActive = false;
+            isF4Active = false;
+            isAnnouncementActive = false;
+            activeAnnouncementData = null;
+
+            const song = songs.find(s => s.id === songId);
+            if (!song) return;
+
+            flattenedSlides = [
+                { type: 'SONG TITLE', lyrics: song.title, author: song.artist, isTitleCard: true }
+            ];
+
+            song.sections.forEach(sec => {
+                const lines = sec.lyrics.split('\n');
+                lines.forEach(line => {
+                    if (line.trim() !== '') {
+                        flattenedSlides.push({ type: sec.type, lyrics: line, isTitleCard: false });
+                    }
+                });
+            });
+
+            document.getElementById('activeSongTitle').textContent = song.title;
+            document.getElementById('activeSongArtist').textContent = song.artist + ' • ' + (flattenedSlides.length - 1) + ' line slides';
+            document.getElementById('currentActiveSongLabel').textContent = song.title;
+            document.getElementById('btnEditActive').classList.remove('hidden-element');
+            document.getElementById('btnExportActive').classList.remove('hidden-element');
+
+            renderQuickJumpBar();
+            renderSlideGrid();
+            renderPlaylist();
+            broadcastState();
+
+            if (window.innerWidth < 1024) switchMobileView('workspace');
+        }
+
+        function renderQuickJumpBar() {
+            const bar = document.getElementById('quickJumpBar');
+            const container = document.getElementById('quickJumpButtons');
+
+            const uniqueSections = [];
+            const sectionIndices = {};
+
+            flattenedSlides.forEach((slide, idx) => {
+                if (!slide.isTitleCard && !sectionIndices[slide.type]) {
+                    sectionIndices[slide.type] = idx;
+                    uniqueSections.push(slide.type);
+                }
+            });
+
+            if (uniqueSections.length === 0) {
+                bar.classList.add('hidden-element');
+                return;
+            }
+
+            bar.classList.remove('hidden-element');
+            container.innerHTML = uniqueSections.map(secName => {
+                const targetIdx = sectionIndices[secName];
+                return `
+                    <button onclick="jumpToSection(${targetIdx})" style="padding: 0.25rem 0.625rem; border-radius: 9999px; background-color: #0f172a; border: 1px solid #334155; font-size: 11px; font-weight: 600; color: #cbd5e1; cursor: pointer; white-space: nowrap;" onmouseover="this.style.borderColor='#ffcd00'; this.style.color='#ffcd00'" onmouseout="this.style.borderColor='#334155'; this.style.color='#cbd5e1'">
+                        ${secName}
+                    </button>
+                `;
+            }).join('');
+        }
+
+        function jumpToSection(slideIdx) {
+            selectSlide(slideIdx);
+            const slideCards = document.querySelectorAll('.slide-card');
+            if (slideCards[slideIdx]) {
+                slideCards[slideIdx].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        }
+
+        function setParticleMode(mode) {
+            currentParticleMode = mode;
+            currentBackground.particleMode = mode;
+            broadcastState();
+        }
+
+        function renderSlideGrid() {
+            const container = document.getElementById('slideGridContainer');
+            container.innerHTML = flattenedSlides.map((slide, idx) => {
+                const isActive = activeSlideIndex === idx && !isAnnouncementActive;
+                return `
+                    <div onclick="selectSlide(${idx})" class="slide-card" style="background-color: #0f172a; border: 1px solid ${isActive ? '#ffcd00' : '#1e293b'}; border-radius: 0.75rem; padding: 0.75rem; display: flex; flex-direction: column; justify-content: space-between; cursor: pointer; position: relative; ${isActive ? 'box-shadow: 0 10px 15px -3px rgba(255,205,0,0.15);' : ''}">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+                            <span style="padding: 0.125rem 0.5rem; border-radius: 0.25rem; font-size: 10px; font-weight: bold; background-color: ${isActive ? '#ffcd00' : '#1e293b'}; color: ${isActive ? '#020617' : '#ffcd00'};">${slide.type}</span>
+                            <span style="font-size: 10px; font-family: monospace; color: #64748b;">${idx + 1}</span>
+                        </div>
+                        <div class="font-presentation" style="font-size: 0.875rem; font-weight: 600; color: #e2e8f0; padding: 0.5rem 0;">
+                            ${slide.isTitleCard ? `<span style="color: #ffcd00; font-style: italic;">🎵 Title: ${slide.lyrics}</span>` : slide.lyrics}
+                        </div>
+                        <div style="margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid rgba(30,41,59,0.8); display: flex; align-items: center; justify-content: space-between; font-size: 10px; color: #64748b;">
+                            <span>${isActive ? '<span style="color: #34d399; font-weight: 600;"><i class="fa-solid fa-circle" style="font-size: 8px; margin-right: 0.25rem;"></i> Live</span>' : 'Click to project'}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function selectSlide(idx) {
+            activeSlideIndex = idx;
+            isLogoActive = false;
+            isBlackActive = false;
+            isInstrumentalActive = false;
+            isAnnouncementActive = false;
+            activeAnnouncementData = null;
+            renderSlideGrid();
+            broadcastState();
+        }
+
+        function triggerFirstSlide() { if (activeSongId) selectSlide(0); }
+
+        function setBackgroundGradient(value) {
+            currentBackground = {
+                type: 'animated-gradient',
+                value: value,
+                particleMode: currentParticleMode
+            };
+            broadcastState();
+        }
+
+        function sendClear(action) {
+            if (action === 'logo') { 
+                isLogoActive = !isLogoActive; isBlackActive = false; isInstrumentalActive = false; isF4Active = false; isAnnouncementActive = false; 
+            }
+            else if (action === 'instrumental') { 
+                isInstrumentalActive = !isInstrumentalActive; isLogoActive = false; isBlackActive = false;
+            }
+            else if (action === 'f4') { 
+                isF4Active = !isF4Active; 
+                const btn = document.getElementById('btnF4Toggle'); 
+                if (isF4Active) { 
+                    btn.style.backgroundColor = '#ffcd00';
+                    btn.style.color = '#020617';
+                    btn.style.fontWeight = 'bold';
+                } else {
+                    btn.style.backgroundColor = '#1e293b';
+                    btn.style.color = '#cbd5e1';
+                    btn.style.fontWeight = 'normal';
+                }
+            }
+            else if (action === 'black') { 
+                isBlackActive = !isBlackActive; isLogoActive = false; isInstrumentalActive = false; isF4Active = false; isAnnouncementActive = false; 
+            }
+            else if (action === 'clear') { 
+                isLogoActive = false; isBlackActive = false; isInstrumentalActive = false; isF4Active = false; isAnnouncementActive = false; activeAnnouncementData = null;
+                const btn = document.getElementById('btnF4Toggle');
+                btn.style.backgroundColor = '#1e293b';
+                btn.style.color = '#cbd5e1';
+                btn.style.fontWeight = 'normal';
+            }
+            broadcastState();
+        }
+
+        function sendStageMessage() { broadcastState(); }
+
+        function openExportModal() {
+            if (!activeSongId) return;
+            exportSpecificSong(activeSongId);
+        }
+
+        function exportSpecificSong(songId) {
+            const song = songs.find(s => s.id === songId);
+            if (!song) return;
+            document.getElementById('exportJsonTextarea').value = JSON.stringify(song, null, 2);
+            document.getElementById('exportModal').classList.remove('hidden-element');
+        }
+
+        function closeExportModal() { document.getElementById('exportModal').classList.add('hidden-element'); }
+
+        function copyExportJson() {
+            const textarea = document.getElementById('exportJsonTextarea');
+            textarea.select();
+            document.execCommand('copy');
+            alert('Song JSON sequence copied to clipboard!');
+        }
+
+        function downloadSongJson() {
+            const songJson = document.getElementById('exportJsonTextarea').value;
+            if (!songJson) return;
+            const parsed = JSON.parse(songJson);
+            const blob = new Blob([songJson], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${parsed.title || 'song'}-worship-sequence.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function openImportModal() {
+            document.getElementById('importJsonTextarea').value = '';
+            document.getElementById('importFileInput').value = '';
+            document.getElementById('importModal').classList.remove('hidden-element');
+        }
+
+        function closeImportModal() { document.getElementById('importModal').classList.add('hidden-element'); }
+
+        function handleFileImport(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('importJsonTextarea').value = e.target.result;
+            };
+            reader.readAsText(file);
+        }
+
+        function processJsonImport() {
+            const rawJson = document.getElementById('importJsonTextarea').value.trim();
+            if (!rawJson) { alert('Please paste or select a JSON file to import.'); return; }
+
+            try {
+                const importedSong = JSON.parse(rawJson);
+                if (!importedSong.title || !importedSong.sections) {
+                    throw new Error('Invalid YA Worship song format.');
+                }
+
+                importedSong.id = 'song-' + Date.now();
+                songs.push(importedSong);
+                playlist.push(importedSong.id);
+
+                saveToLocalStorage();
+                renderSongList();
+                renderPlaylist();
+                closeImportModal();
+                selectSong(importedSong.id);
+                alert(`Successfully imported: "${importedSong.title}"!`);
+            } catch (err) {
+                alert('Failed to import song. Please check if the JSON data is valid.');
+            }
+        }
+
+        function openSongEditorModal(songId = null) {
+            const modal = document.getElementById('songEditorModal');
+            const container = document.getElementById('sectionsEditorContainer');
+            modal.classList.remove('hidden-element');
+
+            if (songId) {
+                const song = songs.find(s => s.id === songId);
+                document.getElementById('modalSongTitle').textContent = 'Edit Song';
+                document.getElementById('editSongId').value = song.id;
+                document.getElementById('inputSongTitle').value = song.title;
+                document.getElementById('inputSongArtist').value = song.artist;
+                document.getElementById('inputSongFont').value = song.fontFamily || 'font-montserrat';
+                container.innerHTML = song.sections.map(sec => createSectionRowHTML(sec.type, sec.lyrics)).join('');
+            } else {
+                document.getElementById('modalSongTitle').textContent = 'Add New Song';
+                document.getElementById('editSongId').value = '';
+                document.getElementById('inputSongTitle').value = '';
+                document.getElementById('inputSongArtist').value = '';
+                document.getElementById('inputSongFont').value = 'font-montserrat';
+                container.innerHTML = createSectionRowHTML('Verse 1', '') + createSectionRowHTML('Chorus', '');
+            }
+        }
+
+        function editCurrentSong() { if (activeSongId) openSongEditorModal(activeSongId); }
+        function closeSongEditorModal() { document.getElementById('songEditorModal').classList.add('hidden-element'); }
+        function addSectionEditorRow() {
+            const container = document.getElementById('sectionsEditorContainer');
+            const div = document.createElement('div');
+            div.innerHTML = createSectionRowHTML('Verse', '');
+            container.appendChild(div.firstElementChild);
+        }
+
+        function createSectionRowHTML(type = 'Verse', lyrics = '') {
+            return `
+                <div class="section-row" style="background-color: #020617; border: 1px solid #1e293b; border-radius: 0.5rem; padding: 0.75rem; display: flex; flex-direction: column; gap: 0.5rem;">
+                    <div style="display: flex; align-items: center; justify-content: space-between;">
+                        <input type="text" value="${type}" class="sec-type" style="background-color: #0f172a; border: 1px solid #334155; border-radius: 0.25rem; padding: 0.25rem 0.5rem; font-size: 0.75rem; font-weight: bold; color: #ffcd00; width: 9rem; outline: none;">
+                        <button onclick="this.closest('.section-row').remove()" style="font-size: 0.75rem; color: #fb7185; background: none; border: none; cursor: pointer;"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                    <textarea rows="3" class="sec-lyrics" style="width: 100%; background-color: #0f172a; border: 1px solid #1e293b; border-radius: 0.25rem; padding: 0.5rem; font-size: 0.75rem; color: #e2e8f0; outline: none; resize: vertical;" onfocus="this.style.borderColor='#ffcd00'" onblur="this.style.borderColor='#1e293b'">${lyrics}</textarea>
+                </div>
+            `;
+        }
+
+        function saveSongFromModal() {
+            const id = document.getElementById('editSongId').value;
+            const title = document.getElementById('inputSongTitle').value.trim();
+            const artist = document.getElementById('inputSongArtist').value.trim();
+            const fontFamily = document.getElementById('inputSongFont').value;
+            if (!title) { alert('Please enter a song title.'); return; }
+
+            const sectionRows = document.querySelectorAll('.section-row');
+            const sections = [];
+            sectionRows.forEach(row => {
+                sections.push({
+                    type: row.querySelector('.sec-type').value || 'Verse',
+                    lyrics: row.querySelector('.sec-lyrics').value || ''
+                });
+            });
+
+            if (id) {
+                const song = songs.find(s => s.id === id);
+                if (song) { song.title = title; song.artist = artist; song.fontFamily = fontFamily; song.sections = sections; }
+            } else {
+                const newSong = { id: 'song-' + Date.now(), title, artist: artist || 'Unknown Artist', fontFamily, sections };
+                songs.push(newSong);
+                playlist.push(newSong.id);
+            }
+
+            saveToLocalStorage();
+            renderSongList();
+            renderPlaylist();
+            closeSongEditorModal();
+            if (id && activeSongId === id) selectSong(id);
+            else if (!id) selectSong(songs[songs.length - 1].id);
+        }
+
+        function deleteSong(songId) {
+            songs = songs.filter(s => s.id !== songId);
+            playlist = playlist.filter(id => id !== songId);
+            saveToLocalStorage();
+            renderSongList();
+            renderPlaylist();
+        }
+
+        function switchMobileView(view) {
+            const sidebarPane = document.getElementById('mobileSidebarPane');
+            const workspacePane = document.getElementById('mobileWorkspacePane');
+            const navSidebar = document.getElementById('mobileNavSidebar');
+            const navWorkspace = document.getElementById('mobileNavWorkspace');
+
+            if (view === 'sidebar') {
+                sidebarPane.classList.remove('hidden-element');
+                workspacePane.classList.add('hidden-element');
+                navSidebar.style.color = '#ffcd00';
+                navSidebar.style.borderBottomColor = '#ffcd00';
+                navWorkspace.style.color = '#94a3b8';
+                navWorkspace.style.borderBottomColor = 'transparent';
+            } else {
+                sidebarPane.classList.add('hidden-element');
+                workspacePane.classList.remove('hidden-element');
+                workspacePane.style.display = 'flex';
+                navWorkspace.style.color = '#ffcd00';
+                navWorkspace.style.borderBottomColor = '#ffcd00';
+                navSidebar.style.color = '#94a3b8';
+                navSidebar.style.borderBottomColor = 'transparent';
+            }
+        }
+
+        /* --- Announcements Functions --- */
+        function openAnnouncementModal() {
+            document.getElementById('announcementTitleInput').value = '';
+            document.getElementById('announcementDescInput').value = '';
+            document.getElementById('announcementImageInput').value = '';
+            document.getElementById('announcementModal').classList.remove('hidden-element');
+        }
+
+        function closeAnnouncementModal() {
+            document.getElementById('announcementModal').classList.add('hidden-element');
+        }
+
+        function saveAnnouncement() {
+            const title = document.getElementById('announcementTitleInput').value.trim();
+            const description = document.getElementById('announcementDescInput').value.trim();
+            const imageInput = document.getElementById('announcementImageInput');
+
+            if (!title && imageInput.files.length === 0) {
+                alert('Please provide at least a title or upload an image poster.');
+                return;
+            }
+
+            if (imageInput.files && imageInput.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    announcements.push({
+                        id: 'announcement-' + Date.now(),
+                        title,
+                        description,
+                        image: e.target.result
+                    });
+                    finishSavingAnnouncement();
+                };
+                reader.readAsDataURL(imageInput.files[0]);
+            } else {
+                announcements.push({
+                    id: 'announcement-' + Date.now(),
+                    title,
+                    description,
+                    image: null
+                });
+                finishSavingAnnouncement();
+            }
+        }
+
+        function finishSavingAnnouncement() {
+            saveAnnouncementsStorage();
+            renderAnnouncementsList();
+            closeAnnouncementModal();
+        }
+
+        function renderAnnouncementsList() {
+            const container = document.getElementById('announcementsListContainer');
+            if (announcements.length === 0) {
+                container.innerHTML = `<div style="text-align: center; color: #64748b; font-size: 0.75rem; padding: 2rem;">No announcement posters uploaded yet.</div>`;
+                return;
+            }
+
+            container.innerHTML = announcements.map(item => {
+                const isActive = isAnnouncementActive && activeAnnouncementData && activeAnnouncementData.id === item.id;
+                return `
+                    <div style="background-color: rgba(2,6,23,0.6); border: 1px solid ${isActive ? '#ffcd00' : '#1e293b'}; border-radius: 0.5rem; padding: 0.625rem; display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; ${isActive ? 'box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);' : ''}">
+                        ${item.image ? `<img src="${item.image}" style="width: 2.5rem; height: 2.5rem; object-fit: cover; border-radius: 0.25rem; border: 1px solid #334155;" />` : `<div style="width: 2.5rem; height: 2.5rem; background: #1e293b; border-radius: 0.25rem; display: flex; align-items: center; justify-content: center; color: #ffcd00; font-size: 0.875rem;"><i class="fa-solid fa-bullhorn"></i></div>`}
+                        <div style="flex: 1; min-width: 0;">
+                            <h4 style="font-size: 0.75rem; font-weight: 600; color: ${isActive ? '#ffcd00' : '#e2e8f0'}; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${item.title || 'Poster Notice'}</h4>
+                            <p style="font-size: 10px; color: #94a3b8; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${item.description || 'Image Poster'}</p>
+                        </div>
+                        <div style="display: flex; gap: 0.25rem;">
+                            <button onclick="projectAnnouncement('${item.id}')" style="background-color: #ffcd00; color: #020617; border: none; padding: 0.25rem 0.5rem; border-radius: 0.25rem; font-size: 10px; font-weight: bold; cursor: pointer;">Project</button>
+                            <button onclick="deleteAnnouncement('${item.id}')" style="background: none; border: none; color: #64748b; cursor: pointer; font-size: 0.75rem;" onmouseover="this.style.color='#fb7185'" onmouseout="this.style.color='#64748b'"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function projectAnnouncement(id) {
+            const item = announcements.find(a => a.id === id);
+            if (!item) return;
+
+            isAnnouncementActive = true;
+            activeAnnouncementData = item;
+            isLogoActive = false;
+            isBlackActive = false;
+            isInstrumentalActive = false;
+            isF4Active = false;
+
+            document.getElementById('activeSongTitle').textContent = item.title || 'Announcement Notice';
+            document.getElementById('activeSongArtist').textContent = 'Live Poster Display';
+            document.getElementById('currentActiveSongLabel').textContent = item.title || 'Announcement';
+
+            renderAnnouncementsList();
+            renderPlaylist();
+            broadcastState();
+        }
+
+        function deleteAnnouncement(id) {
+            announcements = announcements.filter(a => a.id !== id);
+            saveAnnouncementsStorage();
+            renderAnnouncementsList();
+        }
+
+        function exportAllPlaylist() {
+            // Package all songs and the current playlist order into one bundle
+            const setPackage = {
+                app: 'YA Worship Suite',
+                version: '1.0',
+                exportedAt: new Date().toISOString(),
+                songs: songs,
+                playlist: playlist
+            };
+
+            const jsonString = JSON.stringify(setPackage, null, 2);
+            const blob = new Blob([jsonString], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `worship-set-playlist-${new Date().toISOString().slice(0, 10)}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function openImportPlaylistModal() {
+            document.getElementById('importPlaylistJsonTextarea').value = '';
+            document.getElementById('importPlaylistFileInput').value = '';
+            document.getElementById('importPlaylistModal').classList.remove('hidden-element');
+        }
+
+        function closeImportPlaylistModal() {
+            document.getElementById('importPlaylistModal').classList.add('hidden-element');
+        }
+
+        function handlePlaylistFileImport(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('importPlaylistJsonTextarea').value = e.target.result;
+            };
+            reader.readAsText(file);
+        }
+
+        function processPlaylistJsonImport() {
+            const rawJson = document.getElementById('importPlaylistJsonTextarea').value.trim();
+            if (!rawJson) { alert('Please paste or select a worship set JSON file.'); return; }
+
+            try {
+                const bundle = JSON.parse(rawJson);
+                if (!bundle.songs || !bundle.playlist) {
+                    throw new Error('Invalid set package format.');
+                }
+
+                // Merge imported songs and playlist (avoiding duplicate IDs if merging)
+                songs = bundle.songs;
+                playlist = bundle.playlist;
+
+                saveToLocalStorage();
+                renderSongList();
+                renderPlaylist();
+                closeImportPlaylistModal();
+
+                if (playlist.length > 0) {
+                    selectSong(playlist[0]);
+                }
+
+                alert(`Successfully imported worship set with ${songs.length} songs and ${playlist.length} queue items!`);
+            } catch (err) {
+                alert('Failed to import worship set package. Please check if the JSON data is valid.');
+            }
+        }
+    </script>
 </body>
 </html>
